@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,236 +30,262 @@
     </a>
     <div class="header__utility">
       <span class="header__status-tag">T.I.P. Manila Portal&ensp;|&ensp;CPE 408B</span>
+      <!-- Theme toggle -->
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
     </div>
   </header>
 
   <!-- ═══════════════════════════════════════════════════
-       MAIN — AUTHENTICATION CONTAINER
+       MAIN — BENTO GRID AUTHENTICATION LAYOUT
   ═══════════════════════════════════════════════════ -->
-  <main class="auth-page">
-    <div id="auth-card" class="auth-card">
+  <main class="bento-page">
+    <div class="bento-grid">
 
-      <!-- Title -->
-      <div class="auth-card__header">
-        <h1 id="auth-title" class="auth-card__title">TIPPED PORTAL ACCESS</h1>
-        <p class="auth-card__subtitle">Technological Institute of the Philippines — Manila Campus</p>
+      <!-- ╔═══════════════════════════════════════════════
+           ║  CELL 1 — BRAND HERO (large, top-left)
+           ╚═══════════════════════════════════════════════ -->
+      <div class="bento-cell bento-cell--hero" id="bento-hero">
+        <div class="bento-hero__content">
+          <div class="bento-hero__badge">
+            <svg viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="bento-hero__shield">
+              <path d="M28 0L56 12V36C56 52 42 62 28 64C14 62 0 52 0 36V12L28 0Z" fill="#F59E0B"/>
+              <text x="28" y="34" text-anchor="middle" font-size="14" font-weight="900" fill="#0F172A" font-family="Inter, sans-serif">TIPPED</text>
+              <text x="28" y="48" text-anchor="middle" font-size="6.5" font-weight="700" fill="#0F172A" font-family="Inter, sans-serif">T.I.P. MANILA</text>
+            </svg>
+          </div>
+          <h2 class="bento-hero__title">Incident<br>Reporting<br>Platform</h2>
+          <p class="bento-hero__desc">Real-time campus safety monitoring and incident management for T.I.P. Manila</p>
+          <div class="bento-hero__version">v2.0 — Emerging Technologies</div>
+        </div>
+        <div class="bento-hero__glow"></div>
       </div>
 
-      <!-- ── Role Toggle (User / Admin) ── -->
-      <div id="role-toggle" class="role-toggle" role="tablist" aria-label="Login role">
-        <button
-          id="role-user-btn"
-          class="role-toggle__tab role-toggle__tab--active"
-          role="tab"
-          aria-selected="true"
-          data-role="user"
-        >User Login (Student / Faculty)</button>
-        <button
-          id="role-admin-btn"
-          class="role-toggle__tab"
-          role="tab"
-          aria-selected="false"
-          data-role="admin"
-        >Admin Login (Facilities Staff)</button>
-      </div>
+      <!-- ╔═══════════════════════════════════════════════
+           ║  CELL 2 — AUTH FORM (large, right)
+           ╚═══════════════════════════════════════════════ -->
+      <div class="bento-cell bento-cell--auth" id="bento-auth">
 
-      <!-- ── Mode Toggle (Sign In / Sign Up) ── -->
-      <div id="mode-toggle" class="mode-toggle" role="tablist" aria-label="Auth mode">
-        <button
-          id="mode-signin-btn"
-          class="mode-toggle__tab mode-toggle__tab--active"
-          role="tab"
-          aria-selected="true"
-          data-mode="signin"
-        >Sign In</button>
-        <button
-          id="mode-signup-btn"
-          class="mode-toggle__tab"
-          role="tab"
-          aria-selected="false"
-          data-mode="signup"
-        >Sign Up</button>
-      </div>
-
-      <!-- ═══════════ SIGN IN FORM ═══════════ -->
-      <form id="signin-form" class="auth-form" novalidate autocomplete="on">
-
-        <!-- Email -->
-        <div class="form-group" id="signin-email-group">
-          <label for="signin-email" class="form-label">INSTITUTIONAL EMAIL</label>
-          <div class="input-wrapper">
-            <input
-              id="signin-email"
-              class="form-input"
-              type="email"
-              placeholder="e.g. jdoe.m@tip.edu.ph"
-              autocomplete="email"
-              spellcheck="false"
-              required
-            />
-            <span id="signin-email-icon" class="input-icon input-icon--hidden" aria-hidden="true">
-              <!-- Checkmark SVG -->
-              <svg class="icon-check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            </span>
-          </div>
-          <p id="signin-email-error" class="form-error form-error--hidden">Must be a valid @tip.edu.ph email address</p>
+        <!-- Title -->
+        <div class="auth-card__header">
+          <h1 id="auth-title" class="auth-card__title">TIPPED PORTAL ACCESS</h1>
+          <p class="auth-card__subtitle">Technological Institute of the Philippines — Manila Campus</p>
         </div>
 
-        <!-- Password -->
-        <div class="form-group" id="signin-password-group">
-          <label for="signin-password" class="form-label">PASSWORD</label>
-          <div class="input-wrapper">
-            <input
-              id="signin-password"
-              class="form-input"
-              type="password"
-              placeholder="••••••••••••"
-              autocomplete="current-password"
-              required
-            />
-            <button type="button" id="signin-toggle-pw" class="input-icon input-icon--btn" aria-label="Toggle password visibility" tabindex="-1">
-              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg class="icon-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            </button>
-          </div>
+        <!-- ── Role Toggle (User / Admin) ── -->
+        <div id="role-toggle" class="role-toggle" role="tablist" aria-label="Login role">
+          <button id="role-user-btn" class="role-toggle__tab role-toggle__tab--active" role="tab" aria-selected="true" data-role="user">User Login (Student / Faculty)</button>
+          <button id="role-admin-btn" class="role-toggle__tab" role="tab" aria-selected="false" data-role="admin">Admin Login (Facilities Staff)</button>
         </div>
 
-        <!-- Remember + Forgot -->
-        <div class="form-row form-row--between">
-          <label class="checkbox-label" for="remember-me">
-            <input id="remember-me" type="checkbox" class="checkbox-input" />
-            <span class="checkbox-custom"></span>
-            <span class="checkbox-text">REMEMBER ME</span>
-          </label>
-          <a href="#" id="forgot-password-link" class="form-link">Forgot Password?</a>
+        <!-- ── Mode Toggle (Sign In / Sign Up) ── -->
+        <div id="mode-toggle" class="mode-toggle" role="tablist" aria-label="Auth mode">
+          <button id="mode-signin-btn" class="mode-toggle__tab mode-toggle__tab--active" role="tab" aria-selected="true" data-mode="signin">Sign In</button>
+          <button id="mode-signup-btn" class="mode-toggle__tab" role="tab" aria-selected="false" data-mode="signup">Sign Up</button>
         </div>
 
-        <!-- CTA -->
-        <button id="signin-submit" type="submit" class="btn btn--primary">SIGN IN TO TIPPED</button>
-
-        <!-- Divider -->
-        <div class="divider">
-          <span class="divider__text">OR CONTINUE WITH</span>
-        </div>
-
-        <!-- Google SSO -->
-        <button id="google-sso-signin" type="button" class="btn btn--google">
-          <svg class="btn__google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          Sign in with T.I.P. Google Account
-        </button>
-      </form>
-
-      <!-- ═══════════ SIGN UP FORM ═══════════ -->
-      <form id="signup-form" class="auth-form auth-form--hidden" novalidate autocomplete="on">
-
-        <!-- Full Name -->
-        <div class="form-group" id="signup-name-group">
-          <label for="signup-name" class="form-label">FULL NAME</label>
-          <div class="input-wrapper">
-            <input
-              id="signup-name"
-              class="form-input"
-              type="text"
-              placeholder="e.g. Juan De La Cruz"
-              autocomplete="name"
-              required
-            />
-          </div>
-        </div>
-
-        <!-- Email -->
-        <div class="form-group" id="signup-email-group">
-          <label for="signup-email" class="form-label">INSTITUTIONAL EMAIL (@tip.edu.ph)</label>
-          <div class="input-wrapper">
-            <input
-              id="signup-email"
-              class="form-input"
-              type="email"
-              placeholder="e.g. jdoe.m@tip.edu.ph"
-              autocomplete="email"
-              spellcheck="false"
-              required
-            />
-            <span id="signup-email-icon" class="input-icon input-icon--hidden" aria-hidden="true">
-              <svg class="icon-check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            </span>
-          </div>
-          <p id="signup-email-error" class="form-error form-error--hidden">Must be a valid @tip.edu.ph email address</p>
-        </div>
-
-        <!-- Department -->
-        <div class="form-group" id="signup-dept-group">
-          <label for="signup-dept" class="form-label">DEPARTMENT / PROGRAM</label>
-          <div class="input-wrapper input-wrapper--select">
-            <select id="signup-dept" class="form-input form-select" required>
-              <option value="" disabled selected>Select your department…</option>
-              <option value="cea">College of Engineering &amp; Architecture</option>
-              <option value="it">Information Technology</option>
-              <option value="faculty">Faculty</option>
-              <option value="staff">Staff</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Password with strength -->
-        <div class="form-group" id="signup-password-group">
-          <label for="signup-password" class="form-label">CREATE PASSWORD</label>
-          <div class="input-wrapper">
-            <input
-              id="signup-password"
-              class="form-input"
-              type="password"
-              placeholder="Min. 8 characters"
-              autocomplete="new-password"
-              minlength="8"
-              required
-            />
-            <button type="button" id="signup-toggle-pw" class="input-icon input-icon--btn" aria-label="Toggle password visibility" tabindex="-1">
-              <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg class="icon-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-            </button>
-          </div>
-          <!-- Strength meter -->
-          <div id="password-strength" class="strength-meter strength-meter--hidden">
-            <div class="strength-meter__track">
-              <div id="strength-bar" class="strength-meter__bar"></div>
+        <!-- ═══════════ SIGN IN FORM ═══════════ -->
+        <form id="signin-form" class="auth-form" novalidate autocomplete="on">
+          <div class="form-group" id="signin-email-group">
+            <label for="signin-email" class="form-label">INSTITUTIONAL EMAIL</label>
+            <div class="input-wrapper">
+              <input id="signin-email" class="form-input" type="email" placeholder="e.g. jdoe.m@tip.edu.ph" autocomplete="email" spellcheck="false" required />
+              <span id="signin-email-icon" class="input-icon input-icon--hidden" aria-hidden="true">
+                <svg class="icon-check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              </span>
             </div>
-            <span id="strength-label" class="strength-meter__label"></span>
+            <p id="signin-email-error" class="form-error form-error--hidden">Must be a valid @tip.edu.ph email address</p>
           </div>
+
+          <div class="form-group" id="signin-password-group">
+            <label for="signin-password" class="form-label">PASSWORD</label>
+            <div class="input-wrapper">
+              <input id="signin-password" class="form-input" type="password" placeholder="••••••••••••" autocomplete="current-password" required />
+              <button type="button" id="signin-toggle-pw" class="input-icon input-icon--btn" aria-label="Toggle password visibility" tabindex="-1">
+                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-row form-row--between">
+            <label class="checkbox-label" for="remember-me">
+              <input id="remember-me" type="checkbox" class="checkbox-input" />
+              <span class="checkbox-custom"></span>
+              <span class="checkbox-text">REMEMBER ME</span>
+            </label>
+            <a href="#" id="forgot-password-link" class="form-link">Forgot Password?</a>
+          </div>
+
+          <button id="signin-submit" type="submit" class="btn btn--primary">SIGN IN TO TIPPED</button>
+
+          <div class="divider"><span class="divider__text">OR CONTINUE WITH</span></div>
+
+          <button id="google-sso-signin" type="button" class="btn btn--google">
+            <svg class="btn__google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Sign in with T.I.P. Google Account
+          </button>
+        </form>
+
+        <!-- ═══════════ SIGN UP FORM ═══════════ -->
+        <form id="signup-form" class="auth-form auth-form--hidden" novalidate autocomplete="on">
+          <div class="form-group" id="signup-name-group">
+            <label for="signup-name" class="form-label">FULL NAME</label>
+            <div class="input-wrapper">
+              <input id="signup-name" class="form-input" type="text" placeholder="e.g. Juan De La Cruz" autocomplete="name" required />
+            </div>
+          </div>
+
+          <div class="form-group" id="signup-email-group">
+            <label for="signup-email" class="form-label">INSTITUTIONAL EMAIL (@tip.edu.ph)</label>
+            <div class="input-wrapper">
+              <input id="signup-email" class="form-input" type="email" placeholder="e.g. jdoe.m@tip.edu.ph" autocomplete="email" spellcheck="false" required />
+              <span id="signup-email-icon" class="input-icon input-icon--hidden" aria-hidden="true">
+                <svg class="icon-check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              </span>
+            </div>
+            <p id="signup-email-error" class="form-error form-error--hidden">Must be a valid @tip.edu.ph email address</p>
+          </div>
+
+          <div class="form-group" id="signup-dept-group">
+            <label for="signup-dept" class="form-label">DEPARTMENT / PROGRAM</label>
+            <div class="input-wrapper input-wrapper--select">
+              <select id="signup-dept" class="form-input form-select" required>
+                <option value="" disabled selected>Select your department…</option>
+                <option value="cea">College of Engineering &amp; Architecture</option>
+                <option value="it">Information Technology</option>
+                <option value="faculty">Faculty</option>
+                <option value="staff">Staff</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" id="signup-password-group">
+            <label for="signup-password" class="form-label">CREATE PASSWORD</label>
+            <div class="input-wrapper">
+              <input id="signup-password" class="form-input" type="password" placeholder="Min. 8 characters" autocomplete="new-password" minlength="8" required />
+              <button type="button" id="signup-toggle-pw" class="input-icon input-icon--btn" aria-label="Toggle password visibility" tabindex="-1">
+                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+            <div id="password-strength" class="strength-meter strength-meter--hidden">
+              <div class="strength-meter__track"><div id="strength-bar" class="strength-meter__bar"></div></div>
+              <span id="strength-label" class="strength-meter__label"></span>
+            </div>
+          </div>
+
+          <button id="signup-submit" type="submit" class="btn btn--primary">CREATE ACCOUNT</button>
+          <div class="divider"><span class="divider__text">OR CONTINUE WITH</span></div>
+          <button id="google-sso-signup" type="button" class="btn btn--google">
+            <svg class="btn__google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Sign in with T.I.P. Google Account
+          </button>
+        </form>
+
+        <!-- Footer links -->
+        <div class="auth-card__footer">
+          <span id="footer-toggle-text">Don't have an account? <a href="#" id="footer-toggle-link" class="form-link form-link--bold">Sign Up</a></span>
+          <span>Need Help? / <a href="#" id="contact-admin-link" class="form-link form-link--bold">Contact System Admin</a></span>
         </div>
-
-        <!-- CTA -->
-        <button id="signup-submit" type="submit" class="btn btn--primary">CREATE ACCOUNT</button>
-
-        <!-- Divider -->
-        <div class="divider">
-          <span class="divider__text">OR CONTINUE WITH</span>
-        </div>
-
-        <!-- Google SSO -->
-        <button id="google-sso-signup" type="button" class="btn btn--google">
-          <svg class="btn__google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-          </svg>
-          Sign in with T.I.P. Google Account
-        </button>
-      </form>
-
-      <!-- Footer links -->
-      <div class="auth-card__footer">
-        <span id="footer-toggle-text">Don't have an account? <a href="#" id="footer-toggle-link" class="form-link form-link--bold">Sign Up</a></span>
-        <span>Need Help? / <a href="#" id="contact-admin-link" class="form-link form-link--bold">Contact System Admin</a></span>
       </div>
 
-    </div><!-- /auth-card -->
+      <!-- ╔═══════════════════════════════════════════════
+           ║  CELL 3 — LIVE CAMPUS METRICS (narrow)
+           ╚═══════════════════════════════════════════════ -->
+      <div class="bento-cell bento-cell--metrics" id="bento-metrics">
+        <div class="bento-metrics__header">
+          <span class="bento-metrics__dot"></span>
+          <span class="bento-metrics__label">LIVE CAMPUS STATUS</span>
+        </div>
+        <div class="bento-metrics__grid">
+          <div class="metric-card">
+            <span class="metric-card__value" id="metric-active">0</span>
+            <span class="metric-card__label">Active<br>Incidents</span>
+          </div>
+          <div class="metric-card metric-card--accent">
+            <span class="metric-card__value" id="metric-resolved">24</span>
+            <span class="metric-card__label">Resolved<br>This Week</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-card__value" id="metric-avg">2.4<small>min</small></span>
+            <span class="metric-card__label">Avg Response<br>Time</span>
+          </div>
+          <div class="metric-card metric-card--success">
+            <span class="metric-card__value" id="metric-uptime">99.8<small>%</small></span>
+            <span class="metric-card__label">System<br>Uptime</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══════════════════════════════════════════════
+           ║  CELL 4 — RECENT UPDATES (medium)
+           ╚═══════════════════════════════════════════════ -->
+      <div class="bento-cell bento-cell--updates" id="bento-updates">
+        <h3 class="bento-section-title">
+          <svg class="bento-section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Recent Notices
+        </h3>
+        <ul class="updates-list">
+          <li class="updates-list__item">
+            <span class="updates-list__badge updates-list__badge--info">INFO</span>
+            <span class="updates-list__text">System maintenance scheduled Oct 5, 2AM-4AM</span>
+          </li>
+          <li class="updates-list__item">
+            <span class="updates-list__badge updates-list__badge--resolved">RESOLVED</span>
+            <span class="updates-list__text">Elevator B — Building 3 restored to service</span>
+          </li>
+          <li class="updates-list__item">
+            <span class="updates-list__badge updates-list__badge--warning">ADVISORY</span>
+            <span class="updates-list__text">Wet floor advisory near Cafeteria entrance</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ╔═══════════════════════════════════════════════
+           ║  CELL 5 — QUICK FEATURES (small)
+           ╚═══════════════════════════════════════════════ -->
+      <div class="bento-cell bento-cell--features" id="bento-features">
+        <div class="feature-pill">
+          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>GPS Mapping</span>
+        </div>
+        <div class="feature-pill">
+          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Secure Reports</span>
+        </div>
+        <div class="feature-pill">
+          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span>Instant Alerts</span>
+        </div>
+        <div class="feature-pill">
+          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>Admin Dashboard</span>
+        </div>
+      </div>
+
+      <!-- ╔═══════════════════════════════════════════════
+           ║  CELL 6 — SYSTEM INFO (tiny)
+           ╚═══════════════════════════════════════════════ -->
+      <div class="bento-cell bento-cell--sysinfo" id="bento-sysinfo">
+        <div class="sysinfo__label">CPE 408B</div>
+        <div class="sysinfo__sublabel">Emerging Technologies II</div>
+        <div class="sysinfo__semester">1st Semester AY 2026-2027</div>
+      </div>
+
+    </div><!-- /bento-grid -->
   </main>
 
   <script src="app.js"></script>
