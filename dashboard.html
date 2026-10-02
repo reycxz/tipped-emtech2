@@ -54,7 +54,7 @@
       <section class="dash-banner" id="dash-banner">
         <div class="dash-banner__content">
           <h1 class="dash-banner__title">Welcome back, Student!</h1>
-          <p class="dash-banner__subtitle">Report facility concerns or track active maintenance tickets across Arlegui &amp; Casal campuses.</p>
+          <p class="dash-banner__subtitle">Campus facility &amp; maintenance monitoring across Arlegui &amp; Casal campuses.</p>
         </div>
         <a href="/report/new" class="dash-banner__cta" id="banner-submit-btn">
           <svg viewBox="0 0 20 20" fill="currentColor" class="dash-banner__cta-icon">
@@ -64,125 +64,90 @@
         </a>
       </section>
 
-      <!-- ── Bento Grid Main Section ── -->
-      <div class="dash-bento">
+      <!-- ── 2. Real-Time Status Tiles (Compact with Icons) ── -->
+      <div class="status-tiles">
+        <!-- Pending Tile -->
+        <div class="status-tile status-tile--pending">
+          <div class="status-tile__icon-box status-tile__icon-box--pending">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-tile__icon">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="status-tile__info">
+            <span class="status-tile__count" id="count-pending">2</span>
+            <span class="status-tile__label">Pending</span>
+          </div>
+        </div>
 
-        <!-- Left / Center Column: Status Counters & Quick Actions -->
-        <div class="dash-bento__main">
+        <!-- In Progress Tile -->
+        <div class="status-tile status-tile--progress">
+          <div class="status-tile__icon-box status-tile__icon-box--progress">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-tile__icon">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+          </div>
+          <div class="status-tile__info">
+            <span class="status-tile__count" id="count-progress">1</span>
+            <span class="status-tile__label">In Progress</span>
+          </div>
+        </div>
 
-          <!-- ── 2. Real-Time Status Counters ── -->
-          <div class="status-counters">
-            <!-- Pending -->
-            <div class="status-card status-card--pending">
-              <div class="status-card__top">
-                <span class="status-card__label">PENDING</span>
-                <span class="status-badge status-badge--pending">Pending Tickets</span>
-              </div>
-              <div class="status-card__count" id="count-pending">2</div>
-              <div class="status-card__foot">Awaiting campus admin review</div>
+        <!-- Resolved Tile -->
+        <div class="status-tile status-tile--resolved">
+          <div class="status-tile__icon-box status-tile__icon-box--resolved">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="status-tile__icon">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="status-tile__info">
+            <span class="status-tile__count" id="count-resolved">5</span>
+            <span class="status-tile__label">Resolved</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 3. Recent Activity Preview Stream (Compact Bento Card) ── -->
+      <section class="activity-cell">
+        <div class="activity-cell__header">
+          <div class="activity-cell__title-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="activity-cell__icon">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+            <h2 class="activity-cell__title">Recent Ticket Activity</h2>
+          </div>
+          <a href="/my-reports" class="activity-cell__view-all">View All</a>
+        </div>
+
+        <div class="activity-grid">
+          <!-- Ticket 1 -->
+          <div class="activity-card">
+            <div class="activity-card__head">
+              <span class="activity-card__id">#TIP-2026-0892</span>
+              <span class="activity-card__status activity-card__status--progress">In Progress</span>
             </div>
-
-            <!-- In Progress -->
-            <div class="status-card status-card--progress">
-              <div class="status-card__top">
-                <span class="status-card__label">IN PROGRESS</span>
-                <span class="status-badge status-badge--progress">In Progress</span>
-              </div>
-              <div class="status-card__count" id="count-progress">1</div>
-              <div class="status-card__foot">Technician dispatched</div>
-            </div>
-
-            <!-- Resolved -->
-            <div class="status-card status-card--resolved">
-              <div class="status-card__top">
-                <span class="status-card__label">RESOLVED</span>
-                <span class="status-badge status-badge--resolved">Resolved</span>
-              </div>
-              <div class="status-card__count" id="count-resolved">5</div>
-              <div class="status-card__foot">Verified &amp; closed concerns</div>
+            <span class="activity-card__location">Arlegui Campus — CAD Lab 302</span>
+            <div class="activity-card__foot">
+              <span class="activity-card__category">HVAC &amp; Cooling</span>
+              <span class="activity-card__time">Oct 1, 2026</span>
             </div>
           </div>
 
-          <!-- ── 3. Quick Navigation Cards ── -->
-          <div class="quick-nav">
-            <!-- Card 1: Submit Report -->
-            <a href="/report/new" class="quick-card" id="quick-card-submit">
-              <div class="quick-card__icon-wrap quick-card__icon-wrap--gold">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="quick-card__icon">
-                  <path d="M12 4v16m8-8H4"/>
-                </svg>
-              </div>
-              <div class="quick-card__content">
-                <h2 class="quick-card__title">Submit New Incident Report</h2>
-                <p class="quick-card__desc">File a facility, utility, or infrastructure issue with photo evidence.</p>
-              </div>
-            </a>
-
-            <!-- Card 2: Track Reports -->
-            <a href="/my-reports" class="quick-card" id="quick-card-track">
-              <div class="quick-card__icon-wrap quick-card__icon-wrap--blue">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="quick-card__icon">
-                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
-                </svg>
-              </div>
-              <div class="quick-card__content">
-                <h2 class="quick-card__title">Track My Submitted Tickets</h2>
-                <p class="quick-card__desc">Check live status updates, technician logs, and admin remarks.</p>
-              </div>
-            </a>
-          </div>
-
-        </div><!-- /dash-bento__main -->
-
-        <!-- Right Column: Recent Activity Preview Stream -->
-        <aside class="dash-bento__side">
-          <div class="activity-cell">
-            <div class="activity-cell__header">
-              <div class="activity-cell__title-wrap">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="activity-cell__icon">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                </svg>
-                <h2 class="activity-cell__title">Recent Ticket Activity</h2>
-              </div>
-              <a href="/my-reports" class="activity-cell__view-all">View All</a>
+          <!-- Ticket 2 -->
+          <div class="activity-card">
+            <div class="activity-card__head">
+              <span class="activity-card__id">#TIP-2026-0877</span>
+              <span class="activity-card__status activity-card__status--pending">Pending</span>
             </div>
-
-            <div class="activity-list">
-              <!-- Report Item 1 -->
-              <div class="activity-card">
-                <div class="activity-card__head">
-                  <span class="activity-card__id">#TIP-2026-0892</span>
-                  <span class="activity-card__status activity-card__status--progress">In Progress</span>
-                </div>
-                <div class="activity-card__meta">
-                  <span class="activity-card__location">Arlegui Campus — CAD Lab 302</span>
-                </div>
-                <div class="activity-card__foot">
-                  <span class="activity-card__category">HVAC &amp; Cooling</span>
-                  <span class="activity-card__time">Oct 1, 2026</span>
-                </div>
-              </div>
-
-              <!-- Report Item 2 -->
-              <div class="activity-card">
-                <div class="activity-card__head">
-                  <span class="activity-card__id">#TIP-2026-0877</span>
-                  <span class="activity-card__status activity-card__status--pending">Pending</span>
-                </div>
-                <div class="activity-card__meta">
-                  <span class="activity-card__location">Casal Campus — Study Hall 2</span>
-                </div>
-                <div class="activity-card__foot">
-                  <span class="activity-card__category">Electrical &amp; Lighting</span>
-                  <span class="activity-card__time">Sep 29, 2026</span>
-                </div>
-              </div>
-            </div><!-- /activity-list -->
-
-          </div><!-- /activity-cell -->
-        </aside>
-
-      </div><!-- /dash-bento -->
+            <span class="activity-card__location">Casal Campus — Study Hall 2</span>
+            <div class="activity-card__foot">
+              <span class="activity-card__category">Electrical &amp; Lighting</span>
+              <span class="activity-card__time">Sep 29, 2026</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
     </div><!-- /dashboard-container -->
   </main>
