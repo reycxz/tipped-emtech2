@@ -290,21 +290,24 @@
     requestAnimationFrame(tick);
   }
 
-  // Run counter animations when metrics cell is visible
-  const metricsCell = $('#bento-metrics');
-  if (metricsCell) {
+  // Run counter animations when leaderboard cell is visible
+  const leaderboardCell = $('#bento-leaderboard');
+  if (leaderboardCell) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          animateCounter($('#metric-active'), 0, '', 600);
-          animateCounter($('#metric-resolved'), 24, '', 1000);
-          animateCounter($('#metric-avg'), 2.4, 'min', 1200);
-          animateCounter($('#metric-uptime'), 99.8, '%', 1400);
+          const counts = $$('.leaderboard-item__count');
+          counts.forEach((el) => {
+            const val = parseInt(el.textContent, 10);
+            if (!isNaN(val)) {
+              animateCounter(el, val, '', 800);
+            }
+          });
           observer.disconnect();
         }
       });
     }, { threshold: 0.3 });
-    observer.observe(metricsCell);
+    observer.observe(leaderboardCell);
   }
 
   // ═══════════════════════════════════════════════

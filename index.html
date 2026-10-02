@@ -185,35 +185,34 @@
       </div>
 
       <!-- ╔═══════════════════════════════════════════════
-           ║  CELL 3 — LIVE CAMPUS METRICS (narrow)
+           ║  CELL 3 — INCIDENT LEADERBOARD (top right)
            ╚═══════════════════════════════════════════════ -->
-      <div class="bento-cell bento-cell--metrics" id="bento-metrics">
-        <div class="bento-metrics__header">
-          <span class="bento-metrics__dot"></span>
-          <span class="bento-metrics__label">LIVE CAMPUS STATUS</span>
+      <div class="bento-cell bento-cell--leaderboard" id="bento-leaderboard">
+        <div class="bento-leaderboard__header">
+          <div class="bento-leaderboard__title-wrap">
+            <svg class="bento-leaderboard__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 20V10M12 20V4M6 20v-6"/>
+            </svg>
+            <h3 class="bento-leaderboard__title">Most Reported Issues</h3>
+          </div>
+          <span class="bento-leaderboard__period">This Week</span>
         </div>
-        <div class="bento-metrics__grid">
-          <div class="metric-card">
-            <span class="metric-card__value" id="metric-active">0</span>
-            <span class="metric-card__label">Active<br>Incidents</span>
-          </div>
-          <div class="metric-card metric-card--accent">
-            <span class="metric-card__value" id="metric-resolved">24</span>
-            <span class="metric-card__label">Resolved<br>This Week</span>
-          </div>
-          <div class="metric-card">
-            <span class="metric-card__value" id="metric-avg">2.4<small>min</small></span>
-            <span class="metric-card__label">Avg Response<br>Time</span>
-          </div>
-          <div class="metric-card metric-card--success">
-            <span class="metric-card__value" id="metric-uptime">99.8<small>%</small></span>
-            <span class="metric-card__label">System<br>Uptime</span>
-          </div>
-        </div>
+        <ol class="leaderboard-list">
+          <li class="leaderboard-item">
+            <span class="leaderboard-item__rank leaderboard-item__rank--gold">1</span>
+            <span class="leaderboard-item__name">Trash at study area table</span>
+            <span class="leaderboard-item__count">6</span>
+          </li>
+          <li class="leaderboard-item">
+            <span class="leaderboard-item__rank">2</span>
+            <span class="leaderboard-item__name">Elevator not functioning</span>
+            <span class="leaderboard-item__count">2</span>
+          </li>
+        </ol>
       </div>
 
       <!-- ╔═══════════════════════════════════════════════
-           ║  CELL 4 — RECENT UPDATES (medium)
+           ║  CELL 4 — RECENT UPDATES (bottom right)
            ╚═══════════════════════════════════════════════ -->
       <div class="bento-cell bento-cell--updates" id="bento-updates">
         <h3 class="bento-section-title">
@@ -234,36 +233,6 @@
             <span class="updates-list__text">Cafeteria wet floor</span>
           </li>
         </ul>
-      </div>
-
-      <!-- ╔═══════════════════════════════════════════════
-           ║  CELL 5 — QUICK FEATURES (small)
-           ╚═══════════════════════════════════════════════ -->
-      <div class="bento-cell bento-cell--features" id="bento-features">
-        <div class="feature-pill">
-          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span>GPS Mapping</span>
-        </div>
-        <div class="feature-pill">
-          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span>Secure Reports</span>
-        </div>
-        <div class="feature-pill">
-          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-          <span>Instant Alerts</span>
-        </div>
-        <div class="feature-pill">
-          <svg class="feature-pill__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          <span>Admin Dashboard</span>
-        </div>
-      </div>
-
-      <!-- ╔═══════════════════════════════════════════════
-           ║  CELL 6 — SYSTEM INFO (tiny)
-           ╚═══════════════════════════════════════════════ -->
-      <div class="bento-cell bento-cell--sysinfo" id="bento-sysinfo">
-        <div class="sysinfo__label">CPE 408B</div>
-        <div class="sysinfo__sublabel">Emerging Technologies</div>
       </div>
 
     </div><!-- /bento-grid -->
