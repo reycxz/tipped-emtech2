@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — TIPPED Portal</title>
+  <meta name="description" content="TIPPED Campus Incident Reporting & Safety Dashboard" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-body">
+
+  <!-- ═══════════════════════════════════════════════════
+       TOP NAVIGATION HEADER (/navbar)
+  ═══════════════════════════════════════════════════ -->
+  <header class="dash-header">
+    <div class="dash-header__inner">
+      <div class="dash-header__left">
+        <a href="/dashboard" class="dash-header__brand" aria-label="TIPPED Dashboard">
+          <span class="dash-header__brand-name"><strong>TIPPED</strong></span>
+        </a>
+        <nav class="dash-nav" aria-label="Main navigation">
+          <a href="/dashboard" class="dash-nav__link dash-nav__link--active">Dashboard</a>
+          <a href="/report/new" class="dash-nav__link" id="nav-submit-report">Submit Report</a>
+          <a href="/my-reports" class="dash-nav__link" id="nav-my-reports">My Reports</a>
+        </nav>
+      </div>
+
+      <div class="dash-header__right">
+        <div class="dash-user">
+          <span class="dash-user__name" id="user-display-name">John Doe</span>
+          <span class="dash-user__role">USER</span>
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--moon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+
+        <button id="logout-btn" class="dash-logout-btn" title="Sign out of portal">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       DASHBOARD CONTENT (BENTO GRID LAYOUT)
+  ═══════════════════════════════════════════════════ -->
+  <main class="dashboard-page">
+    <div class="dashboard-container">
+
+      <!-- ── 1. Welcome Banner Card ── -->
+      <section class="dash-banner" id="dash-banner">
+        <div class="dash-banner__content">
+          <h1 class="dash-banner__title">Welcome back, Student!</h1>
+          <p class="dash-banner__subtitle">Report facility concerns or track active maintenance tickets across Arlegui &amp; Casal campuses.</p>
+        </div>
+        <a href="/report/new" class="dash-banner__cta" id="banner-submit-btn">
+          <svg viewBox="0 0 20 20" fill="currentColor" class="dash-banner__cta-icon">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          <span>Submit New Report</span>
+        </a>
+      </section>
+
+      <!-- ── Bento Grid Main Section ── -->
+      <div class="dash-bento">
+
+        <!-- Left / Center Column: Status Counters & Quick Actions -->
+        <div class="dash-bento__main">
+
+          <!-- ── 2. Real-Time Status Counters ── -->
+          <div class="status-counters">
+            <!-- Pending -->
+            <div class="status-card status-card--pending">
+              <div class="status-card__top">
+                <span class="status-card__label">PENDING</span>
+                <span class="status-badge status-badge--pending">Pending Tickets</span>
+              </div>
+              <div class="status-card__count" id="count-pending">2</div>
+              <div class="status-card__foot">Awaiting campus admin review</div>
+            </div>
+
+            <!-- In Progress -->
+            <div class="status-card status-card--progress">
+              <div class="status-card__top">
+                <span class="status-card__label">IN PROGRESS</span>
+                <span class="status-badge status-badge--progress">In Progress</span>
+              </div>
+              <div class="status-card__count" id="count-progress">1</div>
+              <div class="status-card__foot">Technician dispatched</div>
+            </div>
+
+            <!-- Resolved -->
+            <div class="status-card status-card--resolved">
+              <div class="status-card__top">
+                <span class="status-card__label">RESOLVED</span>
+                <span class="status-badge status-badge--resolved">Resolved</span>
+              </div>
+              <div class="status-card__count" id="count-resolved">5</div>
+              <div class="status-card__foot">Verified &amp; closed concerns</div>
+            </div>
+          </div>
+
+          <!-- ── 3. Quick Navigation Cards ── -->
+          <div class="quick-nav">
+            <!-- Card 1: Submit Report -->
+            <a href="/report/new" class="quick-card" id="quick-card-submit">
+              <div class="quick-card__icon-wrap quick-card__icon-wrap--gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="quick-card__icon">
+                  <path d="M12 4v16m8-8H4"/>
+                </svg>
+              </div>
+              <div class="quick-card__content">
+                <h2 class="quick-card__title">Submit New Incident Report</h2>
+                <p class="quick-card__desc">File a facility, utility, or infrastructure issue with photo evidence.</p>
+              </div>
+            </a>
+
+            <!-- Card 2: Track Reports -->
+            <a href="/my-reports" class="quick-card" id="quick-card-track">
+              <div class="quick-card__icon-wrap quick-card__icon-wrap--blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="quick-card__icon">
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+              </div>
+              <div class="quick-card__content">
+                <h2 class="quick-card__title">Track My Submitted Tickets</h2>
+                <p class="quick-card__desc">Check live status updates, technician logs, and admin remarks.</p>
+              </div>
+            </a>
+          </div>
+
+        </div><!-- /dash-bento__main -->
+
+        <!-- Right Column: Recent Activity Preview Stream -->
+        <aside class="dash-bento__side">
+          <div class="activity-cell">
+            <div class="activity-cell__header">
+              <div class="activity-cell__title-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="activity-cell__icon">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <h2 class="activity-cell__title">Recent Ticket Activity</h2>
+              </div>
+              <a href="/my-reports" class="activity-cell__view-all">View All</a>
+            </div>
+
+            <div class="activity-list">
+              <!-- Report Item 1 -->
+              <div class="activity-card">
+                <div class="activity-card__head">
+                  <span class="activity-card__id">#TIP-2026-0892</span>
+                  <span class="activity-card__status activity-card__status--progress">In Progress</span>
+                </div>
+                <div class="activity-card__meta">
+                  <span class="activity-card__location">Arlegui Campus — CAD Lab 302</span>
+                </div>
+                <div class="activity-card__foot">
+                  <span class="activity-card__category">HVAC &amp; Cooling</span>
+                  <span class="activity-card__time">Oct 1, 2026</span>
+                </div>
+              </div>
+
+              <!-- Report Item 2 -->
+              <div class="activity-card">
+                <div class="activity-card__head">
+                  <span class="activity-card__id">#TIP-2026-0877</span>
+                  <span class="activity-card__status activity-card__status--pending">Pending</span>
+                </div>
+                <div class="activity-card__meta">
+                  <span class="activity-card__location">Casal Campus — Study Hall 2</span>
+                </div>
+                <div class="activity-card__foot">
+                  <span class="activity-card__category">Electrical &amp; Lighting</span>
+                  <span class="activity-card__time">Sep 29, 2026</span>
+                </div>
+              </div>
+            </div><!-- /activity-list -->
+
+          </div><!-- /activity-cell -->
+        </aside>
+
+      </div><!-- /dash-bento -->
+
+    </div><!-- /dashboard-container -->
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

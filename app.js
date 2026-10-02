@@ -225,8 +225,15 @@
       btn.textContent = 'SIGN IN TO TIPPED';
       btn.disabled = false;
       btn.style.opacity = '';
-      alert(`[Demo] Sign In as ${currentRole}\nEmail: ${signinEmail.value}\nRemember: ${$('#remember-me').checked}`);
-    }, 1200);
+      
+      const emailVal = signinEmail.value.trim();
+      const extractedName = emailVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') || 'John Doe';
+      sessionStorage.setItem('tipped_user_name', extractedName);
+      sessionStorage.setItem('tipped_user_role', currentRole.toUpperCase());
+      sessionStorage.setItem('tipped_user_email', emailVal);
+
+      window.location.href = '/dashboard';
+    }, 700);
   });
 
   signupForm.addEventListener('submit', (e) => {
@@ -244,8 +251,14 @@
       btn.textContent = 'CREATE ACCOUNT';
       btn.disabled = false;
       btn.style.opacity = '';
-      alert(`[Demo] Account Created\nName: ${$('#signup-name').value}\nEmail: ${signupEmail.value}\nDept: ${$('#signup-dept').value}`);
-    }, 1200);
+
+      const nameVal = $('#signup-name').value.trim() || 'John Doe';
+      sessionStorage.setItem('tipped_user_name', nameVal);
+      sessionStorage.setItem('tipped_user_role', 'USER');
+      sessionStorage.setItem('tipped_user_email', signupEmail.value.trim());
+
+      window.location.href = '/dashboard';
+    }, 700);
   });
 
   // ═══════════════════════════════════════════════
