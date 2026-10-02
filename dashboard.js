@@ -107,12 +107,7 @@
     alert(`[Demo] ${msg} — feature arriving in the next release step.`);
   };
 
-  const navSubmit = $('#nav-submit-report');
   const navReports = $('#nav-my-reports');
-  const bannerSubmit = $('#banner-submit-btn');
-
-  if (navSubmit) navSubmit.addEventListener('click', (e) => handleNav(e, 'Navigate to Submit Incident Report (/report/new)'));
   if (navReports) navReports.addEventListener('click', (e) => handleNav(e, 'Navigate to My Reports (/my-reports)'));
-  if (bannerSubmit) bannerSubmit.addEventListener('click', (e) => handleNav(e, 'Open Incident Reporting Form'));
 
 })();
