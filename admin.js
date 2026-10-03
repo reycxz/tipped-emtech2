@@ -4,9 +4,24 @@
 (function () {
   'use strict';
 
+  // ── Admin Auth Guard & Role Verification ──
+  const currentRole = (sessionStorage.getItem('tipped_user_role') || '').toUpperCase();
+  const currentName = sessionStorage.getItem('tipped_user_name');
+  if (currentName && currentRole === 'USER') {
+    console.warn('⛔ [Admin Auth Guard]: Unauthorized user role detected. Redirecting to dashboard.');
+    if (window.toast) {
+      window.toast.error('Access Denied: Administrative credentials required.', 'Security Guard');
+    }
+    setTimeout(() => {
+      window.location.href = '/dashboard';
+    }, 600);
+    return;
+  }
+
   // ── DOM Helpers ──
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
+
 
   // ── Inline High-Res SVG Evidence Samples ──
   const sampleEvidence = {

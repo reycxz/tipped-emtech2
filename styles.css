@@ -5601,11 +5601,280 @@ input, select { font-family: inherit; outline: none; }
   font-weight: 700;
   margin-top: 0.25rem;
 }
-[data-theme="light"] .admin-drawer-room-badge {
-  background: rgba(217, 119, 6, 0.1);
-  border-color: rgba(217, 119, 6, 0.25);
-  color: #B45309;
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL TOAST NOTIFICATION SYSTEM
+   ═══════════════════════════════════════════════════ */
+.toast-container {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  max-width: 420px;
+  width: calc(100% - 2.5rem);
+  pointer-events: none;
 }
+
+@media (max-width: 640px) {
+  .toast-container {
+    top: auto;
+    bottom: 4.5rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    max-width: none;
+  }
+}
+
+.tipped-toast {
+  position: relative;
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: var(--radius-xl);
+  padding: 0.9rem 1.15rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.tipped-toast--visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.tipped-toast--hiding {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+@media (max-width: 640px) {
+  .tipped-toast {
+    transform: translateY(120%);
+  }
+  .tipped-toast--visible {
+    transform: translateY(0);
+  }
+  .tipped-toast--hiding {
+    transform: translateY(120%);
+  }
+}
+
+[data-theme="light"] .tipped-toast {
+  background: #FFFFFF;
+  border-color: #E2E8F0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.tipped-toast--success { border-left: 4px solid #10B981; }
+.tipped-toast--error   { border-left: 4px solid #EF4444; }
+.tipped-toast--warning { border-left: 4px solid #F59E0B; }
+.tipped-toast--info    { border-left: 4px solid #3B82F6; }
+
+.toast-icon-wrap {
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.tipped-toast--success .toast-icon-wrap { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+.tipped-toast--error   .toast-icon-wrap { background: rgba(239, 68, 68, 0.15);   color: #EF4444; }
+.tipped-toast--warning .toast-icon-wrap { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
+.tipped-toast--info    .toast-icon-wrap { background: rgba(59, 130, 246, 0.15); color: #3B82F6; }
+
+.toast-icon-wrap svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.toast-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.toast-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.01em;
+}
+
+[data-theme="light"] .toast-title {
+  color: #0F172A;
+}
+
+.toast-message {
+  font-size: 0.76rem;
+  color: #94A3B8;
+  line-height: 1.45;
+}
+
+[data-theme="light"] .toast-message {
+  color: #64748B;
+}
+
+.toast-close-btn {
+  background: transparent;
+  border: none;
+  color: #64748B;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.toast-close-btn:hover {
+  color: #FFFFFF;
+}
+
+[data-theme="light"] .toast-close-btn:hover {
+  color: #0F172A;
+}
+
+.toast-close-btn svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   GLOBAL UI ERROR BOUNDARY FALLBACK
+   ═══════════════════════════════════════════════════ */
+.error-boundary-fallback {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+}
+
+.error-boundary-card {
+  background: #1E293B;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-2xl);
+  padding: 2.25rem 2rem;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+  animation: grid-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light"] .error-boundary-card {
+  background: #FFFFFF;
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.error-boundary-icon-box {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.15rem;
+}
+
+.error-boundary-icon-box svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.error-boundary-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.45rem;
+}
+
+[data-theme="light"] .error-boundary-title {
+  color: #0F172A;
+}
+
+.error-boundary-text {
+  font-size: 0.82rem;
+  color: #94A3B8;
+  line-height: 1.5;
+  margin-bottom: 1.35rem;
+}
+
+[data-theme="light"] .error-boundary-text {
+  color: #64748B;
+}
+
+.error-boundary-actions {
+  display: flex;
+  gap: 0.65rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-error-boundary-primary {
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--color-gold);
+  color: #0F172A;
+  font-size: 0.8rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.18s ease;
+}
+
+.btn-error-boundary-primary:hover {
+  background: var(--color-gold-hover);
+  transform: translateY(-1px);
+}
+
+.btn-error-boundary-secondary {
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  border: 1px solid #334155;
+  color: #CBD5E1;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.18s ease;
+}
+
+[data-theme="light"] .btn-error-boundary-secondary {
+  border-color: #CBD5E1;
+  color: #475569;
+}
+
+.btn-error-boundary-secondary:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
 
 
 

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page Not Found | TIPPED</title>
+  <meta name="description" content="The page you are looking for does not exist on the TIPPED portal." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .notfound-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .notfound-card {
+      background: #1E293B;
+      border: 1px solid #334155;
+      border-radius: var(--radius-2xl);
+      padding: 2.75rem 2.25rem;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+      z-index: 10;
+      animation: grid-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-theme="light"] .notfound-card {
+      background: #FFFFFF;
+      border-color: #E2E8F0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+    .notfound-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--color-gold);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .notfound-glitch {
+      font-size: 5rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #D97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+      font-family: monospace;
+    }
+    .notfound-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+      margin-bottom: 0.5rem;
+    }
+    .notfound-desc {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      line-height: 1.55;
+      margin-bottom: 1.75rem;
+    }
+    .notfound-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .btn-notfound-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-lg);
+      background: var(--color-gold);
+      color: #0F172A;
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+      transition: all 0.2s ease;
+    }
+    .btn-notfound-primary:hover {
+      background: var(--color-gold-hover);
+      transform: translateY(-1px);
+    }
+    .btn-notfound-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: var(--radius-lg);
+      background: transparent;
+      border: 1px solid #334155;
+      color: #CBD5E1;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    [data-theme="light"] .btn-notfound-secondary {
+      border-color: #CBD5E1;
+      color: #475569;
+    }
+    .btn-notfound-secondary:hover {
+      border-color: var(--color-gold);
+      color: var(--color-gold);
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+  <div class="notfound-wrapper">
+    <div class="notfound-card">
+      <div class="notfound-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>Page Not Found</span>
+      </div>
+
+      <div class="notfound-glitch">404</div>
+      <h1 class="notfound-title">Lost in Campus Space?</h1>
+      <p class="notfound-desc">
+        The page or facilities record you were trying to access does not exist or has been relocated to another building area.
+      </p>
+
+      <div class="notfound-actions">
+        <a href="/dashboard" class="btn-notfound-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Back to Dashboard</span>
+        </a>
+        <button type="button" onclick="history.back()" class="btn-notfound-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Previous Page</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

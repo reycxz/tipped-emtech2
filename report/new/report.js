@@ -632,6 +632,10 @@
         if (modalTicket) modalTicket.textContent = ticketId;
         if (modal) modal.classList.remove('modal--hidden');
 
+        if (window.toast) {
+          window.toast.success(`Ticket ${ticketId} logged successfully. Dispatched to campus facilities.`, 'Report Submitted');
+        }
+
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.style.opacity = '';

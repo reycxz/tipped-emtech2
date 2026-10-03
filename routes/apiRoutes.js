@@ -8,18 +8,20 @@ const router = express.Router();
 
 const authController = require('../controllers/authController');
 const reportController = require('../controllers/reportController');
+const { requireAuth, requireRole } = require('../middleware/authGuard');
 
-// Authentication Routes
+// Public Authentication Routes
 router.post('/auth/register', authController.registerUser);
 router.post('/auth/login', authController.loginUser);
 
-// Incident Report Routes
-router.post('/reports', reportController.createReport);
-router.get('/reports', reportController.getReports);
-router.get('/reports/stats', reportController.getDashboardStats);
+// Protected Incident Report Routes (Requires valid session token)
+router.post('/reports', requireAuth, reportController.createReport);
+router.get('/reports', requireAuth, reportController.getReports);
+router.get('/reports/stats', requireAuth, reportController.getDashboardStats);
 
-// Admin Control Routes
-router.patch('/reports/:id/status', reportController.updateReportStatus);
-router.post('/reports/:id/remarks', reportController.addAdminRemark);
+// Protected Admin Control Routes (Requires Admin role)
+router.patch('/reports/:id/status', requireAuth, requireRole('Admin', 'Superadmin', 'Staff'), reportController.updateReportStatus);
+router.post('/reports/:id/remarks', requireAuth, requireRole('Admin', 'Superadmin', 'Staff'), reportController.addAdminRemark);
 
 module.exports = router;
+
