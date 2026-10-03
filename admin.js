@@ -388,6 +388,11 @@
     });
   }
 
+  // Trending Board elements
+  const trendingGrid   = $('#admin-trending-grid');
+  const timeframeTabs  = $$('.admin-timeframe-tab');
+  let currentTimeframe = 'weekly';
+
   // ═══════════════════════════════════════════════
   //  METRICS CALCULATION
   // ═══════════════════════════════════════════════
@@ -402,6 +407,93 @@
     if (metricPending) metricPending.textContent = Math.max(12, pendingCount);
     if (metricProgress) metricProgress.textContent = Math.max(18, progressCount);
     if (metricResolved) metricResolved.textContent = Math.max(15, resolvedCount);
+  }
+
+  // ═══════════════════════════════════════════════
+  //  TRENDING ISSUES & INCIDENT ANALYTICS BOARD
+  // ═══════════════════════════════════════════════
+  function getTrendingIssuesData(timeframe = 'weekly') {
+    const catMap = {};
+    const categoryIcons = {
+      'Water & Sanitation': '💧',
+      'HVAC & Cooling': '❄️',
+      'Electrical & Power': '⚡',
+      'Digital & IT': '💻',
+      'Furniture & Fixtures': '🪑',
+      'Life Safety & Hazards': '⚠️',
+      'Faculty / Academic': '📚',
+      'General Concern / Other': '📋'
+    };
+
+    allTickets.forEach((t) => {
+      const cat = t.category || 'General Concern / Other';
+      if (!catMap[cat]) {
+        catMap[cat] = {
+          category: cat,
+          icon: categoryIcons[cat] || '📋',
+          total: 0,
+          pending: 0,
+          inProgress: 0,
+          resolved: 0,
+          dismissed: 0
+        };
+      }
+      catMap[cat].total += 1;
+      if (t.status === 'Pending') catMap[cat].pending += 1;
+      else if (t.status === 'In Progress' || t.status === 'Under Review') catMap[cat].inProgress += 1;
+      else if (t.status === 'Resolved') catMap[cat].resolved += 1;
+      else if (t.status === 'Dismissed') catMap[cat].dismissed += 1;
+    });
+
+    const list = Object.values(catMap).map((item) => {
+      const scale = timeframe === 'weekly' ? 1 : (timeframe === 'monthly' ? 3 : 5);
+      const displayTotal = item.total * scale;
+      return {
+        ...item,
+        displayTotal
+      };
+    }).sort((a, b) => b.displayTotal - a.displayTotal);
+
+    const maxCount = list.length > 0 ? list[0].displayTotal : 1;
+    return list.slice(0, 4).map((item, idx) => ({
+      ...item,
+      rank: idx + 1,
+      percentage: Math.min(100, Math.round((item.displayTotal / Math.max(1, maxCount)) * 100))
+    }));
+  }
+
+  function renderTrendingBoard() {
+    if (!trendingGrid) return;
+    const topIssues = getTrendingIssuesData(currentTimeframe);
+
+    if (topIssues.length === 0) {
+      trendingGrid.innerHTML = `<p style="grid-column:1/-1; color:#94A3B8; font-size:0.75rem; text-align:center;">No trending incidents recorded for this period.</p>`;
+      return;
+    }
+
+    trendingGrid.innerHTML = topIssues.map((item) => {
+      const rankClass = item.rank === 1 ? 'admin-trend-tile__rank--gold' : (item.rank === 2 ? 'admin-trend-tile__rank--silver' : (item.rank === 3 ? 'admin-trend-tile__rank--bronze' : ''));
+      return `
+        <div class="admin-trend-tile">
+          <div class="admin-trend-tile__head">
+            <div class="admin-trend-tile__info">
+              <span class="admin-trend-tile__rank ${rankClass}">#${item.rank}</span>
+              <span class="admin-trend-tile__name" title="${item.category}">${item.icon} ${item.category}</span>
+            </div>
+            <span class="admin-trend-tile__count-badge">${item.displayTotal} ${item.displayTotal === 1 ? 'Report' : 'Reports'}</span>
+          </div>
+
+          <div class="admin-trend-tile__bar-wrap">
+            <div class="admin-trend-tile__bar-fill" style="width: ${item.percentage}%;"></div>
+          </div>
+
+          <div class="admin-trend-tile__meta">
+            <span>${item.pending} Pending • ${item.inProgress} In Progress</span>
+            <span>${item.resolved} Resolved</span>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   // ═══════════════════════════════════════════════
@@ -635,6 +727,7 @@
 
     saveMasterReports(allTickets);
     updateMetrics();
+    renderTrendingBoard();
     showToast(`Status updated to ${newStatus} for ${ticketId}`);
   }
 
@@ -740,6 +833,7 @@
 
       saveMasterReports(allTickets);
       updateMetrics();
+      renderTrendingBoard();
       renderTable();
       closeRemarkModal();
       showToast(`Remark saved & reporter notified for ${ticket.id}`);
@@ -817,8 +911,23 @@
     }
   });
 
+  // Timeframe tabs for trending board
+  timeframeTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      timeframeTabs.forEach((t) => {
+        t.classList.remove('admin-timeframe-tab--active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('admin-timeframe-tab--active');
+      tab.setAttribute('aria-selected', 'true');
+      currentTimeframe = tab.dataset.timeframe;
+      renderTrendingBoard();
+    });
+  });
+
   // Initial load
   updateMetrics();
+  renderTrendingBoard();
   renderTable();
 
 })();

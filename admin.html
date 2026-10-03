@@ -96,6 +96,40 @@
         </div>
       </section>
 
+      <!-- ── 1.5. Trending & Most Reported Campus Issues Bento Board ── -->
+      <section class="admin-trending-card" aria-label="Trending Incident Issues">
+        <div class="admin-trending-header">
+          <div class="admin-trending-title-wrap">
+            <div class="admin-trending-badge-icon" title="Incident Trend Analytics">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M18 20V10M12 20V4M6 20v-6"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="admin-trending-title">Most Reported Issues &amp; Campus Incident Trends</h2>
+              <p class="admin-trending-subtitle">Real-time incident volume aggregated from student &amp; faculty submissions</p>
+            </div>
+          </div>
+
+          <!-- Timeframe filter tabs (Weekly / Monthly / All-Time) -->
+          <div class="admin-timeframe-tabs" role="tablist" aria-label="Trending Timeframe">
+            <button class="admin-timeframe-tab admin-timeframe-tab--active" data-timeframe="weekly" role="tab" aria-selected="true">
+              <span>This Week</span>
+            </button>
+            <button class="admin-timeframe-tab" data-timeframe="monthly" role="tab" aria-selected="false">
+              <span>This Month</span>
+            </button>
+            <button class="admin-timeframe-tab" data-timeframe="all" role="tab" aria-selected="false">
+              <span>All-Time</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="admin-trending-grid" class="admin-trending-grid">
+          <!-- Dynamically populated via admin.js from real submitted reports -->
+        </div>
+      </section>
+
       <!-- ── 2. Master Control & Filter Bento Bar with Sleek Dropdowns ── -->
       <section class="bento-tile--tracker-controls" aria-label="Filter & Search Controls">
         <div class="tracker-toolbar">

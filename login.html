@@ -57,8 +57,8 @@
 
         <!-- ── Role Toggle (User / Admin) ── -->
         <div id="role-toggle" class="role-toggle" role="tablist" aria-label="Login role">
-          <button id="role-user-btn" class="role-toggle__tab role-toggle__tab--active" role="tab" aria-selected="true" data-role="user">User Login (Student / Faculty)</button>
-          <button id="role-admin-btn" class="role-toggle__tab" role="tab" aria-selected="false" data-role="admin">Admin Login (Facilities Staff)</button>
+          <button id="role-user-btn" class="role-toggle__tab role-toggle__tab--active" role="tab" aria-selected="true" data-role="user">Student / Faculty</button>
+          <button id="role-admin-btn" class="role-toggle__tab" role="tab" aria-selected="false" data-role="admin">Staff / Admin</button>
         </div>
 
         <!-- ── Mode Toggle (Sign In / Sign Up) ── -->
@@ -208,7 +208,7 @@
           </div>
           <span class="bento-leaderboard__period">This Week</span>
         </div>
-        <ol class="leaderboard-list">
+        <ol class="leaderboard-list" id="leaderboard-list">
           <li class="leaderboard-item">
             <span class="leaderboard-item__rank leaderboard-item__rank--gold">1</span>
             <span class="leaderboard-item__name">Trash at study area table</span>

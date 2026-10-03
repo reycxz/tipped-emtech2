@@ -437,6 +437,82 @@
     requestAnimationFrame(tick);
   }
 
+  // ═══════════════════════════════════════════════
+  //  DYNAMIC REAL-TIME INCIDENT LEADERBOARD
+  // ═══════════════════════════════════════════════
+  function getIncidentLeaderboardData() {
+    let reports = [];
+    try {
+      reports = JSON.parse(localStorage.getItem('tipped_user_reports') || '[]');
+    } catch (e) {
+      console.warn('Storage read error', e);
+    }
+
+    const baselineSeed = [
+      { category: 'Water & Sanitation' },
+      { category: 'Water & Sanitation' },
+      { category: 'Water & Sanitation' },
+      { category: 'Water & Sanitation' },
+      { category: 'Water & Sanitation' },
+      { category: 'Water & Sanitation' },
+      { category: 'HVAC & Cooling' },
+      { category: 'HVAC & Cooling' },
+      { category: 'HVAC & Cooling' },
+      { category: 'HVAC & Cooling' },
+      { category: 'Electrical & Power' },
+      { category: 'Electrical & Power' },
+      { category: 'Digital & IT' }
+    ];
+
+    const allReports = reports.length > 0 ? [...reports, ...baselineSeed] : baselineSeed;
+
+    const categoryLabels = {
+      'Water & Sanitation': 'Trash & Restroom Sanitation',
+      'HVAC & Cooling': 'Air Conditioning Malfunction',
+      'Electrical & Power': 'Power Outages & Sparking Sockets',
+      'Digital & IT': 'Lab Network & Workstations',
+      'Furniture & Fixtures': 'Desks, Chairs & Fixtures',
+      'Life Safety & Hazards': 'Campus Safety & Slip Hazards',
+      'Faculty / Academic': 'Classroom Facilities',
+      'General Concern / Other': 'General Facilities Concern'
+    };
+
+    const counts = {};
+    allReports.forEach((r) => {
+      const cat = r.category || 'General Concern / Other';
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+
+    return Object.entries(counts)
+      .map(([cat, count]) => ({
+        category: cat,
+        name: categoryLabels[cat] || cat,
+        count
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 4);
+  }
+
+  function renderLeaderboard() {
+    const list = $('#leaderboard-list');
+    if (!list) return;
+
+    const topIssues = getIncidentLeaderboardData();
+    list.innerHTML = topIssues.map((item, idx) => {
+      const rank = idx + 1;
+      const rankClass = rank === 1 ? 'leaderboard-item__rank--gold' : '';
+      return `
+        <li class="leaderboard-item">
+          <span class="leaderboard-item__rank ${rankClass}">${rank}</span>
+          <span class="leaderboard-item__name">${item.name}</span>
+          <span class="leaderboard-item__count">${item.count}</span>
+        </li>
+      `;
+    }).join('');
+  }
+
+  renderLeaderboard();
+
   // Run counter animations when leaderboard cell is visible
   const leaderboardCell = $('#bento-leaderboard');
   if (leaderboardCell) {
