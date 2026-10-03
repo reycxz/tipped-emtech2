@@ -75,8 +75,53 @@
   }
 
   // ═══════════════════════════════════════════════
-  //  ANIMATE COUNTERS
+  //  REAL-TIME INCIDENT DATA & COUNTERS
   // ═══════════════════════════════════════════════
+  const baselineReports = [
+    {
+      id: 'ARL-FAC-2026-0877',
+      status: 'In Progress',
+      campus: 'Arlegui Campus — CAD Lab 302',
+      category: 'HVAC & Cooling',
+      date: 'Oct 1, 2026'
+    },
+    {
+      id: 'CSL-ELE-2026-0142',
+      status: 'Pending',
+      campus: 'Casal Campus — Study Hall 2',
+      category: 'Electrical & Power',
+      date: 'Sep 29, 2026'
+    },
+    {
+      id: 'ARL-PLM-2026-0089',
+      status: 'Pending',
+      campus: 'Arlegui Campus — 2nd Floor Restroom',
+      category: 'Water & Sanitation',
+      date: 'Oct 2, 2026'
+    },
+    {
+      id: 'CSL-ELE-2026-7574',
+      status: 'Resolved',
+      campus: 'Casal Campus — 4th Floor Hallway',
+      category: 'Electrical & Power',
+      date: 'Sep 28, 2026'
+    }
+  ];
+
+  let userReports = [];
+  try {
+    userReports = JSON.parse(localStorage.getItem('tipped_user_reports') || '[]');
+  } catch (e) {
+    console.warn('Storage read error', e);
+  }
+
+  const storedIds = new Set(userReports.map((r) => r.id));
+  const allReports = [...userReports, ...baselineReports.filter((b) => !storedIds.has(b.id))];
+
+  const pendingCount = allReports.filter((r) => r.status === 'Pending' || r.status === 'Under Review').length;
+  const progressCount = allReports.filter((r) => r.status === 'In Progress').length;
+  const resolvedCount = allReports.filter((r) => r.status === 'Resolved').length;
+
   function animateValue(el, target, duration) {
     if (!el) return;
     const start = 0;
@@ -95,9 +140,39 @@
     requestAnimationFrame(step);
   }
 
-  animateValue($('#count-pending'), 2, 700);
-  animateValue($('#count-progress'), 1, 900);
-  animateValue($('#count-resolved'), 5, 1100);
+  animateValue($('#count-pending'), pendingCount, 700);
+  animateValue($('#count-progress'), progressCount, 900);
+  animateValue($('#count-resolved'), resolvedCount, 1100);
+
+  // ═══════════════════════════════════════════════
+  //  DYNAMIC RECENT ACTIVITY PREVIEW
+  // ═══════════════════════════════════════════════
+  const activityGrid = $('.activity-grid');
+  if (activityGrid && allReports.length > 0) {
+    const recent = allReports.slice(0, 4);
+    activityGrid.innerHTML = recent.map((ticket) => {
+      let statusClass = 'activity-card__status--pending';
+      if (ticket.status === 'In Progress' || ticket.status === 'Under Review') {
+        statusClass = 'activity-card__status--progress';
+      } else if (ticket.status === 'Resolved') {
+        statusClass = 'activity-card__status--resolved';
+      }
+
+      return `
+        <div class="activity-card">
+          <div class="activity-card__head">
+            <span class="activity-card__id">${ticket.id}</span>
+            <span class="activity-card__status ${statusClass}">${ticket.status}</span>
+          </div>
+          <span class="activity-card__location">${ticket.campus || 'Arlegui Campus'}</span>
+          <div class="activity-card__foot">
+            <span class="activity-card__category">${ticket.category || 'General'}</span>
+            <span class="activity-card__time">${ticket.date ? ticket.date.split('•')[0].trim() : 'Recent'}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
 
 })();
 
