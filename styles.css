@@ -2722,6 +2722,17 @@ input, select { font-family: inherit; outline: none; }
   color: #FFFFFF;
 }
 
+.admin-trend-tile__icon {
+  display: flex;
+  align-items: center;
+  color: var(--color-gold);
+  flex-shrink: 0;
+}
+.admin-trend-tile__icon svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
 .admin-trend-tile__name {
   font-size: 0.78rem;
   font-weight: 700;
@@ -2735,18 +2746,18 @@ input, select { font-family: inherit; outline: none; }
 }
 
 .admin-trend-tile__count-badge {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 800;
   background: rgba(245, 158, 11, 0.15);
   color: var(--color-gold);
-  padding: 0.2rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 999px;
   flex-shrink: 0;
 }
 
 .admin-trend-tile__bar-wrap {
   width: 100%;
-  height: 6px;
+  height: 5px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   overflow: hidden;
@@ -2762,13 +2773,39 @@ input, select { font-family: inherit; outline: none; }
   transition: width 0.6s ease;
 }
 
-.admin-trend-tile__meta {
+.admin-trend-tile__status-indicators {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 0.68rem;
-  color: #94A3B8;
-  font-weight: 600;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.trend-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+}
+.trend-status-pill svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+}
+.trend-status-pill--pending {
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.12);
+}
+.trend-status-pill--progress {
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.12);
+}
+.trend-status-pill--resolved {
+  color: #22C55E;
+  background: rgba(34, 197, 94, 0.12);
 }
 
 .admin-campus-btn {
