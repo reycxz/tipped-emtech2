@@ -85,7 +85,7 @@
   // ── Baseline Master Tickets Data ──
   const baselineAdminReports = [
     {
-      id: '#TIP-2026-0892',
+      id: 'ARL-FAC-2026-0877',
       status: 'In Progress',
       priority: 'High',
       date: 'Oct 1, 2026 • 09:14 AM',
@@ -108,7 +108,7 @@
       ]
     },
     {
-      id: '#TIP-2026-0741',
+      id: 'CSL-ELE-2026-0142',
       status: 'Resolved',
       priority: 'Medium',
       date: 'Sep 28, 2026 • 02:45 PM',
@@ -131,7 +131,7 @@
       ]
     },
     {
-      id: '#TIP-2026-0914',
+      id: 'ARL-PLM-2026-0089',
       status: 'Pending',
       priority: 'Critical',
       date: 'Oct 2, 2026 • 11:20 AM',
@@ -154,7 +154,7 @@
       ]
     },
     {
-      id: '#TIP-2026-0688',
+      id: 'CSL-DIT-2026-0688',
       status: 'Under Review',
       priority: 'High',
       date: 'Sep 29, 2026 • 10:05 AM',
@@ -177,7 +177,7 @@
       ]
     },
     {
-      id: '#TIP-2026-0512',
+      id: 'ARL-FAC-2026-0512',
       status: 'Dismissed',
       priority: 'Low',
       date: 'Sep 24, 2026 • 04:30 PM',
@@ -200,7 +200,7 @@
       ]
     },
     {
-      id: '#TIP-2026-2192',
+      id: 'ARL-PLM-2026-2192',
       status: 'Pending',
       priority: 'Medium',
       date: 'Oct 3, 2026 • 08:30 AM',
@@ -215,7 +215,7 @@
       remarks: []
     },
     {
-      id: '#TIP-2026-7574',
+      id: 'CSL-ELE-2026-7574',
       status: 'Pending',
       priority: 'High',
       date: 'Oct 3, 2026 • 09:10 AM',
@@ -251,7 +251,7 @@
         mergedMap.set(item.id, { ...existing, ...item });
       } else {
         mergedMap.set(item.id, {
-          id: item.id || '#TIP-2026-9999',
+          id: item.id || 'ARL-FAC-2026-9999',
           status: item.status || 'Pending',
           priority: item.priority || 'Medium',
           date: item.date || 'Oct 3, 2026 • 08:00 AM',

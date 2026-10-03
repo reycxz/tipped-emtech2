@@ -271,9 +271,21 @@
       }
 
       setTimeout(() => {
-        // Generate random ticket ID
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        const ticketId = `#TIP-2026-${randomNum}`;
+        // Generate Campus-First & Category ticket ID (e.g. ARL-FAC-2026-0877)
+        const campusCode = (campus && campus.toLowerCase().includes('casal')) ? 'CSL' : 'ARL';
+        let catCode = 'FAC';
+        const c = (category || '').toLowerCase();
+        if (c.includes('elect') || c.includes('power')) catCode = 'ELE';
+        else if (c.includes('water') || c.includes('sanitat') || c.includes('plumb')) catCode = 'PLM';
+        else if (c.includes('hvac') || c.includes('cool') || c.includes('air')) catCode = 'HVC';
+        else if (c.includes('it') || c.includes('digital') || c.includes('network')) catCode = 'DIT';
+        else if (c.includes('safety') || c.includes('hazard')) catCode = 'SAF';
+        else if (c.includes('faculty') || c.includes('acad')) catCode = 'ACA';
+        else if (c.includes('furnitur') || c.includes('fixture')) catCode = 'FAC';
+        else catCode = 'FAC';
+
+        const randomNum = String(Math.floor(100 + Math.random() * 9000)).padStart(4, '0');
+        const ticketId = `${campusCode}-${catCode}-2026-${randomNum}`;
 
         // Save report to localStorage for cross-page demo
         try {

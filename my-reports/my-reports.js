@@ -126,7 +126,7 @@
   // ── Baseline Mock Reports Specification ──
   const baselineReports = [
     {
-      id: '#TIP-2026-0892',
+      id: 'ARL-FAC-2026-0877',
       status: 'In Progress',
       date: 'Oct 1, 2026 • 09:14 AM',
       campus: 'Arlegui Building — CAD Lab 302',
@@ -142,7 +142,7 @@
       }
     },
     {
-      id: '#TIP-2026-0741',
+      id: 'CSL-ELE-2026-0142',
       status: 'Resolved',
       date: 'Sep 28, 2026 • 02:45 PM',
       campus: 'Casal Building — 4th Floor Hallway',
@@ -158,7 +158,7 @@
       }
     },
     {
-      id: '#TIP-2026-0914',
+      id: 'ARL-PLM-2026-0089',
       status: 'Pending',
       date: 'Oct 2, 2026 • 11:20 AM',
       campus: 'Arlegui Building — 2nd Floor Restroom',
@@ -174,7 +174,7 @@
       }
     },
     {
-      id: '#TIP-2026-0688',
+      id: 'CSL-DIT-2026-0688',
       status: 'Under Review',
       date: 'Sep 29, 2026 • 10:05 AM',
       campus: 'Casal Building — IT Computer Lab 102',
@@ -190,7 +190,7 @@
       }
     },
     {
-      id: '#TIP-2026-0512',
+      id: 'ARL-FAC-2026-0512',
       status: 'Dismissed',
       date: 'Sep 24, 2026 • 04:30 PM',
       campus: 'Arlegui Building — Main Lobby',
@@ -223,7 +223,7 @@
     return merged.map((item) => {
       const cat = item.category || 'General Concern / Other';
       return {
-        id: item.id || '#TIP-2026-0001',
+        id: item.id || 'ARL-FAC-2026-0001',
         status: item.status || 'Pending',
         date: item.date || 'Oct 3, 2026 • 08:00 AM',
         campus: item.campus || 'Arlegui Building — Main Hall',
