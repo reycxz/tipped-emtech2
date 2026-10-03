@@ -277,16 +277,30 @@
 
         // Save report to localStorage for cross-page demo
         try {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+          const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const formattedTimestamp = `${dateStr} • ${timeStr}`;
+
           const reports = JSON.parse(localStorage.getItem('tipped_user_reports') || '[]');
           reports.unshift({
             id: ticketId,
-            campus: `${campus} Campus — ${room}`,
+            campus: `${campus} Building — ${room}`,
+            rawCampus: `${campus} Campus`,
+            room: room,
+            floor: floor,
+            landmark: landmark,
             category: category,
             status: 'Pending',
-            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-            landmark: landmark,
-            floor: floor,
-            photosCount: uploadedPhotos.length
+            date: formattedTimestamp,
+            description: desc,
+            photos: uploadedPhotos.map(p => p.dataUrl),
+            photosCount: uploadedPhotos.length,
+            adminRemark: {
+              text: 'Report received and queued for dispatch verification by campus facilities.',
+              action: 'Ticket Logged',
+              admin: `Facilities Helpdesk (${campus})`
+            }
           });
           localStorage.setItem('tipped_user_reports', JSON.stringify(reports));
         } catch (err) {

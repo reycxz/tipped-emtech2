@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Reports &amp; Ticket Tracker — TIPPED</title>
+  <meta name="description" content="Track and monitor status of your reported campus facility and maintenance tickets across T.I.P. Manila." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="dashboard-body">
+
+  <!-- ═══════════════════════════════════════════════════
+       TOP NAVIGATION HEADER (/navbar)
+  ═══════════════════════════════════════════════════ -->
+  <header class="dash-header">
+    <div class="dash-header__inner">
+      <div class="dash-header__left">
+        <a href="/dashboard" class="dash-header__brand" aria-label="TIPPED Dashboard">
+          <span class="dash-header__brand-name"><strong>TIPPED</strong></span>
+        </a>
+        <nav class="dash-nav" aria-label="Main navigation">
+          <a href="/dashboard" class="dash-nav__link">Dashboard</a>
+          <a href="/report/new" class="dash-nav__link" id="nav-submit-report">Submit Report</a>
+          <a href="/my-reports" class="dash-nav__link dash-nav__link--active" id="nav-my-reports">My Reports</a>
+        </nav>
+      </div>
+
+      <div class="dash-header__right">
+        <div class="dash-user">
+          <span class="dash-user__name" id="user-display-name">John Doe</span>
+          <span class="dash-user__role">USER</span>
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--moon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+
+        <button id="logout-btn" class="dash-logout-btn" title="Sign out of portal">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       MY REPORTS CONTENT (BENTO GRID TRACKER)
+  ═══════════════════════════════════════════════════ -->
+  <main class="dashboard-page tracker-page">
+    <div class="dashboard-container tracker-container">
+
+      <!-- Header Title & Subtitle -->
+      <div class="tracker-header">
+        <h1 class="tracker-header__title">My Incident Reports</h1>
+        <p class="tracker-header__subtitle">Real-time status tracking, facilities technician updates, and resolution logs.</p>
+      </div>
+
+      <!-- Bento Tile 1 — Filter & Search Control Bar (col-span-12) -->
+      <section class="bento-tile--tracker-controls" aria-label="Ticket Filter Controls">
+        <!-- Status Filter Tabs (Segmented Pill Bar) -->
+        <div class="status-tabs-container" role="tablist" aria-label="Filter tickets by status">
+          <button type="button" class="status-tab-btn status-tab-btn--active" data-status="All" role="tab" aria-selected="true">
+            <span class="status-indicator-dot status-dot--all"></span>
+            <span>All Reports</span>
+            <span class="status-tab__count">5</span>
+          </button>
+          <button type="button" class="status-tab-btn" data-status="Pending" role="tab" aria-selected="false">
+            <span class="status-indicator-dot status-dot--pending"></span>
+            <span>Pending</span>
+            <span class="status-tab__count">1</span>
+          </button>
+          <button type="button" class="status-tab-btn" data-status="Under Review" role="tab" aria-selected="false">
+            <span class="status-indicator-dot status-dot--review"></span>
+            <span>Under Review</span>
+            <span class="status-tab__count">1</span>
+          </button>
+          <button type="button" class="status-tab-btn" data-status="In Progress" role="tab" aria-selected="false">
+            <span class="status-indicator-dot status-dot--progress"></span>
+            <span>In Progress</span>
+            <span class="status-tab__count">1</span>
+          </button>
+          <button type="button" class="status-tab-btn" data-status="Resolved" role="tab" aria-selected="false">
+            <span class="status-indicator-dot status-dot--resolved"></span>
+            <span>Resolved</span>
+            <span class="status-tab__count">1</span>
+          </button>
+          <button type="button" class="status-tab-btn" data-status="Dismissed" role="tab" aria-selected="false">
+            <span class="status-indicator-dot status-dot--dismissed"></span>
+            <span>Dismissed</span>
+            <span class="status-tab__count">1</span>
+          </button>
+        </div>
+
+        <!-- Sub-row: Campus Quick-Toggle + Search Field -->
+        <div class="tracker-subcontrols">
+          <!-- Campus Sub-Pill Quick-Toggle -->
+          <div class="campus-subtabs" role="group" aria-label="Filter tickets by building">
+            <button type="button" class="campus-subtab-btn campus-subtab-btn--active" data-campus="All">All Buildings</button>
+            <button type="button" class="campus-subtab-btn" data-campus="Arlegui Campus">Arlegui Campus</button>
+            <button type="button" class="campus-subtab-btn" data-campus="Casal Campus">Casal Campus</button>
+          </div>
+
+          <!-- Inline Search Field -->
+          <div class="tracker-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="tracker-search-icon">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="tracker-search-input"
+              class="tracker-search-input"
+              placeholder="Search by Ticket ID (e.g. #TIP) or Area..."
+              aria-label="Search reports"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Bento Tile Feed — Ticket Cards Grid (col-span-12 grid grid-cols-1 md:grid-cols-2 gap-4) -->
+      <section id="tracker-cards-grid" class="tracker-cards-grid" aria-label="Incident Reports Feed">
+        <!-- Rendered dynamically by my-reports.js -->
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       INSTANT LIGHTBOX MODAL (PHOTO EVIDENCE VIEWER)
+  ═══════════════════════════════════════════════════ -->
+  <div id="lightbox-modal" class="lightbox-modal lightbox-modal--hidden" role="dialog" aria-modal="true" aria-label="Photo evidence lightbox">
+    <div id="lightbox-backdrop" class="lightbox-backdrop"></div>
+    <div class="lightbox-content">
+      <div class="lightbox-img-wrap">
+        <button type="button" id="lightbox-close-btn" class="lightbox-close-btn" aria-label="Close image preview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <img id="lightbox-img" class="lightbox-img" src="" alt="Enlarged evidence photo" />
+      </div>
+      <div id="lightbox-caption" class="lightbox-caption">Photo Evidence Preview</div>
+    </div>
+  </div>
+
+  <script src="/my-reports/my-reports.js"></script>
+</body>
+</html>
