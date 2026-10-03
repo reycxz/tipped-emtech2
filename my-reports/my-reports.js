@@ -593,20 +593,7 @@
     if (filtered.length === 0) {
       cardsGrid.innerHTML = `
         <div class="empty-state-tile">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="empty-state-icon">
-            <rect x="3" y="4" width="18" height="16" rx="3"></rect>
-            <line x1="9" y1="9" x2="15" y2="9"></line>
-            <line x1="9" y1="13" x2="15" y2="13"></line>
-            <line x1="9" y1="17" x2="11" y2="17"></line>
-          </svg>
-          <div class="empty-state-text">No reports found for this filter</div>
-          <p class="empty-state-sub">There are currently no tickets matching your active status, building, or search criteria.</p>
-          <a href="/report/new" class="empty-state-link">
-            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-            </svg>
-            <span>+ File a new report</span>
-          </a>
+          <div class="empty-state-text">No reports found</div>
         </div>
       `;
       return;
