@@ -598,6 +598,22 @@
           const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
           const formattedTimestamp = `${dateStr} • ${timeStr}`;
 
+          // Automatic ticket routing on creation
+          let defaultTeam = 'Unassigned';
+          const catTrimmed = (category || '').trim();
+
+          if (catTrimmed === 'Digital & IT') {
+            defaultTeam = 'ITSO';
+          } else if (catTrimmed === 'Electrical & Power' || catTrimmed === 'HVAC & Cooling' || catTrimmed === 'Water & Sanitation' || catTrimmed === 'Facilities' || catTrimmed === 'Furniture & Fixtures') {
+            defaultTeam = 'Maintenance';
+          } else if (catTrimmed === 'Safety & Security' || catTrimmed === 'Life Safety & Hazards') {
+            defaultTeam = 'SOHAS';
+          } else if (catTrimmed === 'Canteen' || catTrimmed === 'Canteen Area') {
+            defaultTeam = 'Canteen Staff';
+          } else {
+            defaultTeam = 'Unassigned';
+          }
+
           const reports = JSON.parse(localStorage.getItem('tipped_user_reports') || '[]');
           reports.unshift({
             id: ticketId,
@@ -613,13 +629,14 @@
             landmark: landmark,
             category: category,
             status: 'Pending',
+            assignedTeam: defaultTeam,
             date: formattedTimestamp,
             description: desc,
             photos: uploadedPhotos.map((p) => p.dataUrl),
             photosCount: uploadedPhotos.length,
             location: locationPayload,
             adminRemark: {
-              text: `Report queued for dispatch verification at ${locationPayload.building_name} (${formattedRoomCode}).`,
+              text: `Report queued for ${defaultTeam !== 'Unassigned' ? defaultTeam : 'dispatch'} verification at ${locationPayload.building_name} (${formattedRoomCode}).`,
               action: 'Ticket Logged',
               admin: `Facilities Helpdesk (${campusData.name})`
             }

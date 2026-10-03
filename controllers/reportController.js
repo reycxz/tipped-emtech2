@@ -1,187 +1,363 @@
-const { Report } = require('../models/tipped-mongoose-models');
+/**
+ * TIPPED — Incident & Report Controller
+ * File: controllers/reportController.js
+ */
+
+const { Incident, Report } = require('../models/tipped-mongoose-models');
 const { asyncHandler, AppError } = require('../middleware/errorHandler');
 
+const OFFICIAL_TEAMS = ['ITSO', 'Maintenance', 'SOHAS', 'Canteen Staff', 'OSA', 'Guidance', 'Unassigned'];
+
 /**
- * @route   POST /api/reports
- * @desc    Submit a new incident or facility report
+ * Helper to generate random/sequential Ticket ID
+ */
+const generateTicketId = (campus) => {
+  const prefix = campus === 'Casal' ? 'CAS-FAC' : 'ARL-FAC';
+  const year = new Date().getFullYear();
+  const randNum = String(Math.floor(100 + Math.random() * 900));
+  return `#${prefix}-${year}-${randNum}`;
+};
+
+/**
+ * Helper for Automatic Ticket Routing on Creation
+ * Digital & IT -> ITSO
+ * Electrical & Power | HVAC & Cooling | Water & Sanitation -> Maintenance
+ * Safety & Security | Life Safety & Hazards -> SOHAS
+ * Canteen | Canteen Area -> Canteen Staff
+ * Default -> Unassigned
+ */
+const getAutoAssignedTeam = (category = '') => {
+  const cat = (category || '').trim();
+
+  if (cat === 'Digital & IT') {
+    return 'ITSO';
+  }
+  if (cat === 'Electrical & Power' || cat === 'HVAC & Cooling' || cat === 'Water & Sanitation' || cat === 'Facilities' || cat === 'Furniture & Fixtures') {
+    return 'Maintenance';
+  }
+  if (cat === 'Safety & Security' || cat === 'Life Safety & Hazards') {
+    return 'SOHAS';
+  }
+  if (cat === 'Canteen' || cat === 'Canteen Area') {
+    return 'Canteen Staff';
+  }
+  return 'Unassigned';
+};
+
+/**
+ * @route   POST /api/reports / POST /api/incidents
+ * @desc    Submit a new incident or facility report with automatic ticket routing
  * @access  Private (Registered Users)
  */
 exports.createReport = asyncHandler(async (req, res, next) => {
-  const { category, campus, floorLevel, roomArea, landmark, description, imageUrls, priorityLevel } = req.body;
+  const {
+    category,
+    campus,
+    roomCode,
+    floorLevel,
+    roomArea,
+    landmark,
+    description,
+    imageUrls,
+    evidencePhotos,
+    priority,
+    priorityLevel
+  } = req.body;
 
   // Validate campus constraint
-  if (!['Arlegui', 'Casal'].includes(campus)) {
+  if (!campus || !['Arlegui', 'Casal'].includes(campus)) {
     return next(new AppError('Campus location must be either Arlegui or Casal.', 400));
   }
 
-  // Validate photo evidence constraint (1 to 5 photos required)
-  if (!imageUrls || !Array.isArray(imageUrls) || imageUrls.length < 1 || imageUrls.length > 5) {
-    return next(new AppError('Report requires between 1 and 5 photo evidence URLs.', 400));
+  const room = (roomCode || roomArea || '').trim();
+  if (!room) {
+    return next(new AppError('Room code or location is required.', 400));
   }
 
-  const report = await Report.create({
-    reporterId: req.user ? req.user.userId : null,
-    category,
-    location: { campus, floorLevel, roomArea, landmark: landmark || '' },
-    description,
-    imageUrls,
-    priorityLevel: priorityLevel || 'Medium',
-    status: 'Pending'
+  if (!description || !description.trim()) {
+    return next(new AppError('Problem description is required.', 400));
+  }
+
+  const photos = Array.isArray(evidencePhotos) ? evidencePhotos : (Array.isArray(imageUrls) ? imageUrls : []);
+
+  const ticketId = generateTicketId(campus);
+  const reporterId = req.user ? (req.user.userId || req.user.id) : null;
+
+  // Automatic ticket routing on creation
+  const determinedTeam = req.body.assignedTeam && OFFICIAL_TEAMS.includes(req.body.assignedTeam)
+    ? req.body.assignedTeam
+    : getAutoAssignedTeam(category);
+
+  const incident = await Incident.create({
+    ticketId,
+    reporter: reporterId,
+    reporterId: reporterId,
+    campus,
+    roomCode: room,
+    category: category || 'Facilities',
+    status: 'Pending',
+    priority: priority || priorityLevel || 'Medium',
+    assignedTeam: determinedTeam,
+    description: description.trim(),
+    evidencePhotos: photos,
+    imageUrls: photos,
+    location: {
+      campus,
+      floorLevel: floorLevel || '',
+      roomArea: room,
+      landmark: landmark || ''
+    }
   });
 
   res.status(201).json({
     success: true,
     message: 'Incident report filed successfully.',
-    report
+    report: incident,
+    incident
   });
 });
 
 /**
- * @route   GET /api/reports
- * @desc    Get all reports with query filters (campus, status, category, reporterId)
+ * @route   GET /api/reports / GET /api/admin/reports
+ * @desc    Get reports with department scoping (Staff: scoped to their dept, Admin: all tickets)
  * @access  Private
  */
 exports.getReports = asyncHandler(async (req, res, next) => {
-  const { campus, status, category, search, reporterId } = req.query;
+  const { campus, status, category, team, search, reporterId, myReports } = req.query;
   let query = {};
 
-  // Filter by Reporter ID (for "My Reports" view)
+  // If filtered for user's own reports (Student view)
   if (reporterId) {
-    query.reporterId = reporterId;
+    query.$or = [{ reporter: reporterId }, { reporterId: reporterId }];
+  } else if (myReports === 'true' && req.user) {
+    const uId = req.user.userId || req.user.id;
+    query.$or = [{ reporter: uId }, { reporterId: uId }];
   }
 
-  // Campus Filter (Arlegui vs Casal)
+  // Department Scoping for Staff vs Admin
+  if (req.user && (req.user.role || '').toLowerCase() === 'staff') {
+    const staffDept = req.user.department || '';
+    let scopedTeam = 'ITSO';
+    if (staffDept.includes('IT') || staffDept.includes('ITSO')) scopedTeam = 'ITSO';
+    else if (staffDept.includes('Maintenance') || staffDept.includes('Facilities')) scopedTeam = 'Maintenance';
+    else if (staffDept.includes('SOHAS') || staffDept.includes('Security') || staffDept.includes('Health')) scopedTeam = 'SOHAS';
+    else if (staffDept.includes('Canteen')) scopedTeam = 'Canteen Staff';
+    else if (staffDept.includes('OSA') || staffDept.includes('Student Affairs')) scopedTeam = 'OSA';
+    else if (staffDept.includes('Guidance')) scopedTeam = 'Guidance';
+    else scopedTeam = staffDept;
+
+    query.assignedTeam = scopedTeam;
+  }
+
   if (campus && campus !== 'All') {
-    query['location.campus'] = campus;
+    query.campus = campus;
   }
 
-  // Status Filter (Pending, Under Review, In Progress, Resolved, Dismissed)
   if (status && status !== 'All') {
     query.status = status;
   }
 
-  // Category Filter
   if (category && category !== 'All') {
     query.category = category;
   }
 
-  // Keyword Search (Room or Description)
+  if (team && team !== 'All') {
+    query.assignedTeam = team;
+  }
+
   if (search) {
     query.$or = [
-      { 'location.roomArea': { $regex: search, $options: 'i' } },
+      { ticketId: { $regex: search, $options: 'i' } },
+      { roomCode: { $regex: search, $options: 'i' } },
       { description: { $regex: search, $options: 'i' } }
     ];
   }
 
-  const reports = await Report.find(query)
-    .populate('reporterId', 'fullName tipEmail department')
-    .populate('adminRemarks.adminId', 'fullName tipEmail')
+  const incidents = await Incident.find(query)
+    .populate('reporter', 'fullName email tipEmail department')
+    .populate('reporterId', 'fullName email tipEmail department')
     .sort({ createdAt: -1 });
 
   res.status(200).json({
     success: true,
-    count: reports.length,
-    reports
+    count: incidents.length,
+    reports: incidents,
+    incidents
   });
 });
 
 /**
- * @route   GET /api/reports/stats
- * @desc    Get dashboard metrics & counters for Bento Grid tiles
+ * @route   GET /api/reports/stats / GET /api/analytics/metrics
+ * @desc    Get dashboard metrics & counters for Bento Grid and Analytics
  * @access  Private
  */
 exports.getDashboardStats = asyncHandler(async (req, res, next) => {
   const { campus } = req.query;
   let matchQuery = {};
   if (campus && campus !== 'All') {
-    matchQuery['location.campus'] = campus;
+    matchQuery.campus = campus;
   }
 
-  const stats = await Report.aggregate([
+  const statusStats = await Incident.aggregate([
     { $match: matchQuery },
     { $group: { _id: '$status', count: { $sum: 1 } } }
   ]);
 
+  const categoryStats = await Incident.aggregate([
+    { $match: matchQuery },
+    { $group: { _id: '$category', count: { $sum: 1 } } }
+  ]);
+
+  const teamStats = await Incident.aggregate([
+    { $match: matchQuery },
+    { $group: { _id: '$assignedTeam', count: { $sum: 1 } } }
+  ]);
+
   const formattedStats = {
     pending: 0,
-    underReview: 0,
     inProgress: 0,
     resolved: 0,
-    dismissed: 0,
-    total: 0
+    underReview: 0,
+    total: 0,
+    categories: {},
+    teams: {}
   };
 
-  stats.forEach((item) => {
+  statusStats.forEach((item) => {
     formattedStats.total += item.count;
     if (item._id === 'Pending') formattedStats.pending = item.count;
-    if (item._id === 'Under Review') formattedStats.underReview = item.count;
     if (item._id === 'In Progress') formattedStats.inProgress = item.count;
     if (item._id === 'Resolved') formattedStats.resolved = item.count;
-    if (item._id === 'Dismissed') formattedStats.dismissed = item.count;
+    if (item._id === 'Under Review') formattedStats.underReview = item.count;
   });
 
-  res.status(200).json({ success: true, stats: formattedStats });
+  categoryStats.forEach((item) => {
+    formattedStats.categories[item._id] = item.count;
+  });
+
+  teamStats.forEach((item) => {
+    formattedStats.teams[item._id] = item.count;
+  });
+
+  res.status(200).json({
+    success: true,
+    stats: formattedStats,
+    metrics: formattedStats
+  });
 });
 
 /**
- * @route   PATCH /api/reports/:id/status
- * @desc    Update report status (Admin action)
- * @access  Private (Admin / Superadmin)
+ * @route   PATCH /api/admin/reports/:id/status / PATCH /api/reports/:id/status
+ * @desc    Update report status (Staff/Admin action)
+ * @access  Private (Staff / Admin)
  */
 exports.updateReportStatus = asyncHandler(async (req, res, next) => {
   const { status } = req.body;
-  const validStatuses = ['Pending', 'Under Review', 'In Progress', 'Resolved', 'Dismissed'];
+  const validStatuses = ['Pending', 'In Progress', 'Resolved', 'Under Review', 'Dismissed'];
 
   if (!validStatuses.includes(status)) {
     return next(new AppError('Invalid status value.', 400));
   }
 
-  const report = await Report.findByIdAndUpdate(
+  const incident = await Incident.findByIdAndUpdate(
     req.params.id,
     { status },
     { new: true, runValidators: true }
   );
 
-  if (!report) {
-    return next(new AppError('Incident report not found.', 404));
+  if (!incident) {
+    return next(new AppError('Incident ticket not found.', 404));
   }
 
   res.status(200).json({
     success: true,
-    message: `Report status updated to ${status}.`,
-    report
+    message: `Ticket status updated to ${status}.`,
+    incident,
+    report: incident
   });
 });
 
 /**
- * @route   POST /api/reports/:id/remarks
- * @desc    Append an official facilities admin remark/note
- * @access  Private (Admin / Superadmin)
+ * @route   PATCH /api/admin/reports/:id/assign
+ * @desc    Assign official TIP Manila department / technician team or update priority
+ * @access  Private (Staff / Admin)
  */
-exports.addAdminRemark = asyncHandler(async (req, res, next) => {
-  const { noteText, actionTaken } = req.body;
+exports.assignTeamOrPriority = asyncHandler(async (req, res, next) => {
+  const { assignedTeam, priority } = req.body;
+  let updateData = {};
 
-  if (!noteText) {
-    return next(new AppError('Remark text cannot be empty.', 400));
+  if (assignedTeam) {
+    if (!OFFICIAL_TEAMS.includes(assignedTeam)) {
+      return next(new AppError(`Invalid team. Allowed departments: ${OFFICIAL_TEAMS.join(', ')}`, 400));
+    }
+    updateData.assignedTeam = assignedTeam;
   }
 
-  const report = await Report.findById(req.params.id);
-  if (!report) {
-    return next(new AppError('Incident report not found.', 404));
+  if (priority) {
+    const validPriorities = ['Low', 'Medium', 'High', 'Urgent', 'Critical'];
+    if (!validPriorities.includes(priority)) {
+      return next(new AppError('Invalid priority level.', 400));
+    }
+    updateData.priority = priority;
   }
 
-  report.adminRemarks.push({
-    adminId: req.user ? req.user.userId : null,
-    noteText,
-    actionTaken: actionTaken || 'General Note'
-  });
+  const incident = await Incident.findByIdAndUpdate(
+    req.params.id,
+    updateData,
+    { new: true, runValidators: true }
+  );
 
-  await report.save();
+  if (!incident) {
+    return next(new AppError('Incident ticket not found.', 404));
+  }
 
   res.status(200).json({
     success: true,
-    message: 'Admin remark logged successfully.',
-    report
+    message: 'Department assignment & priority updated successfully.',
+    incident,
+    report: incident
   });
 });
 
+/**
+ * @route   POST /api/admin/reports/:id/notes / POST /api/reports/:id/remarks
+ * @desc    Append a staff note or admin remark
+ * @access  Private (Staff / Admin)
+ */
+exports.addAdminRemark = asyncHandler(async (req, res, next) => {
+  const { note, noteText, staffName, actionTaken } = req.body;
+  const content = (note || noteText || '').trim();
+
+  if (!content) {
+    return next(new AppError('Note text cannot be empty.', 400));
+  }
+
+  const incident = await Incident.findById(req.params.id);
+  if (!incident) {
+    return next(new AppError('Incident ticket not found.', 404));
+  }
+
+  const authorName = staffName || (req.user ? req.user.fullName || req.user.email : 'Campus IT / Facilities');
+
+  incident.staffNotes.push({
+    note: content,
+    staffName: authorName,
+    staffId: req.user ? (req.user.userId || req.user.id) : null,
+    createdAt: new Date()
+  });
+
+  incident.adminRemarks.push({
+    adminId: req.user ? (req.user.userId || req.user.id) : null,
+    noteText: content,
+    actionTaken: actionTaken || 'General Note'
+  });
+
+  await incident.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Staff note recorded successfully.',
+    incident,
+    report: incident
+  });
+});

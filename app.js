@@ -327,23 +327,38 @@
       btn.disabled = false;
       btn.style.opacity = '';
 
-      let extractedName = 'John Doe';
-      if (currentRole === 'admin') {
+      const normalizedInput = inputVal.toLowerCase();
+      let userRole = currentRole === 'admin' ? 'admin' : 'student';
+      let userDept = '';
+      let extractedName = 'Juan Dela Cruz';
+
+      if (normalizedInput === 'superadmin' || normalizedInput === 'admin@tip.edu.ph') {
+        userRole = 'admin';
+        userDept = 'Executive Operations';
+        extractedName = 'Super Admin';
+      } else if (normalizedInput === 'itdeptmnl' || normalizedInput === 'it@tip.edu.ph') {
+        userRole = 'staff';
+        userDept = 'ITSO';
+        extractedName = 'ITSO Operations';
+      } else if (currentRole === 'admin') {
+        userRole = 'admin';
         extractedName = isEmail 
           ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
           : (inputVal.charAt(0).toUpperCase() + inputVal.slice(1) + ' (Admin)');
-        if (!extractedName || extractedName.trim() === '(Admin)') extractedName = 'Facilities Admin';
+        if (!extractedName || extractedName.trim() === '(Admin)') extractedName = 'Campus Admin';
       } else {
+        userRole = 'student';
         extractedName = isEmail
           ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
-          : 'John Doe';
+          : 'Juan Dela Cruz';
       }
 
       sessionStorage.setItem('tipped_user_name', extractedName);
-      sessionStorage.setItem('tipped_user_role', currentRole.toUpperCase());
+      sessionStorage.setItem('tipped_user_role', userRole.toUpperCase());
+      sessionStorage.setItem('tipped_user_dept', userDept);
       sessionStorage.setItem('tipped_user_email', isEmail ? inputVal : `${inputVal}@tip.edu.ph`);
 
-      if (currentRole === 'admin') {
+      if (userRole === 'admin' || userRole === 'staff' || currentRole === 'admin') {
         window.location.href = '/admin';
       } else {
         window.location.href = '/dashboard';

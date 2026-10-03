@@ -103,7 +103,7 @@
       id: 'ARL-FAC-2026-0877',
       status: 'In Progress',
       priority: 'High',
-      assignedTeam: 'Aircon/HVAC Team',
+      assignedTeam: 'Maintenance',
       date: 'Oct 1, 2026 • 09:14 AM',
       reporterName: 'Juan De La Cruz',
       reporterEmail: 'jdelacruz.m@tip.edu.ph',
@@ -139,7 +139,7 @@
       id: 'CSL-ELE-2026-0142',
       status: 'Resolved',
       priority: 'Medium',
-      assignedTeam: 'Electrical Team',
+      assignedTeam: 'Maintenance',
       date: 'Sep 28, 2026 • 02:45 PM',
       reporterName: 'Maria Santos',
       reporterEmail: 'msantos.e@tip.edu.ph',
@@ -175,7 +175,7 @@
       id: 'ARL-PLM-2026-0089',
       status: 'Pending',
       priority: 'Urgent',
-      assignedTeam: 'Plumbing Team',
+      assignedTeam: 'Maintenance',
       date: 'Oct 2, 2026 • 11:20 AM',
       reporterName: 'Kevin Reyes',
       reporterEmail: 'kreyes.c@tip.edu.ph',
@@ -205,7 +205,7 @@
       id: 'CSL-DIT-2026-0688',
       status: 'Under Review',
       priority: 'High',
-      assignedTeam: 'General Maintenance',
+      assignedTeam: 'ITSO',
       date: 'Sep 29, 2026 • 10:05 AM',
       reporterName: 'Alyssa Tan',
       reporterEmail: 'atan.c@tip.edu.ph',
@@ -235,7 +235,7 @@
       id: 'ARL-FAC-2026-0512',
       status: 'Dismissed',
       priority: 'Low',
-      assignedTeam: 'Unassigned',
+      assignedTeam: 'OSA',
       date: 'Sep 24, 2026 • 04:30 PM',
       reporterName: 'Mark Bautista',
       reporterEmail: 'mbautista.a@tip.edu.ph',
@@ -265,7 +265,7 @@
       id: 'CSL-PLM-2026-2192',
       status: 'Pending',
       priority: 'Medium',
-      assignedTeam: 'Plumbing Team',
+      assignedTeam: 'Maintenance',
       date: 'Oct 3, 2026 • 08:30 AM',
       reporterName: 'John Doe',
       reporterEmail: 'jdoe.m@tip.edu.ph',
@@ -287,7 +287,7 @@
       id: 'CSL-ELE-2026-7574',
       status: 'Pending',
       priority: 'Urgent',
-      assignedTeam: 'Electrical Team',
+      assignedTeam: 'Maintenance',
       date: 'Oct 3, 2026 • 09:10 AM',
       reporterName: 'Elena Ramos',
       reporterEmail: 'eramos.t@tip.edu.ph',
@@ -383,6 +383,27 @@
     } catch (e) {
       console.warn('Notification storage write error', e);
     }
+  }
+
+  // ── Session & Role Scoping ──
+  const userFirstnameSpan = $('#admin-user-firstname');
+
+  const sessionRole = (sessionStorage.getItem('tipped_user_role') || 'ADMIN').toUpperCase();
+  const sessionName = sessionStorage.getItem('tipped_user_name') || 'Admin';
+  const sessionEmail = (sessionStorage.getItem('tipped_user_email') || '').toLowerCase();
+  const sessionDept = sessionStorage.getItem('tipped_user_dept') || '';
+
+  let staffScopedTeam = null;
+  const isItDept = sessionEmail.includes('itdeptmnl') || sessionName.toLowerCase().includes('itdeptmnl') || sessionDept.includes('ITSO') || sessionDept.includes('IT');
+
+  if (sessionRole === 'STAFF' || (isItDept && sessionRole !== 'SUPERADMIN' && sessionRole !== 'ADMIN_OVERSEER')) {
+    staffScopedTeam = sessionDept ? sessionDept : (isItDept ? 'ITSO' : null);
+  }
+
+  // Update Welcome name
+  if (userFirstnameSpan) {
+    const firstName = sessionName.split(' ')[0] || 'Admin';
+    userFirstnameSpan.textContent = firstName;
   }
 
   // ── State ──
@@ -637,6 +658,12 @@
   // ═══════════════════════════════════════════════
   function getFilteredTickets() {
     return allTickets.filter((item) => {
+      // Role-based department scoping for staff
+      if (staffScopedTeam && staffScopedTeam !== 'all') {
+        const itemTeam = (item.assignedTeam || '').toLowerCase();
+        if (itemTeam !== staffScopedTeam.toLowerCase()) return false;
+      }
+
       if (currentCampus !== 'all') {
         const itemCampus = (item.rawCampus || item.campus || '').toLowerCase();
         if (currentCampus === 'arlegui' && !itemCampus.includes('arlegui')) return false;

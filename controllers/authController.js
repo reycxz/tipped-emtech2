@@ -13,45 +13,56 @@ const JWT_SECRET = process.env.JWT_SECRET || 'tipped_tip_manila_secret_key_2026'
 
 /**
  * @route   POST /api/auth/register
- * @desc    Register a new T.I.P. Student, Faculty, or Admin user
+ * @desc    Register a new T.I.P. Student or Faculty user
  * @access  Public
  */
 exports.registerUser = asyncHandler(async (req, res, next) => {
-  const { fullName, tipEmail, password, role, department } = req.body;
+  const { fullName, email, tipEmail, password, role, department, username } = req.body;
+  const userEmail = (email || tipEmail || '').trim().toLowerCase();
 
   // 1. Validate required fields
-  if (!fullName || !tipEmail || !password) {
+  if (!fullName || !userEmail || !password) {
     return next(new AppError('Full name, T.I.P. email, and password are required.', 400));
   }
 
   // 2. Enforce @tip.edu.ph domain validation
   const tipEmailRegex = /^[a-zA-Z0-9._%+-]+@tip\.edu\.ph$/;
-  if (!tipEmailRegex.test(tipEmail)) {
+  if (!tipEmailRegex.test(userEmail)) {
     return next(new AppError('Registration restricted to official @tip.edu.ph institutional emails.', 400));
   }
 
-  // 3. Check for existing account
-  const existingUser = await User.findOne({ tipEmail: tipEmail.toLowerCase() });
+  // 3. Disallow public staff/admin self-registration
+  const normalizedRole = (role || 'student').toLowerCase();
+  if (normalizedRole === 'admin' || normalizedRole === 'staff' || normalizedRole === 'superadmin') {
+    return next(new AppError('Staff and Admin accounts are provisioned by Campus IT. Public registration is not permitted.', 403));
+  }
+
+  // 4. Check for existing account
+  const existingUser = await User.findOne({
+    $or: [{ email: userEmail }, { tipEmail: userEmail }]
+  });
   if (existingUser) {
     return next(new AppError('An account with this T.I.P. email address already exists.', 409));
   }
 
-  // 4. Hash password
+  // 5. Hash password
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(password, salt);
 
-  // 5. Create user record
+  // 6. Create user record
   const user = await User.create({
     fullName,
-    tipEmail: tipEmail.toLowerCase(),
+    username: username ? username.toLowerCase().trim() : userEmail.split('@')[0],
+    email: userEmail,
+    tipEmail: userEmail,
     passwordHash,
-    role: role || 'User',
+    role: normalizedRole,
     department: department || 'General Academic'
   });
 
-  // 6. Generate JWT Token
+  // 7. Generate JWT Token
   const token = jwt.sign(
-    { userId: user._id, tipEmail: user.tipEmail, role: user.role },
+    { userId: user._id, email: user.email, tipEmail: user.tipEmail, role: user.role },
     JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -63,6 +74,8 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     user: {
       id: user._id,
       fullName: user.fullName,
+      username: user.username,
+      email: user.email,
       tipEmail: user.tipEmail,
       role: user.role,
       department: user.department
@@ -72,39 +85,46 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 
 /**
  * @route   POST /api/auth/login
- * @desc    Authenticate user & return JWT token (supports email or username)
+ * @desc    Authenticate user & return JWT token (Dual-identity: supports email or username)
  * @access  Public
  */
 exports.loginUser = asyncHandler(async (req, res, next) => {
-  const { tipEmail, username, loginId, password } = req.body;
-  const identifier = (loginId || tipEmail || username || '').trim();
+  const { identifier, email, tipEmail, username, loginId, password } = req.body;
+  const loginIdentifier = (identifier || email || tipEmail || username || loginId || '').trim();
 
-  if (!identifier || !password) {
+  if (!loginIdentifier || !password) {
     return next(new AppError('Please provide both username or institutional email and password.', 400));
   }
 
-  // Find user by either institutional email or username/name
+  // Find user matching EITHER email OR username OR tipEmail
   const user = await User.findOne({
     $or: [
-      { tipEmail: identifier.toLowerCase() },
-      { username: identifier.toLowerCase() },
-      { fullName: new RegExp(`^${identifier}$`, 'i') }
+      { email: loginIdentifier.toLowerCase() },
+      { tipEmail: loginIdentifier.toLowerCase() },
+      { username: loginIdentifier.toLowerCase() },
+      { fullName: new RegExp(`^${loginIdentifier}$`, 'i') }
     ]
-  }).select('+passwordHash');
+  }).select('+passwordHash +password');
 
   if (!user) {
     return next(new AppError('Invalid credentials.', 401));
   }
 
-  // Verify password
-  const isMatch = await bcrypt.compare(password, user.passwordHash);
+  // Verify password with bcrypt (supports passwordHash or password field)
+  const hash = user.passwordHash || user.password;
+  const isMatch = await bcrypt.compare(password, hash);
   if (!isMatch) {
     return next(new AppError('Invalid credentials.', 401));
   }
 
   // Generate JWT Token
   const token = jwt.sign(
-    { userId: user._id, tipEmail: user.tipEmail, role: user.role },
+    {
+      userId: user._id,
+      email: user.email || user.tipEmail,
+      role: user.role,
+      department: user.department || ''
+    },
     JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -116,12 +136,11 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     user: {
       id: user._id,
       fullName: user.fullName,
-      tipEmail: user.tipEmail,
       username: user.username,
+      email: user.email || user.tipEmail,
+      tipEmail: user.tipEmail || user.email,
       role: user.role,
-      department: user.department
+      department: user.department || ''
     }
   });
 });
-
-
