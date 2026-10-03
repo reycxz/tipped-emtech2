@@ -76,36 +76,12 @@
           code: 'A',
           name: 'Arlegui Main Building',
           floors: [
-            {
-              level: '1st Floor',
-              facilitiesHint: 'Lobby, Registrar, Accounting, Clinic, Restrooms',
-              quickChips: ['Lobby', 'Registrar', 'Accounting Office', 'Clinic', 'Restroom 101', 'Room 102']
-            },
-            {
-              level: '2nd Floor',
-              facilitiesHint: 'Classrooms, Faculty Room, Restrooms',
-              quickChips: ['Room 201', 'Room 202', 'Room 205', 'Faculty Room', 'Restroom 201']
-            },
-            {
-              level: '3rd Floor',
-              facilitiesHint: 'CAD Lab 302, Computer Labs, Physics Lab, Classrooms',
-              quickChips: ['CAD Lab 302', 'Computer Lab 301', 'Physics Lab', 'Room 304', 'Restroom 301']
-            },
-            {
-              level: '4th Floor',
-              facilitiesHint: 'Classrooms, Engineering Labs, Restrooms',
-              quickChips: ['EE Lab 401', 'ECE Lab 402', 'Room 405', 'Restroom 401']
-            },
-            {
-              level: '5th Floor',
-              facilitiesHint: 'Drawing Rooms, Classrooms, Study Area',
-              quickChips: ['Drafting Room 501', 'Room 502', 'Study Area 5', 'Restroom 501']
-            },
-            {
-              level: '6th Floor',
-              facilitiesHint: 'Auditorium, AVR, Rooftop Hall',
-              quickChips: ['Auditorium', 'AVR 601', 'Rooftop Hall', 'Restroom 601']
-            }
+            { level: '1st Floor', facilitiesHint: 'Lobby, Registrar, Accounting, Clinic, Restrooms' },
+            { level: '2nd Floor', facilitiesHint: 'Classrooms, Faculty Room, Restrooms' },
+            { level: '3rd Floor', facilitiesHint: 'CAD Lab 302, Computer Labs, Physics Lab, Classrooms' },
+            { level: '4th Floor', facilitiesHint: 'Classrooms, Engineering Labs, Restrooms' },
+            { level: '5th Floor', facilitiesHint: 'Drawing Rooms, Classrooms, Study Area' },
+            { level: '6th Floor', facilitiesHint: 'Auditorium, AVR, Rooftop Hall' }
           ]
         }
       ]
@@ -118,146 +94,58 @@
           code: 'F',
           name: "Founder's Building",
           floors: [
-            {
-              level: '1st Floor',
-              facilitiesHint: 'Admissions, Canteen, Student Affairs, Restrooms',
-              quickChips: ['Canteen', 'Admissions Office', 'Student Affairs (OSA)', 'Restroom 101']
-            },
-            {
-              level: '2nd Floor',
-              facilitiesHint: 'Casal Library, Reading Hall, Restrooms',
-              quickChips: ['Casal Library', 'Reading Hall', 'Periodicals Section', 'Restroom 201']
-            },
-            {
-              level: '3rd Floor',
-              facilitiesHint: 'Classrooms, Faculty Center, Restrooms',
-              quickChips: ['Room 301', 'Room 306', 'Faculty Center', 'Restroom 301']
-            },
-            {
-              level: '4th Floor',
-              facilitiesHint: 'Classrooms, Chemistry Lab, Study Area',
-              quickChips: ['Chemistry Lab 401', 'Room 405', 'Study Area 4', 'Restroom 401']
-            },
-            {
-              level: '5th Floor',
-              facilitiesHint: 'Classrooms, Computer Lab, AVR',
-              quickChips: ['Comp Lab 501', 'Room 505', 'Casal AVR', 'Restroom 501']
-            },
-            {
-              level: '6th Floor',
-              facilitiesHint: 'Multi-Purpose Hall, Rooftop',
-              quickChips: ['Multi-Purpose Hall', 'Open Rooftop', 'Restroom 601']
-            }
+            { level: '1st Floor', facilitiesHint: 'Admissions, Canteen, Student Affairs, Restrooms' },
+            { level: '2nd Floor', facilitiesHint: 'Casal Library, Reading Hall, Restrooms' },
+            { level: '3rd Floor', facilitiesHint: 'Classrooms, Faculty Center, Restrooms' },
+            { level: '4th Floor', facilitiesHint: 'Classrooms, Chemistry Lab, Study Area' },
+            { level: '5th Floor', facilitiesHint: 'Classrooms, Computer Lab, AVR' },
+            { level: '6th Floor', facilitiesHint: 'Multi-Purpose Hall, Rooftop' }
           ]
         },
         {
           code: 'C',
           name: 'Building 2',
           floors: [
-            {
-              level: '1st Floor',
-              facilitiesHint: 'IT Computer Lab 102, Server Room, IT Faculty',
-              quickChips: ['IT Computer Lab 102', 'Server Room', 'IT Faculty Office', 'Room 105']
-            },
-            {
-              level: '2nd Floor',
-              facilitiesHint: 'Electronics Lab, Hardware Workshop, Classrooms',
-              quickChips: ['Electronics Lab 201', 'Hardware Workshop', 'Room 203', 'Restroom 201']
-            },
-            {
-              level: '3rd Floor',
-              facilitiesHint: 'Study Hall 2, Drafting Room, Restroom',
-              quickChips: ['Study Hall 2', 'Drafting Room 302', 'Room 305', 'Restroom 301']
-            }
+            { level: '1st Floor', facilitiesHint: 'IT Computer Lab 102, Server Room, IT Faculty' },
+            { level: '2nd Floor', facilitiesHint: 'Electronics Lab, Hardware Workshop, Classrooms' },
+            { level: '3rd Floor', facilitiesHint: 'Study Hall 2, Drafting Room, Restroom' }
           ]
         },
         {
           code: 'PC-5',
           name: 'P. Casal 5',
           floors: [
-            {
-              level: '1st Floor',
-              facilitiesHint: 'Security Office, Student Lounge',
-              quickChips: ['Security Office', 'Student Lounge', 'Restroom 101']
-            },
-            {
-              level: '2nd Floor',
-              facilitiesHint: 'Classrooms, Student Council',
-              quickChips: ['Room 201', 'Student Council Office', 'Restroom 201']
-            },
-            {
-              level: '3rd Floor',
-              facilitiesHint: 'Classrooms, Faculty Extension',
-              quickChips: ['Room 301', 'Room 302', 'Restroom 301']
-            },
-            {
-              level: '4th Floor',
-              facilitiesHint: 'Lecture Rooms, Discussion Rooms',
-              quickChips: ['Lecture Room 401', 'Discussion Room 402']
-            }
+            { level: '1st Floor', facilitiesHint: 'Security Office, Student Lounge' },
+            { level: '2nd Floor', facilitiesHint: 'Classrooms, Student Council' },
+            { level: '3rd Floor', facilitiesHint: 'Classrooms, Faculty Extension' },
+            { level: '4th Floor', facilitiesHint: 'Lecture Rooms, Discussion Rooms' }
           ]
         },
         {
           code: 'PC-12',
           name: 'P. Casal 12',
           floors: [
-            {
-              level: '1st Floor',
-              facilitiesHint: 'Architecture Lobby, Exhibition Hall',
-              quickChips: ['Exhibition Hall', 'Archi Lobby', 'Restroom 101']
-            },
-            {
-              level: '2nd Floor',
-              facilitiesHint: 'Architecture Studios, CAD Stations',
-              quickChips: ['Studio 201', 'Studio 202', 'CAD Station 205']
-            },
-            {
-              level: '3rd Floor',
-              facilitiesHint: 'Design Studios, Model Making Lab',
-              quickChips: ['Design Studio 301', 'Model Making Lab', 'Restroom 301']
-            },
-            {
-              level: '4th Floor',
-              facilitiesHint: 'Senior Studios, Thesis Defense Room',
-              quickChips: ['Senior Studio 401', 'Defense Room 402']
-            }
+            { level: '1st Floor', facilitiesHint: 'Architecture Lobby, Exhibition Hall' },
+            { level: '2nd Floor', facilitiesHint: 'Architecture Studios, CAD Stations' },
+            { level: '3rd Floor', facilitiesHint: 'Design Studios, Model Making Lab' },
+            { level: '4th Floor', facilitiesHint: 'Senior Studios, Thesis Defense Room' }
           ]
         },
         {
           code: 'PE',
           name: 'PE Center & Annex',
           floors: [
-            {
-              level: 'Ground Level',
-              facilitiesHint: 'Gymnasium, Sports Equipment Depot, Bleachers',
-              quickChips: ['Main Basketball Court', 'Equipment Depot', 'Bleachers', 'Shower Room']
-            },
-            {
-              level: '2nd Floor',
-              facilitiesHint: 'Dance Studio, Fitness & Weights Gym',
-              quickChips: ['Dance Studio', 'Fitness Gym', 'PE Faculty Office']
-            },
-            {
-              level: '3rd Floor',
-              facilitiesHint: 'Martial Arts Hall, Table Tennis Area',
-              quickChips: ['Martial Arts Hall', 'Table Tennis Area', 'Restroom 301']
-            },
-            {
-              level: 'Rooftop Annex',
-              facilitiesHint: 'Open Training Deck',
-              quickChips: ['Open Training Deck']
-            }
+            { level: 'Ground Level', facilitiesHint: 'Gymnasium, Sports Equipment Depot, Bleachers' },
+            { level: '2nd Floor', facilitiesHint: 'Dance Studio, Fitness & Weights Gym' },
+            { level: '3rd Floor', facilitiesHint: 'Martial Arts Hall, Table Tennis Area' },
+            { level: 'Rooftop Annex', facilitiesHint: 'Open Training Deck' }
           ]
         },
         {
           code: 'EXT',
           name: 'Outdoor / Common Grounds',
           floors: [
-            {
-              level: 'Ground Level',
-              facilitiesHint: 'Main Plaza, Gazebo, Flagpole Area, Parking Lot',
-              quickChips: ['Main Plaza', 'Gazebo Area', 'Flagpole Grounds', 'Parking Lot', 'Campus Gate']
-            }
+            { level: 'Ground Level', facilitiesHint: 'Main Plaza, Gazebo, Flagpole Area, Parking Lot' }
           ]
         }
       ]
@@ -275,7 +163,6 @@
   const landmarkInput    = $('#report-landmark');
   const floorHintBadge   = $('#floor-hint-badge');
   const floorHintText    = $('#floor-hint-text');
-  const roomQuickChips   = $('#room-quick-chips');
   const previewRoomCode  = $('#preview-room-code');
   const previewLocationDesc = $('#preview-location-desc');
 
@@ -332,38 +219,12 @@
     }
   }
 
-  function renderQuickChips(floorObj) {
-    if (!roomQuickChips) return;
-    roomQuickChips.innerHTML = '';
-
-    if (!floorObj || !floorObj.quickChips || floorObj.quickChips.length === 0) {
-      return;
-    }
-
-    floorObj.quickChips.forEach((chipText) => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.className = 'room-chip';
-      chip.textContent = chipText;
-      chip.addEventListener('click', () => {
-        if (roomInput) {
-          roomInput.value = chipText;
-          // Trigger input event to update preview
-          roomInput.dispatchEvent(new Event('input'));
-          roomInput.focus();
-        }
-      });
-      roomQuickChips.appendChild(chip);
-    });
-  }
-
   function populateFloors(buildingObj) {
     if (!floorSelect) return;
     floorSelect.innerHTML = '<option value="" disabled selected>Select floor level…</option>';
 
     if (!buildingObj || !buildingObj.floors) {
       if (floorHintBadge) floorHintBadge.style.display = 'none';
-      renderQuickChips(null);
       currentFloorObj = null;
       updateLivePreview();
       return;
@@ -383,7 +244,6 @@
     } else {
       floorSelect.selectedIndex = 0;
       if (floorHintBadge) floorHintBadge.style.display = 'none';
-      renderQuickChips(null);
       currentFloorObj = null;
       updateLivePreview();
     }
@@ -402,7 +262,6 @@
       if (floorHintBadge) floorHintBadge.style.display = 'none';
     }
 
-    renderQuickChips(floorObj);
     updateLivePreview();
   }
 

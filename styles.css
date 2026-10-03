@@ -3842,41 +3842,6 @@ input, select { font-family: inherit; outline: none; }
   color: #B45309;
 }
 
-.room-quick-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.45rem;
-}
-.room-chip {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  color: var(--color-text-secondary);
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 0.25rem 0.55rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-}
-.room-chip:hover {
-  background: rgba(245, 158, 11, 0.15);
-  border-color: rgba(245, 158, 11, 0.4);
-  color: #FBBF24;
-  transform: translateY(-1px);
-}
-[data-theme="light"] .room-chip {
-  background: #F1F5F9;
-  border-color: #E2E8F0;
-  color: #475569;
-}
-[data-theme="light"] .room-chip:hover {
-  background: #FEF3C7;
-  border-color: #F59E0B;
-  color: #B45309;
-}
-
 .location-code-preview {
   margin-top: 0.85rem;
   padding: 0.75rem 0.95rem;
