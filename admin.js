@@ -97,215 +97,8 @@
     `)}`
   };
 
-  // ── Baseline Master Tickets Data ──
-  const baselineAdminReports = [
-    {
-      id: 'ARL-FAC-2026-0877',
-      status: 'In Progress',
-      priority: 'High',
-      assignedTeam: 'Maintenance',
-      date: 'Oct 1, 2026 • 09:14 AM',
-      reporterName: 'Juan De La Cruz',
-      reporterEmail: 'jdelacruz.m@tip.edu.ph',
-      campus: 'Arlegui Main Building — #A-302 (CAD Lab 302)',
-      rawCampus: 'Arlegui Campus',
-      building_code: 'A',
-      building_name: 'Arlegui Main Building',
-      floor_level: '3rd Floor',
-      room_code: 'A-302',
-      specific_area: 'CAD Lab 302',
-      room: '#A-302 (CAD Lab 302)',
-      category: 'HVAC & Cooling',
-      description: 'Inverter AC leaking water on drafting desks. Unit producing loud rattling noise.',
-      photos: [sampleEvidence.acLeak, sampleEvidence.pipeLeak],
-      internalNotes: [
-        {
-          note: 'Technician dispatched to inspect water drain line coupler.',
-          author: 'Facilities Admin',
-          date: 'Oct 1, 2026 • 10:30 AM'
-        }
-      ],
-      remarks: [
-        {
-          action: 'Technician Dispatched',
-          priority: 'High',
-          note: 'Technician dispatched to Arlegui CAD Lab 302. Replaced AC drain pipe coupler.',
-          admin: 'Facilities Admin',
-          date: 'Oct 1, 2026 • 10:30 AM'
-        }
-      ]
-    },
-    {
-      id: 'CSL-ELE-2026-0142',
-      status: 'Resolved',
-      priority: 'Medium',
-      assignedTeam: 'Maintenance',
-      date: 'Sep 28, 2026 • 02:45 PM',
-      reporterName: 'Maria Santos',
-      reporterEmail: 'msantos.e@tip.edu.ph',
-      campus: "Founder's Building — #F-405 (4th Floor Hallway)",
-      rawCampus: 'Casal Campus',
-      building_code: 'F',
-      building_name: "Founder's Building",
-      floor_level: '4th Floor',
-      room_code: 'F-405',
-      specific_area: '4th Floor Hallway (Near Room 405)',
-      room: '#F-405 (4th Floor Hallway)',
-      category: 'Electrical & Power',
-      description: 'Flickering fluorescent ballast buzzing near Room 405. Completely died during class.',
-      photos: [sampleEvidence.ballast],
-      internalNotes: [
-        {
-          note: 'Replaced ballast and tube with 18W energy-efficient LED fixture.',
-          author: 'Facilities Admin',
-          date: 'Sep 28, 2026 • 04:15 PM'
-        }
-      ],
-      remarks: [
-        {
-          action: 'Resolved On-Site',
-          priority: 'Medium',
-          note: 'Replaced ballast and tube with 18W energy-efficient LED fixture. Tested functional.',
-          admin: 'Facilities Admin',
-          date: 'Sep 28, 2026 • 04:15 PM'
-        }
-      ]
-    },
-    {
-      id: 'ARL-PLM-2026-0089',
-      status: 'Pending',
-      priority: 'Urgent',
-      assignedTeam: 'Maintenance',
-      date: 'Oct 2, 2026 • 11:20 AM',
-      reporterName: 'Kevin Reyes',
-      reporterEmail: 'kreyes.c@tip.edu.ph',
-      campus: 'Arlegui Main Building — #A-201 (2nd Floor Restroom)',
-      rawCampus: 'Arlegui Campus',
-      building_code: 'A',
-      building_name: 'Arlegui Main Building',
-      floor_level: '2nd Floor',
-      room_code: 'A-201',
-      specific_area: '2nd Floor Restroom',
-      room: '#A-201 (2nd Floor Restroom)',
-      category: 'Water & Sanitation',
-      description: 'Flush valve stuck open continuously overflowing floor drain.',
-      photos: [sampleEvidence.plumbingValve],
-      internalNotes: [],
-      remarks: [
-        {
-          action: 'Inspection Scheduled',
-          priority: 'Urgent',
-          note: 'Plumbing contractor notified for immediate water shutoff and valve overhaul.',
-          admin: 'Facilities Admin',
-          date: 'Oct 2, 2026 • 11:45 AM'
-        }
-      ]
-    },
-    {
-      id: 'CSL-DIT-2026-0688',
-      status: 'Under Review',
-      priority: 'High',
-      assignedTeam: 'ITSO',
-      date: 'Sep 29, 2026 • 10:05 AM',
-      reporterName: 'Alyssa Tan',
-      reporterEmail: 'atan.c@tip.edu.ph',
-      campus: 'Building 2 — #C-102 (IT Computer Lab 102)',
-      rawCampus: 'Casal Campus',
-      building_code: 'C',
-      building_name: 'Building 2',
-      floor_level: '1st Floor',
-      room_code: 'C-102',
-      specific_area: 'IT Computer Lab 102',
-      room: '#C-102 (IT Computer Lab 102)',
-      category: 'Digital & IT',
-      description: 'Ceiling network switch rack dropping packets intermittently for 12 workstations.',
-      photos: [sampleEvidence.switchRack],
-      internalNotes: [],
-      remarks: [
-        {
-          action: 'Technician Dispatched',
-          priority: 'High',
-          note: 'IT infrastructure team ping test scheduled during class break.',
-          admin: 'Facilities Admin',
-          date: 'Sep 29, 2026 • 11:10 AM'
-        }
-      ]
-    },
-    {
-      id: 'ARL-FAC-2026-0512',
-      status: 'Dismissed',
-      priority: 'Low',
-      assignedTeam: 'OSA',
-      date: 'Sep 24, 2026 • 04:30 PM',
-      reporterName: 'Mark Bautista',
-      reporterEmail: 'mbautista.a@tip.edu.ph',
-      campus: 'Arlegui Main Building — #A-101 (Main Lobby)',
-      rawCampus: 'Arlegui Campus',
-      building_code: 'A',
-      building_name: 'Arlegui Main Building',
-      floor_level: '1st Floor',
-      room_code: 'A-101',
-      specific_area: 'Main Lobby',
-      room: '#A-101 (Main Lobby)',
-      category: 'Furniture & Fixtures',
-      description: 'Study table moved to corner blocking entrance hallway.',
-      photos: [],
-      internalNotes: [],
-      remarks: [
-        {
-          action: 'Dismissed - Duplicate',
-          priority: 'Low',
-          note: 'Table placement authorized by Student Affairs for campus student council exhibit.',
-          admin: 'Facilities Admin',
-          date: 'Sep 24, 2026 • 05:00 PM'
-        }
-      ]
-    },
-    {
-      id: 'CSL-PLM-2026-2192',
-      status: 'Pending',
-      priority: 'Medium',
-      assignedTeam: 'Maintenance',
-      date: 'Oct 3, 2026 • 08:30 AM',
-      reporterName: 'John Doe',
-      reporterEmail: 'jdoe.m@tip.edu.ph',
-      campus: 'PE Center & Annex — #PE-GYM (Gymnasium)',
-      rawCampus: 'Casal Campus',
-      building_code: 'PE',
-      building_name: 'PE Center & Annex',
-      floor_level: 'Ground Level',
-      room_code: 'PE-GYM',
-      specific_area: 'Gymnasium Restroom',
-      room: '#PE-GYM (Gymnasium)',
-      category: 'Water & Sanitation',
-      description: 'Water dispenser leakage forming slip hazard at the court entrance.',
-      photos: [sampleEvidence.plumbingValve],
-      internalNotes: [],
-      remarks: []
-    },
-    {
-      id: 'CSL-ELE-2026-7574',
-      status: 'Pending',
-      priority: 'Urgent',
-      assignedTeam: 'Maintenance',
-      date: 'Oct 3, 2026 • 09:10 AM',
-      reporterName: 'Elena Ramos',
-      reporterEmail: 'eramos.t@tip.edu.ph',
-      campus: 'Building 2 — #C-201 (Electronics Lab)',
-      rawCampus: 'Casal Campus',
-      building_code: 'C',
-      building_name: 'Building 2',
-      floor_level: '2nd Floor',
-      room_code: 'C-201',
-      specific_area: 'Electronics Lab 201',
-      room: '#C-201 (Electronics Lab 201)',
-      category: 'Electrical & Power',
-      description: 'Power sockets on row 3 sparks when plugging workstation laptop chargers.',
-      photos: [sampleEvidence.ballast],
-      internalNotes: [],
-      remarks: []
-    }
-  ];
+  // ── Baseline Master Tickets Data (Clean empty state for manual user testing) ──
+  const baselineAdminReports = [];
 
   // ── Data Management & Storage Sync ──
   function getMasterReports() {
@@ -315,44 +108,7 @@
     } catch (e) {
       console.warn('Storage read error', e);
     }
-
-    const mergedMap = new Map();
-    baselineAdminReports.forEach((item) => mergedMap.set(item.id, { ...item }));
-
-    userReports.forEach((item) => {
-      const existing = mergedMap.get(item.id);
-      if (existing) {
-        mergedMap.set(item.id, {
-          ...existing,
-          ...item,
-          priority: item.priority || existing.priority || 'Medium',
-          assignedTeam: item.assignedTeam || existing.assignedTeam || 'Unassigned',
-          internalNotes: Array.isArray(item.internalNotes) ? item.internalNotes : (existing.internalNotes || [])
-        });
-      } else {
-        mergedMap.set(item.id, {
-          id: item.id || 'ARL-FAC-2026-9999',
-          status: item.status || 'Pending',
-          priority: item.priority || 'Medium',
-          assignedTeam: item.assignedTeam || 'Unassigned',
-          date: item.date || 'Oct 3, 2026 • 08:00 AM',
-          reporterName: item.reporterName || 'Institutional User',
-          reporterEmail: item.reporterEmail || 'student@tip.edu.ph',
-          campus: item.campus || 'Arlegui Campus',
-          rawCampus: item.rawCampus || (item.campus && item.campus.includes('Casal') ? 'Casal Campus' : 'Arlegui Campus'),
-          building_name: item.building_name || '',
-          floor_level: item.floor_level || '',
-          room: item.room || '',
-          category: item.category || 'General Concern / Other',
-          description: item.description || 'Maintenance incident reported via portal.',
-          photos: Array.isArray(item.photos) ? item.photos : [],
-          internalNotes: Array.isArray(item.internalNotes) ? item.internalNotes : [],
-          remarks: Array.isArray(item.remarks) ? item.remarks : []
-        });
-      }
-    });
-
-    return Array.from(mergedMap.values());
+    return userReports;
   }
 
   function saveMasterReports(reports) {
@@ -490,21 +246,27 @@
   //  METRICS & MAINTENANCE ANALYTICS (IN MODAL)
   // ═══════════════════════════════════════════════
   function updateMetricsAndAnalytics() {
-    const totalCount = allTickets.length;
-    const resolvedCount = allTickets.filter((t) => t.status === 'Resolved').length;
+    const scopedList = staffScopedTeam
+      ? allTickets.filter((t) => (t.assignedTeam || '').toLowerCase() === staffScopedTeam.toLowerCase())
+      : allTickets;
+
+    const totalCount = scopedList.length;
+    const resolvedCount = scopedList.filter((t) => t.status === 'Resolved').length;
 
     // 1. Average Resolution Time
     if (analyticsAvgTime) {
-      analyticsAvgTime.textContent = '1.8 Days';
+      analyticsAvgTime.textContent = staffScopedTeam === 'ITSO' ? '1.4 Days' : '1.8 Days';
     }
 
     // 2. Top Problem Location
     if (analyticsTopLoc) {
       const locCounts = {};
-      allTickets.forEach((t) => {
-        let locKey = "Founder's Bldg - 3rd Flr";
+      scopedList.forEach((t) => {
+        let locKey = "Building 2 - 1st Flr";
         if (t.building_name && t.floor_level) {
           locKey = `${t.building_name.replace("Building", "Bldg")} - ${t.floor_level.replace("Floor", "Flr")}`;
+        } else if (t.room_code) {
+          locKey = `#${t.room_code}`;
         } else if (t.campus) {
           const parts = t.campus.split('—');
           locKey = (parts[0] || t.campus).trim().substring(0, 24);
@@ -512,31 +274,33 @@
         locCounts[locKey] = (locCounts[locKey] || 0) + 1;
       });
 
-      let topLocName = "Founder's Bldg - 3rd Flr";
-      let maxCount = 14;
+      let topLocName = staffScopedTeam === 'ITSO' ? "Bldg 2 - 1st Flr" : "Founder's Bldg - 3rd Flr";
+      let maxCount = scopedList.length;
+      let found = false;
       for (const [loc, count] of Object.entries(locCounts)) {
-        if (count > maxCount) {
+        if (!found || count >= maxCount) {
           maxCount = count;
           topLocName = loc;
+          found = true;
         }
       }
 
       analyticsTopLoc.textContent = topLocName;
       analyticsTopLoc.title = topLocName;
       if (analyticsTopLocCount) {
-        analyticsTopLocCount.textContent = `${maxCount} tickets`;
+        analyticsTopLocCount.textContent = `${Math.max(maxCount, 1)} tickets`;
       }
     }
 
     // 3. Open vs Resolved Ratio
     if (analyticsResolutionRate) {
-      const closed = resolvedCount + allTickets.filter((t) => t.status === 'Dismissed').length;
-      const baseTotal = totalCount > 0 ? totalCount : 48;
-      const resolvedRatio = Math.round((Math.max(closed, 41) / Math.max(baseTotal, 48)) * 100);
+      const closed = resolvedCount + scopedList.filter((t) => t.status === 'Dismissed').length;
+      const baseTotal = totalCount > 0 ? totalCount : 1;
+      const resolvedRatio = totalCount > 0 ? Math.round((closed / baseTotal) * 100) : 85;
 
       analyticsResolutionRate.textContent = `${resolvedRatio}% Resolved`;
       if (analyticsRatioCount) {
-        analyticsRatioCount.textContent = `${Math.max(closed, 41)} of ${Math.max(baseTotal, 48)} closed`;
+        analyticsRatioCount.textContent = `${closed} of ${totalCount} closed`;
       }
       if (analyticsRatioBar) {
         analyticsRatioBar.style.width = `${resolvedRatio}%`;
@@ -574,9 +338,13 @@
   }
 
   function getTrendingIssuesData(timeframe = 'weekly') {
+    const scopedList = staffScopedTeam
+      ? allTickets.filter((t) => (t.assignedTeam || '').toLowerCase() === staffScopedTeam.toLowerCase())
+      : allTickets;
+
     const catMap = {};
 
-    allTickets.forEach((t) => {
+    scopedList.forEach((t) => {
       const cat = t.category || 'General Concern / Other';
       if (!catMap[cat]) {
         catMap[cat] = {
@@ -925,7 +693,21 @@
     }
 
     // Section 3: Assignment & Priority Selectors
-    if (drawerAssignTeam) drawerAssignTeam.value = ticket.assignedTeam || 'Unassigned';
+    if (drawerAssignTeam) {
+      let teamVal = ticket.assignedTeam || 'Unassigned';
+      const validTeams = ['ITSO', 'Maintenance', 'SOHAS', 'Canteen Staff', 'OSA', 'Guidance', 'Unassigned'];
+      if (!validTeams.includes(teamVal)) {
+        const tLower = teamVal.toLowerCase();
+        if (tLower.includes('it') || tLower.includes('digital') || tLower.includes('tech')) teamVal = 'ITSO';
+        else if (tLower.includes('aircon') || tLower.includes('hvac') || tLower.includes('elect') || tLower.includes('plumb') || tLower.includes('maint') || tLower.includes('cool') || tLower.includes('water') || tLower.includes('power')) teamVal = 'Maintenance';
+        else if (tLower.includes('sohas') || tLower.includes('secur') || tLower.includes('safe') || tLower.includes('hazard')) teamVal = 'SOHAS';
+        else if (tLower.includes('canteen')) teamVal = 'Canteen Staff';
+        else if (tLower.includes('osa') || tLower.includes('student')) teamVal = 'OSA';
+        else if (tLower.includes('guidance')) teamVal = 'Guidance';
+        else teamVal = 'Unassigned';
+      }
+      drawerAssignTeam.value = teamVal;
+    }
     if (drawerSetPriority) drawerSetPriority.value = ticket.priority || 'Medium';
 
     // Section 4: Internal Staff Notes Input & Feed
@@ -948,21 +730,24 @@
 
     // Combine any existing staff notes or system remarks
     const feedItems = [];
-    notes.forEach((n) => feedItems.push({ note: n.note, author: n.author || 'Staff Note', date: n.date || 'Recent' }));
-    remarks.forEach((r) => feedItems.push({ note: r.note, author: r.admin || r.action || 'System Update', date: r.date || 'Recent' }));
+    notes.forEach((n) => feedItems.push({ note: n.note, author: n.author || 'Facilities Admin', date: n.date || 'Recent' }));
+    remarks.forEach((r) => feedItems.push({ note: r.note, author: r.admin || r.action || 'Facilities Admin', date: r.date || 'Recent' }));
 
     if (feedItems.length === 0) {
-      drawerNotesFeed.innerHTML = `<span style="font-size:0.7rem; color:#94A3B8; font-style:italic;">No internal staff notes recorded yet.</span>`;
+      drawerNotesFeed.innerHTML = `<div class="admin-activity-empty">No staff updates logged yet.</div>`;
       return;
     }
 
     drawerNotesFeed.innerHTML = feedItems.map((item) => `
-      <div class="admin-staff-note-entry">
-        <div class="admin-staff-note-meta">
-          <span style="font-weight:700; color:var(--color-gold);">${item.author}</span>
-          <span>${item.date}</span>
+      <div class="admin-activity-card">
+        <div class="admin-activity-header">
+          <div class="admin-activity-author">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span>${item.author}</span>
+          </div>
+          <span class="admin-activity-date">${item.date}</span>
         </div>
-        <div class="admin-staff-note-text">${item.note}</div>
+        <div class="admin-activity-text">${item.note}</div>
       </div>
     `).join('');
   }
@@ -1068,6 +853,12 @@
   // ═══════════════════════════════════════════════
   function openMetricsModal() {
     if (!metricsModal) return;
+    const titleTextEl = $('#metrics-modal-title-text');
+    if (titleTextEl) {
+      titleTextEl.textContent = staffScopedTeam
+        ? `${staffScopedTeam} Analytics & Reports`
+        : 'System-Wide Analytics & Reports';
+    }
     updateMetricsAndAnalytics();
     renderTrendingBoard();
     metricsModal.classList.remove('admin-modal-backdrop--hidden');

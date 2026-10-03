@@ -76,39 +76,8 @@
     });
   }
 
-  // ═══════════════════════════════════════════════
-  //  REAL-TIME INCIDENT DATA & COUNTERS
-  // ═══════════════════════════════════════════════
-  const baselineReports = [
-    {
-      id: 'ARL-FAC-2026-0877',
-      status: 'In Progress',
-      campus: 'Arlegui Main Building — #A-302 (CAD Lab 302)',
-      category: 'HVAC & Cooling',
-      date: 'Oct 1, 2026'
-    },
-    {
-      id: 'CSL-ELE-2026-0142',
-      status: 'Pending',
-      campus: 'Building 2 — #C-302 (Study Hall 2)',
-      category: 'Electrical & Power',
-      date: 'Sep 29, 2026'
-    },
-    {
-      id: 'ARL-PLM-2026-0089',
-      status: 'Pending',
-      campus: 'Arlegui Main Building — #A-201 (2nd Floor Restroom)',
-      category: 'Water & Sanitation',
-      date: 'Oct 2, 2026'
-    },
-    {
-      id: 'CSL-ELE-2026-7574',
-      status: 'Resolved',
-      campus: "Founder's Building — #F-405 (4th Floor)",
-      category: 'Electrical & Power',
-      date: 'Sep 28, 2026'
-    }
-  ];
+  // ── Baseline Reports (Cleared for manual testing) ──
+  const baselineReports = [];
 
   let userReports = [];
   try {
@@ -117,8 +86,7 @@
     console.warn('Storage read error', e);
   }
 
-  const storedIds = new Set(userReports.map((r) => r.id));
-  const allReports = [...userReports, ...baselineReports.filter((b) => !storedIds.has(b.id))];
+  const allReports = [...userReports];
 
   const pendingCount = allReports.filter((r) => r.status === 'Pending' || r.status === 'Under Review').length;
   const progressCount = allReports.filter((r) => r.status === 'In Progress').length;
@@ -150,30 +118,38 @@
   //  DYNAMIC RECENT ACTIVITY PREVIEW
   // ═══════════════════════════════════════════════
   const activityGrid = $('.activity-grid');
-  if (activityGrid && allReports.length > 0) {
-    const recent = allReports.slice(0, 4);
-    activityGrid.innerHTML = recent.map((ticket) => {
-      let statusClass = 'activity-card__status--pending';
-      if (ticket.status === 'In Progress' || ticket.status === 'Under Review') {
-        statusClass = 'activity-card__status--progress';
-      } else if (ticket.status === 'Resolved') {
-        statusClass = 'activity-card__status--resolved';
-      }
-
-      return `
-        <div class="activity-card">
-          <div class="activity-card__head">
-            <span class="activity-card__id">${ticket.id}</span>
-            <span class="activity-card__status ${statusClass}">${ticket.status}</span>
-          </div>
-          <span class="activity-card__location">${ticket.campus || 'Arlegui Campus'}</span>
-          <div class="activity-card__foot">
-            <span class="activity-card__category">${ticket.category || 'General'}</span>
-            <span class="activity-card__time">${ticket.date ? ticket.date.split('•')[0].trim() : 'Recent'}</span>
-          </div>
+  if (activityGrid) {
+    if (allReports.length === 0) {
+      activityGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem 1rem; color: var(--color-slate-400); font-size: 0.875rem;">
+          No incident tickets logged yet.
         </div>
       `;
-    }).join('');
+    } else {
+      const recent = allReports.slice(0, 4);
+      activityGrid.innerHTML = recent.map((ticket) => {
+        let statusClass = 'activity-card__status--pending';
+        if (ticket.status === 'In Progress' || ticket.status === 'Under Review') {
+          statusClass = 'activity-card__status--progress';
+        } else if (ticket.status === 'Resolved') {
+          statusClass = 'activity-card__status--resolved';
+        }
+
+        return `
+          <div class="activity-card">
+            <div class="activity-card__head">
+              <span class="activity-card__id">${ticket.id}</span>
+              <span class="activity-card__status ${statusClass}">${ticket.status}</span>
+            </div>
+            <span class="activity-card__location">${ticket.campus || 'Arlegui Campus'}</span>
+            <div class="activity-card__foot">
+              <span class="activity-card__category">${ticket.category || 'General'}</span>
+              <span class="activity-card__time">${ticket.date ? ticket.date.split('•')[0].trim() : 'Recent'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
   }
 
 })();

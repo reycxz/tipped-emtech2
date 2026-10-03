@@ -5878,6 +5878,76 @@ input, select { font-family: inherit; outline: none; }
   color: var(--color-gold);
 }
 
+/* ── Staff Notes Activity History Feed ── */
+.admin-activity-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid #334155;
+  border-left: 3px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.15s ease;
+}
+
+[data-theme="light"] .admin-activity-card {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+  border-left: 3px solid #D97706;
+}
+
+.admin-activity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+  gap: 0.5rem;
+}
+
+.admin-activity-author {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+[data-theme="light"] .admin-activity-author {
+  color: #D97706;
+}
+
+.admin-activity-date {
+  font-size: 0.65rem;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+[data-theme="light"] .admin-activity-date {
+  color: #64748B;
+}
+
+.admin-activity-text {
+  font-size: 0.74rem;
+  color: #F1F5F9;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+[data-theme="light"] .admin-activity-text {
+  color: #1E293B;
+}
+
+.admin-activity-empty {
+  font-size: 0.72rem;
+  color: #94A3B8;
+  font-style: italic;
+  padding: 0.35rem 0;
+}
+
+[data-theme="light"] .admin-activity-empty {
+  color: #64748B;
+}
+
 
 
 

@@ -123,114 +123,8 @@
     `)}`
   };
 
-  // ── Baseline Mock Reports Specification ──
-  const baselineReports = [
-    {
-      id: 'ARL-FAC-2026-0877',
-      status: 'In Progress',
-      date: 'Oct 1, 2026 • 09:14 AM',
-      campus: 'Arlegui Main Building — #A-302 (CAD Lab 302)',
-      rawCampus: 'Arlegui Campus',
-      building_code: 'A',
-      building_name: 'Arlegui Main Building',
-      floor_level: '3rd Floor',
-      room_code: 'A-302',
-      specific_area: 'CAD Lab 302',
-      room: '#A-302 (CAD Lab 302)',
-      category: 'HVAC & Cooling',
-      description: 'Inverter split-type AC unit leaking water directly onto student drafting desks. Unit producing loud rattling noise.',
-      photos: [sampleEvidence.acLeak, sampleEvidence.pipeLeak],
-      adminRemark: {
-        text: 'Technician dispatched to Arlegui CAD Lab 302. Replacement drain pipe installed and unit tested.',
-        action: 'Technician Dispatched',
-        admin: 'Facilities Admin (Arlegui)'
-      }
-    },
-    {
-      id: 'CSL-ELE-2026-0142',
-      status: 'Resolved',
-      date: 'Sep 28, 2026 • 02:45 PM',
-      campus: "Founder's Building — #F-405 (4th Floor Hallway)",
-      rawCampus: 'Casal Campus',
-      building_code: 'F',
-      building_name: "Founder's Building",
-      floor_level: '4th Floor',
-      room_code: 'F-405',
-      specific_area: '4th Floor Hallway (Near Room 405)',
-      room: '#F-405 (4th Floor Hallway)',
-      category: 'Electrical & Power',
-      description: 'Flickering fluorescent ballast causing buzzing sound near Room 405. Light completely died during afternoon classes.',
-      photos: [sampleEvidence.ballast],
-      adminRemark: {
-        text: 'Ballast replaced with new energy-efficient LED tube. Verified working order.',
-        action: 'Repairs Completed',
-        admin: 'Maintenance Lead (Casal)'
-      }
-    },
-    {
-      id: 'ARL-PLM-2026-0089',
-      status: 'Pending',
-      date: 'Oct 2, 2026 • 11:20 AM',
-      campus: 'Arlegui Main Building — #A-201 (2nd Floor Restroom)',
-      rawCampus: 'Arlegui Campus',
-      building_code: 'A',
-      building_name: 'Arlegui Main Building',
-      floor_level: '2nd Floor',
-      room_code: 'A-201',
-      specific_area: '2nd Floor Restroom',
-      room: '#A-201 (2nd Floor Restroom)',
-      category: 'Water & Sanitation',
-      description: 'Second cubicle flush valve stuck open, running water continuously and overflowing floor drain.',
-      photos: [sampleEvidence.plumbingValve],
-      adminRemark: {
-        text: 'Work order dispatched. Facilities plumbing team assigned for immediate inspection.',
-        action: 'Work Order Assigned',
-        admin: 'Facilities Helpdesk'
-      }
-    },
-    {
-      id: 'CSL-DIT-2026-0688',
-      status: 'Under Review',
-      date: 'Sep 29, 2026 • 10:05 AM',
-      campus: 'Building 2 — #C-102 (IT Computer Lab 102)',
-      rawCampus: 'Casal Campus',
-      building_code: 'C',
-      building_name: 'Building 2',
-      floor_level: '1st Floor',
-      room_code: 'C-102',
-      specific_area: 'IT Computer Lab 102',
-      room: '#C-102 (IT Computer Lab 102)',
-      category: 'Digital & IT',
-      description: 'Ceiling-mounted network switch rack dropping packets intermittently for 12 workstations.',
-      photos: [sampleEvidence.switchRack],
-      adminRemark: {
-        text: 'Network diagnostics scheduled with campus IT administrator during lunch break.',
-        action: 'Diagnostics Scheduled',
-        admin: 'IT Systems Admin'
-      }
-    },
-    {
-      id: 'ARL-FAC-2026-0512',
-      status: 'Dismissed',
-      date: 'Sep 24, 2026 • 04:30 PM',
-      campus: 'Arlegui Main Building — #A-101 (Main Lobby)',
-      rawCampus: 'Arlegui Campus',
-      building_code: 'A',
-      building_name: 'Arlegui Main Building',
-      floor_level: '1st Floor',
-      room_code: 'A-101',
-      specific_area: 'Main Lobby',
-      room: '#A-101 (Main Lobby)',
-      category: 'Furniture & Fixtures',
-      description: 'Study table moved to corner blocking entrance hallway.',
-      photos: [],
-      adminRemark: {
-        text: 'Table was repositioned for ongoing student council exhibit; authorized by Student Affairs.',
-        action: 'Notice Filed',
-        admin: 'Security Office'
-      }
-    }
-  ];
+  // ── Baseline Mock Reports (Cleared for manual testing) ──
+  const baselineReports = [];
 
   // ── Retrieve Merged Reports ──
   function getAllReports() {
@@ -241,8 +135,7 @@
       console.warn('Storage parsing error', e);
     }
 
-    const storedIds = new Set(stored.map((r) => r.id));
-    const merged = [...stored, ...baselineReports.filter((b) => !storedIds.has(b.id))];
+    const merged = [...stored];
 
     // Ensure any report has proper defaults
     return merged.map((item) => {
