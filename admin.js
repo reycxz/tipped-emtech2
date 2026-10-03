@@ -379,8 +379,9 @@
   let currentDrawerTicketId = null;
 
   // ── DOM Elements ──
-  const tableBody   = $('#admin-table-body');
-  const countBadge  = $('#admin-table-count');
+  const tableBody      = $('#admin-table-body');
+  const countBadge     = $('#admin-table-count');
+  const tableTitleText = $('#admin-table-title-text');
 
   // Controls (Dropdowns & Search)
   const statusSelect   = $('#admin-status-filter');
@@ -673,14 +674,65 @@
     }
   }
 
+  function formatShortLocation(ticket) {
+    let room = '';
+    if (ticket.room_code) {
+      room = ticket.room_code.startsWith('#') ? ticket.room_code : `#${ticket.room_code}`;
+    } else if (ticket.room) {
+      const m = ticket.room.match(/#[A-Za-z0-9-]+/);
+      room = m ? m[0] : ticket.room.split('(')[0].trim();
+      if (!room.startsWith('#')) room = `#${room}`;
+    } else if (ticket.campus) {
+      const m = ticket.campus.match(/#[A-Za-z0-9-]+/);
+      if (m) room = m[0];
+    }
+
+    if (!room) {
+      room = '#Room';
+    }
+
+    // Campus / Building short name
+    let campusShort = 'Arlegui';
+    const raw = (ticket.rawCampus || ticket.campus || '').toLowerCase();
+    if (raw.includes('casal')) {
+      campusShort = 'Casal';
+    } else if (raw.includes('arlegui')) {
+      campusShort = 'Arlegui';
+    } else if (ticket.building_name) {
+      campusShort = ticket.building_name.replace('Building', '').replace('Main', '').trim() || 'Campus';
+    }
+
+    return `${room} • ${campusShort}`;
+  }
+
   // ═══════════════════════════════════════════════
   //  TABLE RENDERING (STRICTLY 4 FOCUSED COLUMNS)
   // ═══════════════════════════════════════════════
   function renderTable() {
     const filtered = getFilteredTickets();
 
+    // 1. Dynamic Table Section Header
+    if (tableTitleText) {
+      if (currentStatus === 'all') {
+        tableTitleText.textContent = 'Incident Queue';
+      } else if (currentStatus === 'Pending' || currentStatus === 'In Progress' || currentStatus === 'Under Review') {
+        tableTitleText.textContent = 'Active Incidents';
+      } else if (currentStatus === 'Resolved') {
+        tableTitleText.textContent = 'Resolved History';
+      } else if (currentStatus === 'Dismissed') {
+        tableTitleText.textContent = 'Dismissed Tickets';
+      } else {
+        tableTitleText.textContent = 'Incident Queue';
+      }
+    }
+
+    // 2. Dynamic Count Badge
     if (countBadge) {
-      countBadge.textContent = `${filtered.length} of ${allTickets.length} tickets`;
+      if (filtered.length === allTickets.length) {
+        countBadge.textContent = `${allTickets.length} total tickets`;
+      } else {
+        countBadge.textContent = `${filtered.length} of ${allTickets.length} tickets`;
+      }
     }
 
     if (filtered.length === 0) {
@@ -696,6 +748,7 @@
     }
 
     tableBody.innerHTML = filtered.map((ticket) => {
+      const shortLoc = formatShortLocation(ticket);
       return `
         <tr data-ticket-id="${ticket.id}" class="admin-table-row">
           <!-- Column 1: Ticket & Date -->
@@ -707,11 +760,11 @@
             </div>
           </td>
 
-          <!-- Column 2: Location & Category -->
+          <!-- Column 2: Location & Category (Streamlined) -->
           <td>
             <div class="admin-location-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span class="admin-location-title">${ticket.campus || 'Arlegui Campus'}</span>
+              <span class="admin-location-title">${shortLoc}</span>
             </div>
             <span class="admin-category-badge">
               ${getCategoryIcon(ticket.category)}
