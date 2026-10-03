@@ -57,50 +57,43 @@
 
       <!-- Bento Tile 1 — Filter & Search Control Bar (col-span-12) -->
       <section class="bento-tile--tracker-controls" aria-label="Ticket Filter Controls">
-        <!-- Status Filter Tabs (Segmented Pill Bar) -->
-        <div class="status-tabs-container" role="tablist" aria-label="Filter tickets by status">
-          <button type="button" class="status-tab-btn status-tab-btn--active" data-status="All" role="tab" aria-selected="true">
-            <span class="status-indicator-dot status-dot--all"></span>
-            <span>All Reports</span>
-            <span class="status-tab__count">5</span>
-          </button>
-          <button type="button" class="status-tab-btn" data-status="Pending" role="tab" aria-selected="false">
-            <span class="status-indicator-dot status-dot--pending"></span>
-            <span>Pending</span>
-            <span class="status-tab__count">1</span>
-          </button>
-          <button type="button" class="status-tab-btn" data-status="Under Review" role="tab" aria-selected="false">
-            <span class="status-indicator-dot status-dot--review"></span>
-            <span>Under Review</span>
-            <span class="status-tab__count">1</span>
-          </button>
-          <button type="button" class="status-tab-btn" data-status="In Progress" role="tab" aria-selected="false">
-            <span class="status-indicator-dot status-dot--progress"></span>
-            <span>In Progress</span>
-            <span class="status-tab__count">1</span>
-          </button>
-          <button type="button" class="status-tab-btn" data-status="Resolved" role="tab" aria-selected="false">
-            <span class="status-indicator-dot status-dot--resolved"></span>
-            <span>Resolved</span>
-            <span class="status-tab__count">1</span>
-          </button>
-          <button type="button" class="status-tab-btn" data-status="Dismissed" role="tab" aria-selected="false">
-            <span class="status-indicator-dot status-dot--dismissed"></span>
-            <span>Dismissed</span>
-            <span class="status-tab__count">1</span>
-          </button>
-        </div>
+        <div class="tracker-toolbar">
+          <div class="tracker-toolbar__filters">
+            <!-- Dropdown 1: Status -->
+            <div class="tracker-select-wrap">
+              <label for="filter-status" class="tracker-select-label">Status</label>
+              <div class="tracker-select-custom">
+                <select id="filter-status" class="tracker-select" aria-label="Filter by status">
+                  <option value="All">All Reports</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Under Review">Under Review</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Resolved">Resolved</option>
+                  <option value="Dismissed">Dismissed</option>
+                </select>
+                <svg viewBox="0 0 20 20" fill="currentColor" class="tracker-select-chevron">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </div>
 
-        <!-- Sub-row: Campus Quick-Toggle + Search Field -->
-        <div class="tracker-subcontrols">
-          <!-- Campus Sub-Pill Quick-Toggle -->
-          <div class="campus-subtabs" role="group" aria-label="Filter tickets by building">
-            <button type="button" class="campus-subtab-btn campus-subtab-btn--active" data-campus="All">All Buildings</button>
-            <button type="button" class="campus-subtab-btn" data-campus="Arlegui Campus">Arlegui Campus</button>
-            <button type="button" class="campus-subtab-btn" data-campus="Casal Campus">Casal Campus</button>
+            <!-- Dropdown 2: Building -->
+            <div class="tracker-select-wrap">
+              <label for="filter-building" class="tracker-select-label">Building</label>
+              <div class="tracker-select-custom">
+                <select id="filter-building" class="tracker-select" aria-label="Filter by building">
+                  <option value="All">All Buildings</option>
+                  <option value="Arlegui Campus">Arlegui Campus</option>
+                  <option value="Casal Campus">Casal Campus</option>
+                </select>
+                <svg viewBox="0 0 20 20" fill="currentColor" class="tracker-select-chevron">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+            </div>
           </div>
 
-          <!-- Inline Search Field -->
+          <!-- Inline Search Field (Right Aligned) -->
           <div class="tracker-search-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="tracker-search-icon">
               <circle cx="11" cy="11" r="8"></circle>
@@ -110,7 +103,7 @@
               type="text"
               id="tracker-search-input"
               class="tracker-search-input"
-              placeholder="Search by Ticket ID (e.g. #TIP) or Area..."
+              placeholder="Search by Ticket ID or area..."
               aria-label="Search reports"
             />
           </div>
@@ -124,6 +117,70 @@
 
     </div>
   </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       TICKET DETAILS MODAL / DRAWER
+  ═══════════════════════════════════════════════════ -->
+  <div id="details-modal" class="details-modal details-modal--hidden" role="dialog" aria-modal="true" aria-labelledby="details-modal-id">
+    <div id="details-backdrop" class="details-backdrop"></div>
+    <div class="details-card">
+      <div class="details-card__header">
+        <div class="details-card__title-group">
+          <span class="details-card__id" id="details-modal-id">#TIP-2026-0000</span>
+          <span class="ticket-status-pill" id="details-modal-status">PENDING</span>
+        </div>
+        <button type="button" id="details-close-btn" class="details-close-btn" aria-label="Close details">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="details-card__body">
+        <div class="details-meta-grid">
+          <div class="details-meta-item">
+            <span class="details-meta-label">Submitted On</span>
+            <span class="details-meta-val" id="details-modal-date">-</span>
+          </div>
+          <div class="details-meta-item">
+            <span class="details-meta-label">Campus Location</span>
+            <span class="details-meta-val" id="details-modal-campus">-</span>
+          </div>
+          <div class="details-meta-item">
+            <span class="details-meta-label">Category</span>
+            <span class="details-meta-val" id="details-modal-category">-</span>
+          </div>
+        </div>
+
+        <div class="details-section">
+          <h4 class="details-section__title">Problem Description</h4>
+          <p class="details-section__text" id="details-modal-desc">-</p>
+        </div>
+
+        <div class="details-section" id="details-evidence-section">
+          <h4 class="details-section__title">Photo Evidence</h4>
+          <div class="ticket-card__evidence" id="details-modal-evidence"></div>
+        </div>
+
+        <div class="details-section" id="details-remarks-section">
+          <div class="ticket-remarks-box" id="details-modal-remarks">
+            <div class="ticket-remarks__header">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+              </svg>
+              <span>OFFICIAL FACILITIES RESPONSE</span>
+            </div>
+            <p class="ticket-remarks__text" id="details-modal-remark-text">"-"</p>
+            <div class="ticket-remarks__footer">
+              <span class="ticket-remarks__action-badge" id="details-modal-remark-action">Updated</span>
+              <span id="details-modal-remark-admin">• Updated by Facilities Office</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════
        INSTANT LIGHTBOX MODAL (PHOTO EVIDENCE VIEWER)

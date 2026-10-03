@@ -242,13 +242,30 @@
   }
 
   // ── Elements ──
-  const themeToggle   = $('#theme-toggle');
-  const logoutBtn     = $('#logout-btn');
-  const userDisplay   = $('#user-display-name');
-  const statusTabs    = $$('.status-tab-btn');
-  const campusTabs    = $$('.campus-subtab-btn');
-  const searchInput   = $('#tracker-search-input');
-  const cardsGrid     = $('#tracker-cards-grid');
+  const themeToggle    = $('#theme-toggle');
+  const logoutBtn      = $('#logout-btn');
+  const userDisplay    = $('#user-display-name');
+  const filterStatus   = $('#filter-status');
+  const filterBuilding = $('#filter-building');
+  const searchInput    = $('#tracker-search-input');
+  const cardsGrid      = $('#tracker-cards-grid');
+
+  // Details Modal Elements
+  const detailsModal        = $('#details-modal');
+  const detailsBackdrop     = $('#details-backdrop');
+  const detailsCloseBtn     = $('#details-close-btn');
+  const detailsModalId      = $('#details-modal-id');
+  const detailsModalStatus  = $('#details-modal-status');
+  const detailsModalDate    = $('#details-modal-date');
+  const detailsModalCampus  = $('#details-modal-campus');
+  const detailsModalCategory= $('#details-modal-category');
+  const detailsModalDesc    = $('#details-modal-desc');
+  const detailsEvidenceSec  = $('#details-evidence-section');
+  const detailsEvidenceGrid = $('#details-modal-evidence');
+  const detailsRemarksSec   = $('#details-remarks-section');
+  const detailsRemarkText   = $('#details-modal-remark-text');
+  const detailsRemarkAction = $('#details-modal-remark-action');
+  const detailsRemarkAdmin  = $('#details-modal-remark-admin');
 
   // Lightbox Elements
   const lightboxModal   = $('#lightbox-modal');
@@ -310,20 +327,78 @@
   // ═══════════════════════════════════════════════
   //  FILTER STATE
   // ═══════════════════════════════════════════════
-  let activeStatusFilter = 'All'; // 'All', 'Pending', 'Under Review', 'In Progress', 'Resolved', 'Dismissed'
-  let activeCampusFilter = 'All'; // 'All', 'Arlegui Campus', 'Casal Campus'
+  let activeStatusFilter = filterStatus ? filterStatus.value : 'All';
+  let activeCampusFilter = filterBuilding ? filterBuilding.value : 'All';
   let searchQuery = '';
 
-  function getStatusClass(status) {
-    switch (status) {
-      case 'Pending':      return 'status-pill--pending';
-      case 'Under Review': return 'status-pill--review';
-      case 'In Progress':  return 'status-pill--progress';
-      case 'Resolved':     return 'status-pill--resolved';
-      case 'Dismissed':    return 'status-pill--dismissed';
-      default:             return 'status-pill--pending';
+  // ═══════════════════════════════════════════════
+  //  DETAILS MODAL / DRAWER CONTROLLER
+  // ═══════════════════════════════════════════════
+  function openDetailsModal(ticket) {
+    if (!detailsModal) return;
+
+    if (detailsModalId) detailsModalId.textContent = ticket.id;
+    if (detailsModalStatus) detailsModalStatus.textContent = ticket.status;
+    if (detailsModalDate) detailsModalDate.textContent = ticket.date;
+    if (detailsModalCampus) detailsModalCampus.textContent = ticket.campus;
+    if (detailsModalCategory) detailsModalCategory.textContent = ticket.category;
+    if (detailsModalDesc) detailsModalDesc.textContent = ticket.description || 'No description provided.';
+
+    // Evidence Photos
+    if (detailsEvidenceSec && detailsEvidenceGrid) {
+      if (ticket.photos && ticket.photos.length > 0) {
+        detailsEvidenceSec.style.display = 'block';
+        detailsEvidenceGrid.innerHTML = ticket.photos.map((pUrl, idx) => `
+          <div class="ticket-thumbnail-item" data-photo="${encodeURIComponent(pUrl)}" data-caption="Ticket ${ticket.id} • Photo ${idx + 1}" title="Click to enlarge photo">
+            <img src="${pUrl}" alt="Incident photo ${idx + 1}" class="ticket-thumbnail-img" />
+            <div class="ticket-thumbnail-overlay">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+              </svg>
+            </div>
+          </div>
+        `).join('');
+
+        detailsEvidenceGrid.querySelectorAll('.ticket-thumbnail-item').forEach((thumb) => {
+          thumb.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const pUrl = decodeURIComponent(thumb.dataset.photo);
+            const pCap = thumb.dataset.caption;
+            openLightbox(pUrl, pCap);
+          });
+        });
+      } else {
+        detailsEvidenceSec.style.display = 'none';
+      }
     }
+
+    // Facilities Remarks
+    if (detailsRemarksSec && detailsRemarkText) {
+      if (ticket.adminRemark && ticket.adminRemark.text) {
+        detailsRemarksSec.style.display = 'block';
+        detailsRemarkText.textContent = `"${ticket.adminRemark.text}"`;
+        if (detailsRemarkAction) detailsRemarkAction.textContent = ticket.adminRemark.action || 'Updated';
+        if (detailsRemarkAdmin) detailsRemarkAdmin.textContent = `• Updated by ${ticket.adminRemark.admin || 'Facilities Office'}`;
+      } else {
+        detailsRemarksSec.style.display = 'none';
+      }
+    }
+
+    detailsModal.classList.remove('details-modal--hidden');
+    document.body.style.overflow = 'hidden';
   }
+
+  function closeDetailsModal() {
+    if (!detailsModal) return;
+    detailsModal.classList.add('details-modal--hidden');
+    document.body.style.overflow = '';
+  }
+
+  if (detailsCloseBtn) detailsCloseBtn.addEventListener('click', closeDetailsModal);
+  if (detailsBackdrop) detailsBackdrop.addEventListener('click', closeDetailsModal);
 
   // ═══════════════════════════════════════════════
   //  LIGHTBOX CONTROLLER
@@ -342,19 +417,27 @@
     if (!lightboxModal) return;
     lightboxModal.classList.add('lightbox-modal--hidden');
     lightboxImg.src = '';
-    document.body.style.overflow = '';
+    // Restore overflow only if details modal is not still open
+    if (!detailsModal || detailsModal.classList.contains('details-modal--hidden')) {
+      document.body.style.overflow = '';
+    }
   }
 
   if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
   if (lightboxBackdrop) lightboxBackdrop.addEventListener('click', closeLightbox);
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightboxModal && !lightboxModal.classList.contains('lightbox-modal--hidden')) {
-      closeLightbox();
+    if (e.key === 'Escape') {
+      if (lightboxModal && !lightboxModal.classList.contains('lightbox-modal--hidden')) {
+        closeLightbox();
+      } else if (detailsModal && !detailsModal.classList.contains('details-modal--hidden')) {
+        closeDetailsModal();
+      }
     }
   });
 
   // ═══════════════════════════════════════════════
-  //  RENDER TICKET CARDS
+  //  RENDER TICKET CARDS & UPDATE DROPDOWN COUNTS
   // ═══════════════════════════════════════════════
   function updateCounts(reports) {
     const counts = {
@@ -372,13 +455,18 @@
       }
     });
 
-    statusTabs.forEach((btn) => {
-      const st = btn.dataset.status;
-      const countEl = btn.querySelector('.status-tab__count');
-      if (countEl && counts[st] !== undefined) {
-        countEl.textContent = counts[st];
+    if (filterStatus) {
+      const options = filterStatus.options;
+      for (let i = 0; i < options.length; i++) {
+        const val = options[i].value;
+        const count = counts[val] !== undefined ? counts[val] : 0;
+        if (val === 'All') {
+          options[i].textContent = `All Reports (${count})`;
+        } else {
+          options[i].textContent = `${val} (${count})`;
+        }
       }
-    });
+    }
   }
 
   function renderFeed() {
@@ -440,129 +528,74 @@
       return;
     }
 
-    // Render Cards
+    // Render Compact Cards (Strict 2-Color, 3 Rows: Top, Middle, Bottom)
     filtered.forEach((ticket) => {
       const card = document.createElement('article');
       card.className = 'ticket-card';
 
-      // Status pill class
-      const statusClass = getStatusClass(ticket.status);
-
-      // Thumbnails HTML
-      let thumbnailsHtml = '';
-      if (ticket.photos && ticket.photos.length > 0) {
-        thumbnailsHtml = `
-          <div class="ticket-card__evidence" aria-label="Photo evidence gallery">
-            ${ticket.photos.map((photoUrl, idx) => `
-              <div class="ticket-thumbnail-item" data-photo="${encodeURIComponent(photoUrl)}" data-caption="Ticket ${ticket.id} • Photo ${idx + 1}" title="Click to enlarge photo">
-                <img src="${photoUrl}" alt="Incident photo ${idx + 1}" class="ticket-thumbnail-img" />
-                <div class="ticket-thumbnail-overlay">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    <line x1="11" y1="8" x2="11" y2="14"></line>
-                    <line x1="8" y1="11" x2="14" y2="11"></line>
-                  </svg>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      }
-
-      // Remarks HTML
-      let remarksHtml = '';
-      if (ticket.adminRemark && ticket.adminRemark.text) {
-        remarksHtml = `
-          <div class="ticket-remarks-box">
-            <div class="ticket-remarks__header">
-              <svg viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-              </svg>
-              <span>OFFICIAL FACILITIES RESPONSE</span>
-            </div>
-            <p class="ticket-remarks__text">"${ticket.adminRemark.text}"</p>
-            <div class="ticket-remarks__footer">
-              <span class="ticket-remarks__action-badge">${ticket.adminRemark.action || 'Updated'}</span>
-              <span>• Updated by ${ticket.adminRemark.admin || 'Facilities Office'}</span>
-            </div>
-          </div>
-        `;
-      }
-
       card.innerHTML = `
-        <div>
-          <!-- Card Header Row -->
-          <div class="ticket-card__header">
-            <div class="ticket-card__id-group">
-              <span class="ticket-card__id">${ticket.id}</span>
-              <span class="ticket-status-pill ${statusClass}">
-                <span class="status-indicator-dot"></span>
-                <span>${ticket.status}</span>
-              </span>
-            </div>
-            <span class="ticket-card__timestamp">${ticket.date}</span>
+        <!-- Top Row: Ticket ID, Status Badge, Submission Date -->
+        <div class="ticket-card__header">
+          <div class="ticket-card__id-group">
+            <span class="ticket-card__id">${ticket.id}</span>
+            <span class="ticket-status-pill">${ticket.status}</span>
           </div>
-
-          <!-- Location & Category Tags -->
-          <div class="ticket-card__tags">
-            <span class="ticket-tag ticket-tag--location">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="display:inline-block; vertical-align:middle; margin-right:4px;">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-              ${ticket.campus}
-            </span>
-            <span class="ticket-tag ticket-tag--category">
-              ${ticket.category}
-            </span>
-          </div>
-
-          <!-- Problem Summary -->
-          <p class="ticket-card__desc">${ticket.description}</p>
-
-          <!-- Evidence Thumbnails -->
-          ${thumbnailsHtml}
+          <span class="ticket-card__timestamp">${ticket.date}</span>
         </div>
 
-        <!-- Embedded Admin Remarks Box -->
-        ${remarksHtml}
+        <!-- Middle Row: Location Tag & Category Tag -->
+        <div class="ticket-card__tags">
+          <span class="ticket-tag ticket-tag--location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="display:inline-block; vertical-align:middle; margin-right:3px;">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            ${ticket.campus}
+          </span>
+          <span class="ticket-tag ticket-tag--category">
+            ${ticket.category}
+          </span>
+        </div>
+
+        <!-- Bottom Row: Clean Outline Button "View Details" -->
+        <div class="ticket-card__footer">
+          <button type="button" class="btn--view-details" data-id="${ticket.id}" aria-label="View details for ${ticket.id}">
+            <span>View Details</span>
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
       `;
 
-      // Attach Lightbox click handlers to thumbnail items
-      card.querySelectorAll('.ticket-thumbnail-item').forEach((thumb) => {
-        thumb.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const pUrl = decodeURIComponent(thumb.dataset.photo);
-          const pCap = thumb.dataset.caption;
-          openLightbox(pUrl, pCap);
+      // Attach Click to "View Details"
+      const viewBtn = card.querySelector('.btn--view-details');
+      if (viewBtn) {
+        viewBtn.addEventListener('click', () => {
+          openDetailsModal(ticket);
         });
-      });
+      }
 
       cardsGrid.appendChild(card);
     });
   }
 
   // ═══════════════════════════════════════════════
-  //  EVENT LISTENERS: FILTERS & SEARCH
+  //  EVENT LISTENERS: DROPDOWNS & SEARCH
   // ═══════════════════════════════════════════════
-  statusTabs.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      statusTabs.forEach((b) => b.classList.remove('status-tab-btn--active'));
-      btn.classList.add('status-tab-btn--active');
-      activeStatusFilter = btn.dataset.status;
+  if (filterStatus) {
+    filterStatus.addEventListener('change', (e) => {
+      activeStatusFilter = e.target.value;
       renderFeed();
     });
-  });
+  }
 
-  campusTabs.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      campusTabs.forEach((b) => b.classList.remove('campus-subtab-btn--active'));
-      btn.classList.add('campus-subtab-btn--active');
-      activeCampusFilter = btn.dataset.campus;
+  if (filterBuilding) {
+    filterBuilding.addEventListener('change', (e) => {
+      activeCampusFilter = e.target.value;
       renderFeed();
     });
-  });
+  }
 
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
