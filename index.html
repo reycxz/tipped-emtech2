@@ -70,20 +70,20 @@
         <!-- ═══════════ SIGN IN FORM ═══════════ -->
         <form id="signin-form" class="auth-form" novalidate autocomplete="on">
           <div class="form-group" id="signin-email-group">
-            <label for="signin-email" class="form-label">INSTITUTIONAL EMAIL</label>
+            <label for="signin-email" class="form-label" id="signin-email-label">USERNAME OR EMAIL</label>
             <div class="input-wrapper">
-              <input id="signin-email" class="form-input" type="email" autocomplete="email" spellcheck="false" required />
+              <input id="signin-email" class="form-input" type="text" autocomplete="username" spellcheck="false" placeholder="Username or Email" required />
               <span id="signin-email-icon" class="input-icon input-icon--hidden" aria-hidden="true">
                 <svg class="icon-check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
               </span>
             </div>
-            <p id="signin-email-error" class="form-error form-error--hidden">Must be a valid @tip.edu.ph email address</p>
+            <p id="signin-email-error" class="form-error form-error--hidden">Please enter a valid username or institutional email</p>
           </div>
 
           <div class="form-group" id="signin-password-group">
             <label for="signin-password" class="form-label">PASSWORD</label>
             <div class="input-wrapper">
-              <input id="signin-password" class="form-input" type="password" autocomplete="current-password" required />
+              <input id="signin-password" class="form-input" type="password" autocomplete="current-password" placeholder="Enter password" required />
               <button type="button" id="signin-toggle-pw" class="input-icon input-icon--btn" aria-label="Toggle password visibility" tabindex="-1">
                 <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
                 <svg class="icon-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -120,14 +120,14 @@
           <div class="form-group" id="signup-name-group">
             <label for="signup-name" class="form-label">FULL NAME</label>
             <div class="input-wrapper">
-              <input id="signup-name" class="form-input" type="text" autocomplete="name" required />
+              <input id="signup-name" class="form-input" type="text" autocomplete="name" placeholder="e.g. Juan Dela Cruz" required />
             </div>
           </div>
 
           <div class="form-group" id="signup-email-group">
-            <label for="signup-email" class="form-label">INSTITUTIONAL EMAIL (@tip.edu.ph)</label>
+            <label for="signup-email" class="form-label">EMAIL</label>
             <div class="input-wrapper">
-              <input id="signup-email" class="form-input" type="email" autocomplete="email" spellcheck="false" required />
+              <input id="signup-email" class="form-input" type="email" autocomplete="email" spellcheck="false" placeholder="name@tip.edu.ph" required />
               <span id="signup-email-icon" class="input-icon input-icon--hidden" aria-hidden="true">
                 <svg class="icon-check" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
               </span>
@@ -136,22 +136,23 @@
           </div>
 
           <div class="form-group" id="signup-dept-group">
-            <label for="signup-dept" class="form-label">DEPARTMENT / PROGRAM</label>
+            <label for="signup-dept" class="form-label">PROGRAM</label>
             <div class="input-wrapper input-wrapper--select">
               <select id="signup-dept" class="form-input form-select" required>
-                <option value="" disabled selected>Select your department…</option>
+                <option value="" disabled selected>Select program...</option>
                 <option value="cea">College of Engineering &amp; Architecture</option>
                 <option value="it">Information Technology</option>
+                <option value="cba">College of Business Administration</option>
+                <option value="cased">College of Arts, Sciences &amp; Education</option>
                 <option value="faculty">Faculty</option>
-                <option value="staff">Staff</option>
               </select>
             </div>
           </div>
 
           <div class="form-group" id="signup-password-group">
-            <label for="signup-password" class="form-label">CREATE PASSWORD</label>
+            <label for="signup-password" class="form-label">PASSWORD</label>
             <div class="input-wrapper">
-              <input id="signup-password" class="form-input" type="password" autocomplete="new-password" minlength="8" required />
+              <input id="signup-password" class="form-input" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required />
               <button type="button" id="signup-toggle-pw" class="input-icon input-icon--btn" aria-label="Toggle password visibility" tabindex="-1">
                 <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
                 <svg class="icon-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -164,9 +165,9 @@
           </div>
 
           <div class="form-group" id="signup-confirm-password-group">
-            <label for="signup-confirm-password" class="form-label">RE-ENTER YOUR PASSWORD</label>
+            <label for="signup-confirm-password" class="form-label">CONFIRM PASSWORD</label>
             <div class="input-wrapper">
-              <input id="signup-confirm-password" class="form-input" type="password" autocomplete="new-password" minlength="8" required />
+              <input id="signup-confirm-password" class="form-input" type="password" autocomplete="new-password" placeholder="Re-enter password" minlength="8" required />
               <button type="button" id="signup-toggle-confirm-pw" class="input-icon input-icon--btn" aria-label="Toggle password visibility" tabindex="-1">
                 <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
                 <svg class="icon-eye-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -175,7 +176,7 @@
             <p id="signup-confirm-password-error" class="form-error form-error--hidden">Passwords do not match</p>
           </div>
 
-          <button id="signup-submit" type="submit" class="btn btn--primary">CREATE ACCOUNT</button>
+          <button id="signup-submit" type="submit" class="btn btn--primary">SIGN UP</button>
           <div class="divider"><span class="divider__text">OR CONTINUE WITH</span></div>
           <button id="google-sso-signup" type="button" class="btn btn--google">
             <svg class="btn__google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -187,6 +188,16 @@
             Sign in with Google
           </button>
         </form>
+
+        <!-- Staff IT Provisioning Helper Note (Visible when Staff/Admin role selected) -->
+        <div id="staff-provision-note" class="staff-provision-note hidden" aria-live="polite">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Staff accounts are provisioned by Campus IT. Contact your system admin for credentials.</span>
+        </div>
 
         <!-- Footer links -->
         <div class="auth-card__footer">

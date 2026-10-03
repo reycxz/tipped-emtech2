@@ -72,18 +72,26 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
 
 /**
  * @route   POST /api/auth/login
- * @desc    Authenticate user & return JWT token
+ * @desc    Authenticate user & return JWT token (supports email or username)
  * @access  Public
  */
 exports.loginUser = asyncHandler(async (req, res, next) => {
-  const { tipEmail, password } = req.body;
+  const { tipEmail, username, loginId, password } = req.body;
+  const identifier = (loginId || tipEmail || username || '').trim();
 
-  if (!tipEmail || !password) {
-    return next(new AppError('Please provide both institutional email and password.', 400));
+  if (!identifier || !password) {
+    return next(new AppError('Please provide both username or institutional email and password.', 400));
   }
 
-  // Find user and explicitly select passwordHash
-  const user = await User.findOne({ tipEmail: tipEmail.toLowerCase() }).select('+passwordHash');
+  // Find user by either institutional email or username/name
+  const user = await User.findOne({
+    $or: [
+      { tipEmail: identifier.toLowerCase() },
+      { username: identifier.toLowerCase() },
+      { fullName: new RegExp(`^${identifier}$`, 'i') }
+    ]
+  }).select('+passwordHash');
+
   if (!user) {
     return next(new AppError('Invalid credentials.', 401));
   }
@@ -109,9 +117,11 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
       id: user._id,
       fullName: user.fullName,
       tipEmail: user.tipEmail,
+      username: user.username,
       role: user.role,
       department: user.department
     }
   });
 });
+
 

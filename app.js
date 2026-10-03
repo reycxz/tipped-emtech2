@@ -72,6 +72,9 @@
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 
+  const modeToggle = $('#mode-toggle');
+  const staffProvisionNote = $('#staff-provision-note');
+
   // ═══════════════════════════════════════════════
   //  ROLE TOGGLE
   // ═══════════════════════════════════════════════
@@ -82,6 +85,38 @@
       btn.classList.toggle('role-toggle__tab--active', isActive);
       btn.setAttribute('aria-selected', isActive);
     });
+
+    const emailLabel = $('#signin-email-label');
+
+    if (role === 'admin') {
+      // Force Sign In mode only and completely hide the inner toggle bar
+      setMode('signin');
+      if (modeToggle) {
+        modeToggle.style.display = 'none';
+        modeToggle.classList.add('hidden');
+      }
+      if (staffProvisionNote) staffProvisionNote.classList.remove('hidden');
+      if (footerToggleLink) footerToggleLink.classList.add('hidden');
+      if (emailLabel) emailLabel.textContent = 'USERNAME OR EMAIL';
+      if (signinEmail) signinEmail.placeholder = 'Username or Email';
+      if (signinPassword) signinPassword.placeholder = 'Enter password';
+    } else {
+      // Restore sub-toggle bar for Student / Faculty
+      if (modeToggle) {
+        modeToggle.style.display = '';
+        modeToggle.classList.remove('hidden');
+      }
+      if (staffProvisionNote) staffProvisionNote.classList.add('hidden');
+      if (footerToggleLink) footerToggleLink.classList.remove('hidden');
+      if (emailLabel) emailLabel.textContent = 'EMAIL';
+      if (signinEmail) signinEmail.placeholder = 'name@tip.edu.ph';
+      if (signinPassword) signinPassword.placeholder = 'Enter password';
+    }
+
+    // Re-validate current input with active role rules
+    if (signinEmail && signinEmail.value.trim().length > 0) {
+      validateEmail(signinEmail, signinEmailIcon, signinEmailErr);
+    }
   }
 
   roleUserBtn.addEventListener('click', () => setRole('user'));
@@ -131,7 +166,7 @@
   }
 
   // ═══════════════════════════════════════════════
-  //  EMAIL VALIDATION
+  //  USERNAME & EMAIL VALIDATION
   // ═══════════════════════════════════════════════
   function validateEmail(input, icon, error) {
     const val = input.value.trim();
@@ -142,7 +177,23 @@
       error.classList.add('form-error--hidden');
       return;
     }
-    if (TIP_EMAIL_REGEX.test(val)) {
+
+    const isEmail = val.includes('@');
+    let isValid = false;
+
+    if (input === signinEmail) {
+      if (isEmail) {
+        isValid = TIP_EMAIL_REGEX.test(val);
+      } else {
+        // Allow valid username string (e.g. itdeptmnl, admin, facilities)
+        isValid = /^[a-zA-Z0-9._-]{3,30}$/.test(val);
+      }
+    } else {
+      // Registration strictly requires institutional email
+      isValid = TIP_EMAIL_REGEX.test(val);
+    }
+
+    if (isValid) {
       input.classList.add('form-input--valid');
       input.classList.remove('form-input--error');
       icon.classList.remove('input-icon--hidden');
@@ -252,8 +303,19 @@
   signinForm.addEventListener('submit', (e) => {
     e.preventDefault();
     validateEmail(signinEmail, signinEmailIcon, signinEmailErr);
-    if (!TIP_EMAIL_REGEX.test(signinEmail.value.trim())) { signinEmail.focus(); return; }
-    if (signinPassword.value.length === 0) { signinPassword.focus(); return; }
+
+    const inputVal = signinEmail.value.trim();
+    const isEmail = inputVal.includes('@');
+    const isValid = isEmail ? TIP_EMAIL_REGEX.test(inputVal) : (inputVal.length >= 3);
+
+    if (!isValid) {
+      signinEmail.focus();
+      return;
+    }
+    if (signinPassword.value.length === 0) {
+      signinPassword.focus();
+      return;
+    }
 
     const btn = $('#signin-submit');
     btn.textContent = 'SIGNING IN…';
@@ -264,12 +326,22 @@
       btn.textContent = 'SIGN IN';
       btn.disabled = false;
       btn.style.opacity = '';
-      
-      const emailVal = signinEmail.value.trim();
-      const extractedName = emailVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') || 'John Doe';
+
+      let extractedName = 'John Doe';
+      if (currentRole === 'admin') {
+        extractedName = isEmail 
+          ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
+          : (inputVal.charAt(0).toUpperCase() + inputVal.slice(1) + ' (Admin)');
+        if (!extractedName || extractedName.trim() === '(Admin)') extractedName = 'Facilities Admin';
+      } else {
+        extractedName = isEmail
+          ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
+          : 'John Doe';
+      }
+
       sessionStorage.setItem('tipped_user_name', extractedName);
       sessionStorage.setItem('tipped_user_role', currentRole.toUpperCase());
-      sessionStorage.setItem('tipped_user_email', emailVal);
+      sessionStorage.setItem('tipped_user_email', isEmail ? inputVal : `${inputVal}@tip.edu.ph`);
 
       if (currentRole === 'admin') {
         window.location.href = '/admin';

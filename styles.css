@@ -2,6 +2,11 @@
    TIPPED Portal – Bento Grid Design System
    ═══════════════════════════════════════════════════════════ */
 
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
 /* ── Design Tokens — Dark Theme (default) ── */
 :root,
 [data-theme="dark"] {
@@ -517,6 +522,34 @@ input, select { font-family: inherit; outline: none; }
   gap: .25rem 1.25rem;
   font-size: 0.7rem; color: var(--color-text-muted); text-align: center;
 }
+
+/* Staff Provision Helper Note */
+.staff-provision-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-md);
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  color: #93C5FD;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  margin-top: 0.95rem;
+  text-align: left;
+}
+[data-theme="light"] .staff-provision-note {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+  color: #1D4ED8;
+}
+.staff-provision-note svg {
+  flex-shrink: 0;
+  color: #3B82F6;
+  width: 14px;
+  height: 14px;
+}
+
 
 /* ═══════════════════════════════════════════════
    CELL 3 — INCIDENT LEADERBOARD
