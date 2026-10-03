@@ -53,7 +53,6 @@
       <!-- Compact Page Header -->
       <div class="report-header">
         <h1 class="report-header__title">Submit Incident Report</h1>
-        <p class="report-header__subtitle">Specify location, category, and details to dispatch campus maintenance.</p>
       </div>
 
       <!-- Bento Grid Form -->
@@ -106,16 +105,16 @@
           <div class="form-group form-group--compact">
             <label for="report-room" class="form-label form-label--compact">ROOM / SPECIFIC AREA</label>
             <div class="input-wrapper">
-              <input id="report-room" list="room-suggestions" class="form-input" type="text" placeholder="e.g. CAD Lab 302" autocomplete="off" required />
+              <input id="report-room" list="room-suggestions" class="form-input" type="text" autocomplete="off" required />
               <datalist id="room-suggestions">
-                <option value="CAD Lab 302"></option>
-                <option value="Study Hall 2"></option>
-                <option value="Main Library — 2nd Flr"></option>
-                <option value="Computer Lab 405"></option>
-                <option value="Chemistry Lab 201"></option>
-                <option value="Engineering Bldg Rm 104"></option>
-                <option value="Campus Cafeteria"></option>
-                <option value="Gymnasium Restroom"></option>
+                <option value="Option 1"></option>
+                <option value="Option 2"></option>
+                <option value="Option 3"></option>
+                <option value="Option 4"></option>
+                <option value="Option 5"></option>
+                <option value="Option 6"></option>
+                <option value="Option 7"></option>
+                <option value="Option 8"></option>
               </datalist>
             </div>
           </div>
@@ -124,7 +123,7 @@
           <div class="form-group form-group--compact">
             <label for="report-landmark" class="form-label form-label--compact">LANDMARK <span class="form-label__sub">(OPTIONAL)</span></label>
             <div class="input-wrapper">
-              <input id="report-landmark" class="form-input" type="text" placeholder="e.g. Near Staircase B or Elevator" />
+              <input id="report-landmark" class="form-input" type="text" />
             </div>
           </div>
         </div>
@@ -149,32 +148,28 @@
           <!-- Category Matrix -->
           <div class="category-matrix" id="category-matrix" role="radiogroup" aria-label="Incident Category">
             <button type="button" class="category-pill category-pill--active" data-category="HVAC & Cooling" role="radio" aria-checked="true">
-              <span class="category-pill__icon">❄️</span>
               <span class="category-pill__text">HVAC &amp; Cooling</span>
             </button>
             <button type="button" class="category-pill" data-category="Electrical & Power" role="radio" aria-checked="false">
-              <span class="category-pill__icon">⚡</span>
               <span class="category-pill__text">Electrical &amp; Power</span>
             </button>
             <button type="button" class="category-pill" data-category="Water & Sanitation" role="radio" aria-checked="false">
-              <span class="category-pill__icon">🚰</span>
               <span class="category-pill__text">Water &amp; Sanitation</span>
             </button>
             <button type="button" class="category-pill" data-category="Digital & IT" role="radio" aria-checked="false">
-              <span class="category-pill__icon">💻</span>
               <span class="category-pill__text">Digital &amp; IT</span>
             </button>
             <button type="button" class="category-pill" data-category="Furniture & Fixtures" role="radio" aria-checked="false">
-              <span class="category-pill__icon">🪑</span>
               <span class="category-pill__text">Furniture &amp; Fixtures</span>
             </button>
             <button type="button" class="category-pill" data-category="Life Safety & Hazards" role="radio" aria-checked="false">
-              <span class="category-pill__icon">⚠️</span>
               <span class="category-pill__text">Life Safety &amp; Hazards</span>
             </button>
             <button type="button" class="category-pill" data-category="Faculty / Academic" role="radio" aria-checked="false">
-              <span class="category-pill__icon">🎓</span>
               <span class="category-pill__text">Faculty / Academic</span>
+            </button>
+            <button type="button" class="category-pill" data-category="General Concern / Other" role="radio" aria-checked="false">
+              <span class="category-pill__text">General Concern / Other</span>
             </button>
           </div>
           <input type="hidden" id="report-category" name="category" value="HVAC & Cooling" />

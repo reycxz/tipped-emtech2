@@ -133,7 +133,6 @@
       rawCampus: 'Arlegui Campus',
       room: 'CAD Lab 302',
       category: 'HVAC & Cooling',
-      categoryIcon: '❄️',
       description: 'Inverter split-type AC unit leaking water directly onto student drafting desks. Unit producing loud rattling noise.',
       photos: [sampleEvidence.acLeak, sampleEvidence.pipeLeak],
       adminRemark: {
@@ -150,7 +149,6 @@
       rawCampus: 'Casal Campus',
       room: '4th Floor Hallway (Near Room 405)',
       category: 'Electrical & Power',
-      categoryIcon: '⚡',
       description: 'Flickering fluorescent ballast causing buzzing sound near Room 405. Light completely died during afternoon classes.',
       photos: [sampleEvidence.ballast],
       adminRemark: {
@@ -167,7 +165,6 @@
       rawCampus: 'Arlegui Campus',
       room: '2nd Floor Restroom',
       category: 'Water & Sanitation',
-      categoryIcon: '🚰',
       description: 'Second cubicle flush valve stuck open, running water continuously and overflowing floor drain.',
       photos: [sampleEvidence.plumbingValve],
       adminRemark: {
@@ -184,7 +181,6 @@
       rawCampus: 'Casal Campus',
       room: 'IT Computer Lab 102',
       category: 'Digital & IT',
-      categoryIcon: '💻',
       description: 'Ceiling-mounted network switch rack dropping packets intermittently for 12 workstations.',
       photos: [sampleEvidence.switchRack],
       adminRemark: {
@@ -201,7 +197,6 @@
       rawCampus: 'Arlegui Campus',
       room: 'Main Lobby',
       category: 'Furniture & Fixtures',
-      categoryIcon: '🪑',
       description: 'Study table moved to corner blocking entrance hallway.',
       photos: [],
       adminRemark: {
@@ -211,17 +206,6 @@
       }
     }
   ];
-
-  // ── Category Icon Map ──
-  const categoryIcons = {
-    'HVAC & Cooling': '❄️',
-    'Electrical & Power': '⚡',
-    'Water & Sanitation': '🚰',
-    'Digital & IT': '💻',
-    'Furniture & Fixtures': '🪑',
-    'Life Safety & Hazards': '⚠️',
-    'Faculty / Academic': '🎓'
-  };
 
   // ── Retrieve Merged Reports ──
   function getAllReports() {
@@ -237,8 +221,7 @@
 
     // Ensure any report has proper defaults
     return merged.map((item) => {
-      const cat = item.category || 'HVAC & Cooling';
-      const icon = item.categoryIcon || categoryIcons[cat] || '📋';
+      const cat = item.category || 'General Concern / Other';
       return {
         id: item.id || '#TIP-2026-0001',
         status: item.status || 'Pending',
@@ -247,7 +230,16 @@
         rawCampus: item.rawCampus || (item.campus && item.campus.includes('Casal') ? 'Casal Campus' : 'Arlegui Campus'),
         room: item.room || '',
         category: cat,
-        categoryIcon: icon,
+        description: item.description || 'Facility maintenance report submitted via student portal.',
+        photos: Array.isArray(item.photos) ? item.photos : [],
+        adminRemark: item.adminRemark || {
+          text: 'Ticket acknowledged by campus maintenance office. Technician review in progress.',
+          action: 'Under Facilities Review',
+          admin: 'Facilities Helpdesk'
+        }
+      };
+    });
+  }
         description: item.description || 'Facility maintenance report submitted via student portal.',
         photos: Array.isArray(item.photos) ? item.photos : [],
         adminRemark: item.adminRemark || {
@@ -525,10 +517,14 @@
           <!-- Location & Category Tags -->
           <div class="ticket-card__tags">
             <span class="ticket-tag ticket-tag--location">
-              📍 ${ticket.campus}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="display:inline-block; vertical-align:middle; margin-right:4px;">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              ${ticket.campus}
             </span>
             <span class="ticket-tag ticket-tag--category">
-              ${ticket.categoryIcon || '📋'} ${ticket.category}
+              ${ticket.category}
             </span>
           </div>
 
