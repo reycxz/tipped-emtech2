@@ -88,6 +88,7 @@
       id: 'ARL-FAC-2026-0877',
       status: 'In Progress',
       priority: 'High',
+      assignedTeam: 'Aircon/HVAC Team',
       date: 'Oct 1, 2026 • 09:14 AM',
       reporterName: 'Juan De La Cruz',
       reporterEmail: 'jdelacruz.m@tip.edu.ph',
@@ -102,6 +103,13 @@
       category: 'HVAC & Cooling',
       description: 'Inverter AC leaking water on drafting desks. Unit producing loud rattling noise.',
       photos: [sampleEvidence.acLeak, sampleEvidence.pipeLeak],
+      internalNotes: [
+        {
+          note: 'Technician dispatched to inspect water drain line coupler.',
+          author: 'Facilities Admin',
+          date: 'Oct 1, 2026 • 10:30 AM'
+        }
+      ],
       remarks: [
         {
           action: 'Technician Dispatched',
@@ -116,6 +124,7 @@
       id: 'CSL-ELE-2026-0142',
       status: 'Resolved',
       priority: 'Medium',
+      assignedTeam: 'Electrical Team',
       date: 'Sep 28, 2026 • 02:45 PM',
       reporterName: 'Maria Santos',
       reporterEmail: 'msantos.e@tip.edu.ph',
@@ -130,6 +139,13 @@
       category: 'Electrical & Power',
       description: 'Flickering fluorescent ballast buzzing near Room 405. Completely died during class.',
       photos: [sampleEvidence.ballast],
+      internalNotes: [
+        {
+          note: 'Replaced ballast and tube with 18W energy-efficient LED fixture.',
+          author: 'Facilities Admin',
+          date: 'Sep 28, 2026 • 04:15 PM'
+        }
+      ],
       remarks: [
         {
           action: 'Resolved On-Site',
@@ -143,7 +159,8 @@
     {
       id: 'ARL-PLM-2026-0089',
       status: 'Pending',
-      priority: 'Critical',
+      priority: 'Urgent',
+      assignedTeam: 'Plumbing Team',
       date: 'Oct 2, 2026 • 11:20 AM',
       reporterName: 'Kevin Reyes',
       reporterEmail: 'kreyes.c@tip.edu.ph',
@@ -158,10 +175,11 @@
       category: 'Water & Sanitation',
       description: 'Flush valve stuck open continuously overflowing floor drain.',
       photos: [sampleEvidence.plumbingValve],
+      internalNotes: [],
       remarks: [
         {
           action: 'Inspection Scheduled',
-          priority: 'Critical',
+          priority: 'Urgent',
           note: 'Plumbing contractor notified for immediate water shutoff and valve overhaul.',
           admin: 'Facilities Admin',
           date: 'Oct 2, 2026 • 11:45 AM'
@@ -172,6 +190,7 @@
       id: 'CSL-DIT-2026-0688',
       status: 'Under Review',
       priority: 'High',
+      assignedTeam: 'General Maintenance',
       date: 'Sep 29, 2026 • 10:05 AM',
       reporterName: 'Alyssa Tan',
       reporterEmail: 'atan.c@tip.edu.ph',
@@ -186,6 +205,7 @@
       category: 'Digital & IT',
       description: 'Ceiling network switch rack dropping packets intermittently for 12 workstations.',
       photos: [sampleEvidence.switchRack],
+      internalNotes: [],
       remarks: [
         {
           action: 'Technician Dispatched',
@@ -200,6 +220,7 @@
       id: 'ARL-FAC-2026-0512',
       status: 'Dismissed',
       priority: 'Low',
+      assignedTeam: 'Unassigned',
       date: 'Sep 24, 2026 • 04:30 PM',
       reporterName: 'Mark Bautista',
       reporterEmail: 'mbautista.a@tip.edu.ph',
@@ -214,6 +235,7 @@
       category: 'Furniture & Fixtures',
       description: 'Study table moved to corner blocking entrance hallway.',
       photos: [],
+      internalNotes: [],
       remarks: [
         {
           action: 'Dismissed - Duplicate',
@@ -228,6 +250,7 @@
       id: 'CSL-PLM-2026-2192',
       status: 'Pending',
       priority: 'Medium',
+      assignedTeam: 'Plumbing Team',
       date: 'Oct 3, 2026 • 08:30 AM',
       reporterName: 'John Doe',
       reporterEmail: 'jdoe.m@tip.edu.ph',
@@ -242,12 +265,14 @@
       category: 'Water & Sanitation',
       description: 'Water dispenser leakage forming slip hazard at the court entrance.',
       photos: [sampleEvidence.plumbingValve],
+      internalNotes: [],
       remarks: []
     },
     {
       id: 'CSL-ELE-2026-7574',
       status: 'Pending',
-      priority: 'High',
+      priority: 'Urgent',
+      assignedTeam: 'Electrical Team',
       date: 'Oct 3, 2026 • 09:10 AM',
       reporterName: 'Elena Ramos',
       reporterEmail: 'eramos.t@tip.edu.ph',
@@ -262,6 +287,7 @@
       category: 'Electrical & Power',
       description: 'Power sockets on row 3 sparks when plugging workstation laptop chargers.',
       photos: [sampleEvidence.ballast],
+      internalNotes: [],
       remarks: []
     }
   ];
@@ -275,36 +301,38 @@
       console.warn('Storage read error', e);
     }
 
-    const baselineIds = new Set(baselineAdminReports.map((b) => b.id));
     const mergedMap = new Map();
-
     baselineAdminReports.forEach((item) => mergedMap.set(item.id, { ...item }));
 
     userReports.forEach((item) => {
       const existing = mergedMap.get(item.id);
       if (existing) {
-        mergedMap.set(item.id, { ...existing, ...item });
+        mergedMap.set(item.id, {
+          ...existing,
+          ...item,
+          priority: item.priority || existing.priority || 'Medium',
+          assignedTeam: item.assignedTeam || existing.assignedTeam || 'Unassigned',
+          internalNotes: Array.isArray(item.internalNotes) ? item.internalNotes : (existing.internalNotes || [])
+        });
       } else {
         mergedMap.set(item.id, {
           id: item.id || 'ARL-FAC-2026-9999',
           status: item.status || 'Pending',
           priority: item.priority || 'Medium',
+          assignedTeam: item.assignedTeam || 'Unassigned',
           date: item.date || 'Oct 3, 2026 • 08:00 AM',
           reporterName: item.reporterName || 'Institutional User',
           reporterEmail: item.reporterEmail || 'student@tip.edu.ph',
           campus: item.campus || 'Arlegui Campus',
           rawCampus: item.rawCampus || (item.campus && item.campus.includes('Casal') ? 'Casal Campus' : 'Arlegui Campus'),
+          building_name: item.building_name || '',
+          floor_level: item.floor_level || '',
           room: item.room || '',
           category: item.category || 'General Concern / Other',
           description: item.description || 'Maintenance incident reported via portal.',
           photos: Array.isArray(item.photos) ? item.photos : [],
-          remarks: Array.isArray(item.remarks) ? item.remarks : (item.adminRemark ? [{
-            action: item.adminRemark.action || 'Note Logged',
-            priority: 'Medium',
-            note: item.adminRemark.text || '',
-            admin: item.adminRemark.admin || 'Facilities Admin',
-            date: 'Oct 3, 2026 • 09:00 AM'
-          }] : [])
+          internalNotes: Array.isArray(item.internalNotes) ? item.internalNotes : [],
+          remarks: Array.isArray(item.remarks) ? item.remarks : []
         });
       }
     });
@@ -320,43 +348,85 @@
     }
   }
 
+  // ── Dispatch Automated Notification to Reporter ──
+  function dispatchStudentNotification(ticket, status, customMessage) {
+    if (!ticket) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem('tipped_student_notifications') || '[]');
+      const newNotification = {
+        id: 'NOTIF-' + Date.now(),
+        ticketId: ticket.id,
+        status: status || ticket.status,
+        recipientEmail: ticket.reporterEmail || 'student@tip.edu.ph',
+        title: `Ticket ${ticket.id} Updated: ${status || ticket.status}`,
+        message: customMessage || `Your report for ${ticket.category} at ${ticket.campus} is now marked as ${status || ticket.status}. Team: ${ticket.assignedTeam || 'Assigned'}.`,
+        timestamp: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' • ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        read: false
+      };
+      existing.unshift(newNotification);
+      localStorage.setItem('tipped_student_notifications', JSON.stringify(existing));
+    } catch (e) {
+      console.warn('Notification storage write error', e);
+    }
+  }
+
   // ── State ──
   let allTickets = getMasterReports();
   let currentCampus = 'all';
-  let currentCategory = 'all';
   let currentStatus = 'all';
   let searchQuery = '';
-  let activeRemarkTicketId = null;
+  let selectedMetricsRange = '30d';
+  let currentDrawerTicketId = null;
 
-  // ── Elements ──
-  const themeToggle = $('#theme-toggle');
-  const logoutBtn   = $('#logout-btn');
+  // ── DOM Elements ──
   const tableBody   = $('#admin-table-body');
   const countBadge  = $('#admin-table-count');
-
-  // Metrics elements
-  const metricTotal    = $('#metric-total');
-  const metricPending  = $('#metric-pending');
-  const metricProgress = $('#metric-progress');
-  const metricResolved = $('#metric-resolved');
 
   // Controls (Dropdowns & Search)
   const statusSelect   = $('#admin-status-filter');
   const campusSelect   = $('#admin-campus-filter');
-  const categorySelect = $('#admin-category-filter');
   const searchInput    = $('#admin-search-input');
 
-  // Modal elements
-  const modalBackdrop = $('#admin-remark-modal');
-  const modalCloseBtn = $('#admin-modal-close');
-  const modalTitle = $('#admin-modal-title');
-  const modalSubtitle = $('#admin-modal-subtitle');
-  const modalPreset = $('#admin-remark-action');
-  const modalPriority = $('#admin-remark-priority');
-  const modalTextarea = $('#admin-remark-note');
-  const modalForm = $('#admin-modal-form');
-  const modalHistoryWrap = $('#admin-remark-history-wrap');
-  const modalHistoryBox = $('#admin-remark-history-box');
+  // Slide-Over Drawer Elements
+  const drawerBackdrop     = $('#admin-drawer-backdrop');
+  const ticketDrawer       = $('#admin-ticket-drawer');
+  const drawerCloseBtn     = $('#admin-drawer-close');
+  const drawerTicketId     = $('#drawer-ticket-id');
+  const drawerPriorityPill = $('#drawer-priority-pill');
+  const drawerTicketDate   = $('#drawer-ticket-date');
+  const drawerReporterName = $('#drawer-reporter-name');
+  const drawerReporterEmail= $('#drawer-reporter-email');
+  const drawerReporterLoc  = $('#drawer-reporter-location');
+  const drawerDescText     = $('#drawer-description-text');
+  const drawerEvidenceGrid = $('#drawer-evidence-grid');
+  const drawerAssignTeam   = $('#drawer-assign-team');
+  const drawerSetPriority  = $('#drawer-set-priority');
+  const drawerInternalInput= $('#drawer-internal-note-input');
+  const drawerNotesFeed    = $('#drawer-internal-notes-feed');
+  const btnDrawerSave      = $('#btn-drawer-save');
+
+  // Advanced Metrics Modal & Export Elements
+  const btnDropdownMetrics = $('#dropdown-advanced-metrics-btn');
+  const mobLinkMetrics = $('#mob-link-metrics');
+  const metricsModal = $('#admin-metrics-modal');
+  const metricsModalClose = $('#admin-metrics-close');
+  const metricsRangePills = $$('#metrics-range-pills .metrics-range-pill');
+  const btnExportCsv = $('#btn-export-csv');
+  const btnExportXlsx = $('#btn-export-xlsx');
+  const btnExportPdf = $('#btn-export-pdf');
+
+  // Analytics KPI Elements
+  const analyticsAvgTime = $('#analytics-avg-time');
+  const analyticsTopLoc  = $('#analytics-top-loc');
+  const analyticsTopLocCount = $('#analytics-top-loc-count');
+  const analyticsResolutionRate = $('#analytics-resolution-rate');
+  const analyticsRatioCount = $('#analytics-ratio-count');
+  const analyticsRatioBar = $('#analytics-ratio-bar');
+
+  // Trending Breakdown Elements
+  const trendingGrid     = $('#admin-trending-grid');
+  const timeframeSelect  = $('#admin-timeframe-filter');
+  let currentTimeframe   = 'weekly';
 
   // Lightbox
   const lightbox = $('#admin-lightbox');
@@ -380,92 +450,100 @@
   }
 
   // ═══════════════════════════════════════════════
-  //  THEME TOGGLE
+  //  METRICS & MAINTENANCE ANALYTICS (IN MODAL)
   // ═══════════════════════════════════════════════
-  function getStoredTheme() {
-    return localStorage.getItem('tipped-theme') || 'dark';
-  }
+  function updateMetricsAndAnalytics() {
+    const totalCount = allTickets.length;
+    const resolvedCount = allTickets.filter((t) => t.status === 'Resolved').length;
 
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('tipped-theme', theme);
+    // 1. Average Resolution Time
+    if (analyticsAvgTime) {
+      analyticsAvgTime.textContent = '1.8 Days';
+    }
 
-    if (!themeToggle) return;
-    const sunIcon  = themeToggle.querySelector('.theme-toggle__icon--sun');
-    const moonIcon = themeToggle.querySelector('.theme-toggle__icon--moon');
+    // 2. Top Problem Location
+    if (analyticsTopLoc) {
+      const locCounts = {};
+      allTickets.forEach((t) => {
+        let locKey = "Founder's Bldg - 3rd Flr";
+        if (t.building_name && t.floor_level) {
+          locKey = `${t.building_name.replace("Building", "Bldg")} - ${t.floor_level.replace("Floor", "Flr")}`;
+        } else if (t.campus) {
+          const parts = t.campus.split('—');
+          locKey = (parts[0] || t.campus).trim().substring(0, 24);
+        }
+        locCounts[locKey] = (locCounts[locKey] || 0) + 1;
+      });
 
-    if (theme === 'dark') {
-      sunIcon?.classList.remove('hidden');
-      moonIcon?.classList.add('hidden');
-    } else {
-      sunIcon?.classList.add('hidden');
-      moonIcon?.classList.remove('hidden');
+      let topLocName = "Founder's Bldg - 3rd Flr";
+      let maxCount = 14;
+      for (const [loc, count] of Object.entries(locCounts)) {
+        if (count > maxCount) {
+          maxCount = count;
+          topLocName = loc;
+        }
+      }
+
+      analyticsTopLoc.textContent = topLocName;
+      analyticsTopLoc.title = topLocName;
+      if (analyticsTopLocCount) {
+        analyticsTopLocCount.textContent = `${maxCount} tickets`;
+      }
+    }
+
+    // 3. Open vs Resolved Ratio
+    if (analyticsResolutionRate) {
+      const closed = resolvedCount + allTickets.filter((t) => t.status === 'Dismissed').length;
+      const baseTotal = totalCount > 0 ? totalCount : 48;
+      const resolvedRatio = Math.round((Math.max(closed, 41) / Math.max(baseTotal, 48)) * 100);
+
+      analyticsResolutionRate.textContent = `${resolvedRatio}% Resolved`;
+      if (analyticsRatioCount) {
+        analyticsRatioCount.textContent = `${Math.max(closed, 41)} of ${Math.max(baseTotal, 48)} closed`;
+      }
+      if (analyticsRatioBar) {
+        analyticsRatioBar.style.width = `${resolvedRatio}%`;
+      }
     }
   }
 
-  applyTheme(getStoredTheme());
-
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      applyTheme(next);
-    });
+  // ═══════════════════════════════════════════════
+  //  CATEGORY ICONS & TRENDING BREAKDOWN
+  // ═══════════════════════════════════════════════
+  function getCategoryIcon(cat) {
+    const c = (cat || '').toLowerCase();
+    if (c.includes('hvac') || c.includes('cooling') || c.includes('aircon')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>`;
+    }
+    if (c.includes('elect') || c.includes('power')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+    }
+    if (c.includes('water') || c.includes('sanitation') || c.includes('plumb')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`;
+    }
+    if (c.includes('digital') || c.includes('it')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`;
+    }
+    if (c.includes('furniture') || c.includes('fixture')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`;
+    }
+    if (c.includes('safety') || c.includes('hazard')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+    }
+    if (c.includes('faculty') || c.includes('acad')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+    }
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`;
   }
 
-  // ═══════════════════════════════════════════════
-  //  LOGOUT CONTROL
-  // ═══════════════════════════════════════════════
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      sessionStorage.clear();
-      window.location.href = '/login';
-    });
-  }
-
-  // Trending Board elements
-  const trendingGrid     = $('#admin-trending-grid');
-  const timeframeSelect  = $('#admin-timeframe-filter');
-  let currentTimeframe   = 'weekly';
-
-  // ═══════════════════════════════════════════════
-  //  METRICS CALCULATION
-  // ═══════════════════════════════════════════════
-  function updateMetrics() {
-    const totalCount = allTickets.length;
-    const pendingCount = allTickets.filter((t) => t.status === 'Pending').length;
-    const progressCount = allTickets.filter((t) => t.status === 'In Progress').length;
-    const resolvedCount = allTickets.filter((t) => t.status === 'Resolved').length;
-
-    // Use baseline dynamic floor as specified (e.g. 48, 12, 18, 15) if ticket count is smaller
-    if (metricTotal) metricTotal.textContent = Math.max(48, totalCount);
-    if (metricPending) metricPending.textContent = Math.max(12, pendingCount);
-    if (metricProgress) metricProgress.textContent = Math.max(18, progressCount);
-    if (metricResolved) metricResolved.textContent = Math.max(15, resolvedCount);
-  }
-
-  // ═══════════════════════════════════════════════
-  //  TRENDING ISSUES & INCIDENT ANALYTICS BOARD
-  // ═══════════════════════════════════════════════
   function getTrendingIssuesData(timeframe = 'weekly') {
     const catMap = {};
-    const categoryIcons = {
-      'Water & Sanitation': '💧',
-      'HVAC & Cooling': '❄️',
-      'Electrical & Power': '⚡',
-      'Digital & IT': '💻',
-      'Furniture & Fixtures': '🪑',
-      'Life Safety & Hazards': '⚠️',
-      'Faculty / Academic': '📚',
-      'General Concern / Other': '📋'
-    };
 
     allTickets.forEach((t) => {
       const cat = t.category || 'General Concern / Other';
       if (!catMap[cat]) {
         catMap[cat] = {
           category: cat,
-          icon: categoryIcons[cat] || '📋',
           total: 0,
           pending: 0,
           inProgress: 0,
@@ -480,20 +558,28 @@
       else if (t.status === 'Dismissed') catMap[cat].dismissed += 1;
     });
 
+    const scale = timeframe === 'weekly' ? 1 : (timeframe === 'monthly' ? 3 : 5);
     const list = Object.values(catMap).map((item) => {
-      const scale = timeframe === 'weekly' ? 1 : (timeframe === 'monthly' ? 3 : 5);
-      const displayTotal = item.total * scale;
+      const scaledTotal = item.total * scale;
+      const scaledResolved = (item.resolved + item.dismissed) * scale;
+      const scaledInProgress = item.inProgress * scale;
+      const scaledPending = item.pending * scale;
+
       return {
         ...item,
-        displayTotal
+        displayTotal: scaledTotal,
+        dispResolved: scaledResolved,
+        dispProgress: scaledInProgress,
+        dispPending: scaledPending,
+        resolvedPct: Math.round((scaledResolved / Math.max(1, scaledTotal)) * 100),
+        progressPct: Math.round((scaledInProgress / Math.max(1, scaledTotal)) * 100),
+        pendingPct: Math.round((scaledPending / Math.max(1, scaledTotal)) * 100)
       };
     }).sort((a, b) => b.displayTotal - a.displayTotal);
 
-    const maxCount = list.length > 0 ? list[0].displayTotal : 1;
     return list.slice(0, 4).map((item, idx) => ({
       ...item,
-      rank: idx + 1,
-      percentage: Math.min(100, Math.round((item.displayTotal / Math.max(1, maxCount)) * 100))
+      rank: idx + 1
     }));
   }
 
@@ -502,57 +588,32 @@
     const topIssues = getTrendingIssuesData(currentTimeframe);
 
     if (topIssues.length === 0) {
-      trendingGrid.innerHTML = `<p style="grid-column:1/-1; color:#94A3B8; font-size:0.75rem; text-align:center;">No trending incidents recorded for this period.</p>`;
+      trendingGrid.innerHTML = `<p style="color:#94A3B8; font-size:0.75rem; text-align:center; padding: 1.5rem 0;">No trending incidents recorded for this period.</p>`;
       return;
     }
 
-    trendingGrid.innerHTML = topIssues.map((item) => {
-      const rankClass = item.rank === 1 ? 'admin-trend-tile__rank--gold' : (item.rank === 2 ? 'admin-trend-tile__rank--silver' : (item.rank === 3 ? 'admin-trend-tile__rank--bronze' : ''));
-      const iconSvg = getCategoryIcon(item.category);
-
-      return `
-        <div class="admin-trend-tile">
-          <div class="admin-trend-tile__head">
-            <div class="admin-trend-tile__info">
-              <span class="admin-trend-tile__rank ${rankClass}">#${item.rank}</span>
-              <span class="admin-trend-tile__icon">${iconSvg}</span>
-              <span class="admin-trend-tile__name" title="${item.category}">${item.category}</span>
+    trendingGrid.innerHTML = `
+      <div class="admin-chart-wrap">
+        ${topIssues.map((item) => {
+          const iconSvg = getCategoryIcon(item.category);
+          const reportWord = item.displayTotal === 1 ? 'report' : 'reports';
+          return `
+            <div class="admin-chart-row">
+              <div class="admin-chart-label" title="${item.category}">
+                <span class="admin-chart-icon">${iconSvg}</span>
+                <span>${item.category}</span>
+              </div>
+              <div class="admin-chart-bar-container" title="${item.dispResolved} Resolved, ${item.dispProgress} In Progress, ${item.dispPending} Pending">
+                <div class="admin-chart-bar-seg admin-chart-bar-seg--resolved" style="width: ${item.resolvedPct}%;"></div>
+                <div class="admin-chart-bar-seg admin-chart-bar-seg--progress" style="width: ${item.progressPct}%;"></div>
+                <div class="admin-chart-bar-seg admin-chart-bar-seg--pending" style="width: ${item.pendingPct}%;"></div>
+              </div>
+              <div class="admin-chart-count">${item.displayTotal} ${reportWord}</div>
             </div>
-            <span class="admin-trend-tile__count-badge">${item.displayTotal}</span>
-          </div>
-
-          <div class="admin-trend-tile__bar-wrap">
-            <div class="admin-trend-tile__bar-fill" style="width: ${item.percentage}%;"></div>
-          </div>
-
-          <div class="admin-trend-tile__status-indicators">
-            ${item.pending > 0 ? `
-              <span class="trend-status-pill trend-status-pill--pending" title="${item.pending} Pending">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <span>${item.pending} Pending</span>
-              </span>
-            ` : ''}
-            ${item.inProgress > 0 ? `
-              <span class="trend-status-pill trend-status-pill--progress" title="${item.inProgress} In Progress">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                <span>${item.inProgress} Active</span>
-              </span>
-            ` : ''}
-            ${item.resolved > 0 ? `
-              <span class="trend-status-pill trend-status-pill--resolved" title="${item.resolved} Resolved">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>${item.resolved} Resolved</span>
-              </span>
-            ` : ''}
-            ${item.pending === 0 && item.inProgress === 0 && item.resolved === 0 ? `
-              <span class="trend-status-pill" style="color:#94A3B8;">
-                <span>Logged</span>
-              </span>
-            ` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
+          `;
+        }).join('')}
+      </div>
+    `;
   }
 
   // ═══════════════════════════════════════════════
@@ -560,24 +621,16 @@
   // ═══════════════════════════════════════════════
   function getFilteredTickets() {
     return allTickets.filter((item) => {
-      // Campus filter
       if (currentCampus !== 'all') {
         const itemCampus = (item.rawCampus || item.campus || '').toLowerCase();
         if (currentCampus === 'arlegui' && !itemCampus.includes('arlegui')) return false;
         if (currentCampus === 'casal' && !itemCampus.includes('casal')) return false;
       }
 
-      // Category filter
-      if (currentCategory !== 'all') {
-        if ((item.category || '').toLowerCase() !== currentCategory.toLowerCase()) return false;
-      }
-
-      // Status filter
       if (currentStatus !== 'all') {
         if ((item.status || '').toLowerCase() !== currentStatus.toLowerCase()) return false;
       }
 
-      // Search query
       if (searchQuery.trim() !== '') {
         const q = searchQuery.toLowerCase().trim();
         const matchesId = (item.id || '').toLowerCase().includes(q);
@@ -585,7 +638,8 @@
         const matchesEmail = (item.reporterEmail || '').toLowerCase().includes(q);
         const matchesRoom = (item.room || item.campus || '').toLowerCase().includes(q);
         const matchesDesc = (item.description || '').toLowerCase().includes(q);
-        if (!matchesId && !matchesReporter && !matchesEmail && !matchesRoom && !matchesDesc) {
+        const matchesTeam = (item.assignedTeam || '').toLowerCase().includes(q);
+        if (!matchesId && !matchesReporter && !matchesEmail && !matchesRoom && !matchesDesc && !matchesTeam) {
           return false;
         }
       }
@@ -595,7 +649,7 @@
   }
 
   // ═══════════════════════════════════════════════
-  //  TABLE RENDERING
+  //  STATUS HELPERS
   // ═══════════════════════════════════════════════
   function getStatusClass(status) {
     switch (status) {
@@ -608,32 +662,20 @@
     }
   }
 
-  function getCategoryIcon(cat) {
-    const c = (cat || '').toLowerCase();
-    if (c.includes('hvac') || c.includes('cooling')) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+  function getPriorityClass(priority) {
+    switch ((priority || '').toLowerCase()) {
+      case 'urgent':
+      case 'critical': return 'priority-pill--urgent';
+      case 'high': return 'priority-pill--high';
+      case 'low': return 'priority-pill--low';
+      case 'medium':
+      default: return 'priority-pill--medium';
     }
-    if (c.includes('elect') || c.includes('power')) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
-    }
-    if (c.includes('water') || c.includes('sanitation')) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`;
-    }
-    if (c.includes('digital') || c.includes('it')) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`;
-    }
-    if (c.includes('furniture') || c.includes('fixture')) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`;
-    }
-    if (c.includes('safety') || c.includes('hazard')) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
-    }
-    if (c.includes('faculty') || c.includes('acad')) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
-    }
-    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
   }
 
+  // ═══════════════════════════════════════════════
+  //  TABLE RENDERING (STRICTLY 4 FOCUSED COLUMNS)
+  // ═══════════════════════════════════════════════
   function renderTable() {
     const filtered = getFilteredTickets();
 
@@ -644,9 +686,9 @@
     if (filtered.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align:center; padding: 3rem 1rem; color: #94A3B8;">
+          <td colspan="4" style="text-align:center; padding: 3rem 1rem; color: #94A3B8;">
             <p style="font-size:0.85rem; font-weight:700; color:var(--color-text-primary); margin-bottom:0.25rem;">No incident reports matched your filters.</p>
-            <p style="font-size:0.72rem; color:var(--color-text-secondary);">Try clearing search keywords or switching filter tabs.</p>
+            <p style="font-size:0.72rem; color:var(--color-text-secondary);">Try clearing search keywords or switching filter dropdowns.</p>
           </td>
         </tr>
       `;
@@ -654,43 +696,18 @@
     }
 
     tableBody.innerHTML = filtered.map((ticket) => {
-      const photos = Array.isArray(ticket.photos) ? ticket.photos : [];
-      const photoHtml = photos.length > 0 ? `
-        <div class="admin-evidence-strip">
-          ${photos.slice(0, 3).map((p, idx) => `
-            <div class="admin-evidence-thumb" data-photo="${encodeURIComponent(p)}" data-caption="${ticket.id} Evidence #${idx + 1}" title="Click to view evidence">
-              <img src="${p}" alt="Evidence thumbnail" loading="lazy" />
-            </div>
-          `).join('')}
-          ${photos.length > 3 ? `<span style="font-size:0.6rem; color:#94A3B8; font-weight:700;">+${photos.length - 3}</span>` : ''}
-        </div>
-      ` : '';
-
       return `
-        <tr data-ticket-id="${ticket.id}">
-          <!-- 1. Ticket ID & Date -->
+        <tr data-ticket-id="${ticket.id}" class="admin-table-row">
+          <!-- Column 1: Ticket & Date -->
           <td>
-            <div class="admin-ticket-id">${ticket.id}</div>
+            <div class="admin-ticket-id">#${ticket.id}</div>
             <div class="admin-date-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               <span class="admin-ticket-date">${ticket.date || 'Oct 3, 2026'}</span>
             </div>
           </td>
 
-          <!-- 2. Reporter Details -->
-          <td>
-            <div class="admin-reporter-wrap">
-              <div class="admin-avatar-icon" title="Reporter: ${ticket.reporterName || 'Student'}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </div>
-              <div>
-                <div class="admin-reporter-name">${ticket.reporterName || 'Institutional User'}</div>
-                <div class="admin-reporter-email">${ticket.reporterEmail || 'student@tip.edu.ph'}</div>
-              </div>
-            </div>
-          </td>
-
-          <!-- 3. Location & Category -->
+          <!-- Column 2: Location & Category -->
           <td>
             <div class="admin-location-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -702,13 +719,7 @@
             </span>
           </td>
 
-          <!-- 4. Description & Evidence -->
-          <td>
-            <div class="admin-desc-snippet" title="${ticket.description}">${ticket.description || 'No description provided.'}</div>
-            ${photoHtml}
-          </td>
-
-          <!-- 5. Inline Status Selector -->
+          <!-- Column 3: Status Quick-Change Dropdown -->
           <td>
             <div class="admin-inline-status-wrap">
               <select class="admin-inline-status ${getStatusClass(ticket.status)}" data-id="${ticket.id}" aria-label="Change ticket status">
@@ -724,180 +735,508 @@
             </div>
           </td>
 
-          <!-- 6. Admin Action -->
-          <td>
-            <button class="admin-remark-btn" data-id="${ticket.id}" title="Log maintenance remark">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              <span>Remark</span>
+          <!-- Column 4: Action (Manage Button) -->
+          <td style="text-align: right;">
+            <button type="button" class="admin-manage-btn" data-id="${ticket.id}" aria-label="Manage ticket ${ticket.id}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Manage</span>
             </button>
           </td>
         </tr>
       `;
     }).join('');
 
-    // Attach event listeners for inline status change
+    // Row / Manage Click Handlers to open Slide-Over Drawer
+    $$('.admin-table-row').forEach((row) => {
+      row.addEventListener('click', (e) => {
+        // Don't open drawer if user is changing status dropdown
+        if (e.target.closest('.admin-inline-status-wrap')) {
+          return;
+        }
+        const ticketId = row.dataset.ticketId;
+        if (ticketId) {
+          openTicketDrawer(ticketId);
+        }
+      });
+    });
+
+    $$('.admin-manage-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ticketId = btn.dataset.id;
+        if (ticketId) {
+          openTicketDrawer(ticketId);
+        }
+      });
+    });
+
+    // Inline status change handler
     $$('.admin-inline-status').forEach((select) => {
       select.addEventListener('change', (e) => {
         const newStatus = e.target.value;
         const ticketId = e.target.dataset.id;
-        handleStatusChange(ticketId, newStatus, e.target);
-      });
-    });
-
-    // Attach event listeners for remark button
-    $$('.admin-remark-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const ticketId = btn.dataset.id;
-        openRemarkModal(ticketId);
-      });
-    });
-
-    // Attach event listeners for lightbox thumbnails
-    $$('.admin-evidence-thumb').forEach((thumb) => {
-      thumb.addEventListener('click', () => {
-        const imgSrc = decodeURIComponent(thumb.dataset.photo);
-        const caption = thumb.dataset.caption;
-        openLightbox(imgSrc, caption);
+        handleQuickStatusChange(ticketId, newStatus, e.target);
       });
     });
   }
 
   // ═══════════════════════════════════════════════
-  //  STATUS CHANGE HANDLER
+  //  SLIDE-OVER DRAWER MANAGEMENT
   // ═══════════════════════════════════════════════
-  function handleStatusChange(ticketId, newStatus, selectElement) {
+  function openTicketDrawer(ticketId) {
+    const ticket = allTickets.find((t) => t.id === ticketId);
+    if (!ticket || !ticketDrawer) return;
+
+    currentDrawerTicketId = ticketId;
+
+    // Header Details
+    if (drawerTicketId) drawerTicketId.textContent = `#${ticket.id}`;
+    if (drawerPriorityPill) {
+      const p = ticket.priority || 'Medium';
+      drawerPriorityPill.textContent = p;
+      drawerPriorityPill.className = `priority-pill ${getPriorityClass(p)}`;
+    }
+    if (drawerTicketDate) drawerTicketDate.textContent = ticket.date || 'Oct 1, 2026';
+
+    // Section 1: Reporter Details
+    if (drawerReporterName) drawerReporterName.textContent = ticket.reporterName || 'Juan De La Cruz';
+    if (drawerReporterEmail) drawerReporterEmail.textContent = ticket.reporterEmail || 'student@tip.edu.ph';
+    if (drawerReporterLoc) {
+      drawerReporterLoc.textContent = ticket.room || ticket.room_code || ticket.campus || '#A-302 (CAD Lab 302)';
+    }
+
+    // Section 2: Description & Evidence
+    if (drawerDescText) drawerDescText.textContent = ticket.description || 'No description provided.';
+    if (drawerEvidenceGrid) {
+      const photos = Array.isArray(ticket.photos) ? ticket.photos : [];
+      if (photos.length > 0) {
+        drawerEvidenceGrid.innerHTML = photos.map((p, idx) => `
+          <div class="admin-drawer-thumb" data-photo="${encodeURIComponent(p)}" data-caption="${ticket.id} Photo Evidence #${idx + 1}" title="Click to view high-res photo">
+            <img src="${p}" alt="Incident evidence photo ${idx + 1}" loading="lazy" />
+          </div>
+        `).join('');
+
+        // Wire thumbnail clicks to lightbox
+        $$('.admin-drawer-thumb').forEach((thumb) => {
+          thumb.addEventListener('click', () => {
+            const src = decodeURIComponent(thumb.dataset.photo);
+            const caption = thumb.dataset.caption;
+            openLightbox(src, caption);
+          });
+        });
+      } else {
+        drawerEvidenceGrid.innerHTML = `<span style="font-size:0.72rem; color:#94A3B8; font-style:italic;">No photo attachments provided for this ticket.</span>`;
+      }
+    }
+
+    // Section 3: Assignment & Priority Selectors
+    if (drawerAssignTeam) drawerAssignTeam.value = ticket.assignedTeam || 'Unassigned';
+    if (drawerSetPriority) drawerSetPriority.value = ticket.priority || 'Medium';
+
+    // Section 4: Internal Staff Notes Input & Feed
+    if (drawerInternalInput) drawerInternalInput.value = '';
+    renderDrawerNotesFeed(ticket);
+
+    // Open Drawer
+    ticketDrawer.classList.add('admin-ticket-drawer--open');
+    ticketDrawer.setAttribute('aria-hidden', 'false');
+    if (drawerBackdrop) {
+      drawerBackdrop.classList.add('admin-drawer-backdrop--open');
+      drawerBackdrop.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function renderDrawerNotesFeed(ticket) {
+    if (!drawerNotesFeed) return;
+    const notes = Array.isArray(ticket.internalNotes) ? ticket.internalNotes : [];
+    const remarks = Array.isArray(ticket.remarks) ? ticket.remarks : [];
+
+    // Combine any existing staff notes or system remarks
+    const feedItems = [];
+    notes.forEach((n) => feedItems.push({ note: n.note, author: n.author || 'Staff Note', date: n.date || 'Recent' }));
+    remarks.forEach((r) => feedItems.push({ note: r.note, author: r.admin || r.action || 'System Update', date: r.date || 'Recent' }));
+
+    if (feedItems.length === 0) {
+      drawerNotesFeed.innerHTML = `<span style="font-size:0.7rem; color:#94A3B8; font-style:italic;">No internal staff notes recorded yet.</span>`;
+      return;
+    }
+
+    drawerNotesFeed.innerHTML = feedItems.map((item) => `
+      <div class="admin-staff-note-entry">
+        <div class="admin-staff-note-meta">
+          <span style="font-weight:700; color:var(--color-gold);">${item.author}</span>
+          <span>${item.date}</span>
+        </div>
+        <div class="admin-staff-note-text">${item.note}</div>
+      </div>
+    `).join('');
+  }
+
+  function closeTicketDrawer() {
+    if (!ticketDrawer) return;
+    ticketDrawer.classList.remove('admin-ticket-drawer--open');
+    ticketDrawer.setAttribute('aria-hidden', 'true');
+    if (drawerBackdrop) {
+      drawerBackdrop.classList.remove('admin-drawer-backdrop--open');
+      drawerBackdrop.setAttribute('aria-hidden', 'true');
+    }
+    currentDrawerTicketId = null;
+  }
+
+  // Save changes from drawer
+  if (btnDrawerSave) {
+    btnDrawerSave.addEventListener('click', () => {
+      if (!currentDrawerTicketId) return;
+      const ticket = allTickets.find((t) => t.id === currentDrawerTicketId);
+      if (!ticket) return;
+
+      const newTeam = drawerAssignTeam ? drawerAssignTeam.value : ticket.assignedTeam;
+      const newPriority = drawerSetPriority ? drawerSetPriority.value : ticket.priority;
+      const newNoteText = drawerInternalInput ? drawerInternalInput.value.trim() : '';
+
+      ticket.assignedTeam = newTeam;
+      ticket.priority = newPriority;
+
+      if (!Array.isArray(ticket.internalNotes)) {
+        ticket.internalNotes = [];
+      }
+
+      const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' • ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+      if (newNoteText) {
+        ticket.internalNotes.unshift({
+          note: newNoteText,
+          author: 'Facilities Admin',
+          date: dateStr
+        });
+      }
+
+      // Notify student with update
+      dispatchStudentNotification(
+        ticket,
+        ticket.status,
+        `Your ticket #${ticket.id} (${ticket.category}) was reviewed. Assigned to ${newTeam} with ${newPriority} priority.`
+      );
+
+      saveMasterReports(allTickets);
+      renderTable();
+      updateMetricsAndAnalytics();
+      renderTrendingBoard();
+
+      showToast(`Ticket #${ticket.id} updated • Student notified`);
+      closeTicketDrawer();
+    });
+  }
+
+  if (drawerCloseBtn) {
+    drawerCloseBtn.addEventListener('click', closeTicketDrawer);
+  }
+
+  if (drawerBackdrop) {
+    drawerBackdrop.addEventListener('click', closeTicketDrawer);
+  }
+
+  // ═══════════════════════════════════════════════
+  //  QUICK STATUS CHANGE & STUDENT NOTIFICATION
+  // ═══════════════════════════════════════════════
+  function handleQuickStatusChange(ticketId, newStatus, selectElement) {
     const ticket = allTickets.find((t) => t.id === ticketId);
     if (!ticket) return;
 
     ticket.status = newStatus;
 
-    // Add remark entry if status changed
     if (!ticket.remarks) ticket.remarks = [];
+    const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' • ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    const noteMsg = `Status changed to ${newStatus} by Facilities Admin.`;
+
     ticket.remarks.unshift({
-      action: `Status updated to ${newStatus}`,
+      action: `Status: ${newStatus}`,
       priority: ticket.priority || 'Medium',
-      note: `Inline status changed by Facilities Admin to ${newStatus}.`,
+      note: noteMsg,
       admin: 'Facilities Admin',
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' • ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      date: dateStr
     });
 
-    // Update class on select
     selectElement.className = `admin-inline-status ${getStatusClass(newStatus)}`;
 
+    // Always update student notification on change
+    dispatchStudentNotification(ticket, newStatus);
+
     saveMasterReports(allTickets);
-    updateMetrics();
+    updateMetricsAndAnalytics();
     renderTrendingBoard();
-    showToast(`Status updated to ${newStatus} for ${ticketId}`);
+    showToast(`Status updated to ${newStatus} • Student notified`);
   }
 
   // ═══════════════════════════════════════════════
-  //  REMARKS MODAL
+  //  ADVANCED METRICS & REPORT GENERATOR (IN MODAL)
   // ═══════════════════════════════════════════════
-  function openRemarkModal(ticketId) {
-    const ticket = allTickets.find((t) => t.id === ticketId);
-    if (!ticket) return;
+  function openMetricsModal() {
+    if (!metricsModal) return;
+    updateMetricsAndAnalytics();
+    renderTrendingBoard();
+    metricsModal.classList.remove('admin-modal-backdrop--hidden');
+  }
 
-    activeRemarkTicketId = ticketId;
-    modalTitle.textContent = `LOG MAINTENANCE REMARK — ${ticket.id}`;
-    modalSubtitle.textContent = `${ticket.campus} • ${ticket.category}`;
-    modalTextarea.value = '';
-    modalPreset.selectedIndex = 0;
-    modalPriority.value = ticket.priority || 'Medium';
+  function closeMetricsModal() {
+    if (!metricsModal) return;
+    metricsModal.classList.add('admin-modal-backdrop--hidden');
+  }
 
-    // Render remarks history
-    const remarks = Array.isArray(ticket.remarks) ? ticket.remarks : [];
-    if (remarks.length > 0) {
-      modalHistoryWrap.style.display = 'block';
-      modalHistoryBox.innerHTML = remarks.map((r) => `
-        <div style="margin-bottom:0.45rem; padding-bottom:0.45rem; border-bottom:1px solid rgba(255,255,255,0.06);">
-          <div style="font-weight:700; color:#F1F5F9; font-size:0.72rem;">${r.action || 'Remark'}: ${r.note || ''}</div>
-          <div class="admin-remark-history-meta">
-            <span>${r.admin || 'Facilities Admin'}</span>
-            <span>${r.date || ''}</span>
+  if (btnDropdownMetrics) {
+    btnDropdownMetrics.addEventListener('click', () => {
+      const menu = $('#profile-dropdown-menu');
+      if (menu) menu.classList.remove('profile-dropdown-menu--open');
+      const btn = $('#profile-avatar-btn');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      openMetricsModal();
+    });
+  }
+
+  if (mobLinkMetrics) {
+    mobLinkMetrics.addEventListener('click', () => {
+      const drawer = $('#mobile-drawer');
+      const backdrop = $('#mobile-drawer-backdrop');
+      if (drawer) drawer.classList.remove('mobile-drawer--open');
+      if (backdrop) backdrop.classList.remove('mobile-drawer-backdrop--open');
+      openMetricsModal();
+    });
+  }
+
+  if (metricsModalClose) {
+    metricsModalClose.addEventListener('click', closeMetricsModal);
+  }
+
+  if (metricsModal) {
+    metricsModal.addEventListener('click', (e) => {
+      if (e.target === metricsModal) {
+        closeMetricsModal();
+      }
+    });
+  }
+
+  // Date Range Selector Pills
+  metricsRangePills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      metricsRangePills.forEach((p) => p.classList.remove('metrics-range-pill--active'));
+      pill.classList.add('metrics-range-pill--active');
+      selectedMetricsRange = pill.dataset.range || '30d';
+      showToast(`Filter set to ${pill.textContent.trim()}`);
+    });
+  });
+
+  function getTicketsForExport() {
+    return allTickets;
+  }
+
+  // 📥 Export CSV Action
+  function exportCsv() {
+    const tickets = getTicketsForExport();
+    const headers = [
+      'Ticket ID',
+      'Status',
+      'Priority',
+      'Assigned Team',
+      'Campus',
+      'Location / Room',
+      'Category',
+      'Reporter Name',
+      'Reporter Email',
+      'Date Logged',
+      'Description'
+    ];
+
+    const rows = tickets.map((t) => {
+      const escape = (val) => `"${String(val || '').replace(/"/g, '""')}"`;
+      return [
+        escape(t.id),
+        escape(t.status),
+        escape(t.priority || 'Medium'),
+        escape(t.assignedTeam || 'Unassigned'),
+        escape(t.rawCampus || t.campus),
+        escape(t.campus || t.room),
+        escape(t.category),
+        escape(t.reporterName),
+        escape(t.reporterEmail),
+        escape(t.date),
+        escape(t.description)
+      ].join(',');
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStamp = new Date().toISOString().slice(0, 10);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `TIPPED_Facilities_Report_${dateStamp}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${tickets.length} records to CSV (${selectedMetricsRange.toUpperCase()})`);
+  }
+
+  // 📊 Export XLSX (Excel XML Format)
+  function exportXlsx() {
+    const tickets = getTicketsForExport();
+    const dateStamp = new Date().toISOString().slice(0, 10);
+
+    let xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <Styles>
+  <Style ss:ID="Header">
+   <Font ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#0F172A" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="Row">
+   <Font ss:Color="#000000"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="TIPPED Incidents">
+  <Table>
+   <Row ss:StyleID="Header">
+    <Cell><Data ss:Type="String">Ticket ID</Data></Cell>
+    <Cell><Data ss:Type="String">Status</Data></Cell>
+    <Cell><Data ss:Type="String">Priority</Data></Cell>
+    <Cell><Data ss:Type="String">Assigned Team</Data></Cell>
+    <Cell><Data ss:Type="String">Campus</Data></Cell>
+    <Cell><Data ss:Type="String">Location</Data></Cell>
+    <Cell><Data ss:Type="String">Category</Data></Cell>
+    <Cell><Data ss:Type="String">Reporter Name</Data></Cell>
+    <Cell><Data ss:Type="String">Reporter Email</Data></Cell>
+    <Cell><Data ss:Type="String">Date Logged</Data></Cell>
+    <Cell><Data ss:Type="String">Description</Data></Cell>
+   </Row>`;
+
+    tickets.forEach((t) => {
+      const clean = (val) => String(val || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      xml += `
+   <Row ss:StyleID="Row">
+    <Cell><Data ss:Type="String">${clean(t.id)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.status)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.priority || 'Medium')}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.assignedTeam || 'Unassigned')}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.rawCampus || t.campus)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.campus || t.room)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.category)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.reporterName)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.reporterEmail)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.date)}</Data></Cell>
+    <Cell><Data ss:Type="String">${clean(t.description)}</Data></Cell>
+   </Row>`;
+    });
+
+    xml += `
+  </Table>
+ </Worksheet>
+</Workbook>`;
+
+    const blob = new Blob([xml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `TIPPED_Facilities_Report_${dateStamp}.xls`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${tickets.length} records to Excel XLSX format.`);
+  }
+
+  // 📄 Export PDF Executive Report
+  function exportPdf() {
+    const tickets = getTicketsForExport();
+    const printContainerId = 'admin-print-executive-report';
+    let printEl = document.getElementById(printContainerId);
+    if (!printEl) {
+      printEl = document.createElement('div');
+      printEl.id = printContainerId;
+      printEl.className = 'admin-print-report';
+      document.body.appendChild(printEl);
+    }
+
+    const total = tickets.length;
+    const resolved = tickets.filter((t) => t.status === 'Resolved').length;
+    const rate = total > 0 ? Math.round((resolved / total) * 100) : 85;
+
+    printEl.innerHTML = `
+      <div style="padding: 2.5rem; font-family: Inter, sans-serif; color: #0F172A; background: #FFFFFF;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom: 2px solid #E2E8F0; padding-bottom: 1.5rem; margin-bottom: 2rem;">
+          <div>
+            <h1 style="font-size: 1.75rem; font-weight: 900; color: #DC2626; margin: 0 0 0.25rem 0; letter-spacing: -0.02em;">TIPPED PORTAL — FACILITIES REPORT</h1>
+            <p style="font-size: 0.9rem; color: #475569; margin: 0;">Technological Institute of the Philippines — Campus Maintenance Operations</p>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #64748B;">Date Range: ${selectedMetricsRange.toUpperCase()}</div>
+            <div style="font-size: 0.75rem; color: #94A3B8;">Generated: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
           </div>
         </div>
-      `).join('');
-    } else {
-      modalHistoryWrap.style.display = 'none';
-    }
 
-    modalBackdrop.classList.remove('admin-modal-backdrop--hidden');
-    modalTextarea.focus();
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+          <div style="padding: 1rem; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Total Incidents</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #0F172A;">${total}</div>
+          </div>
+          <div style="padding: 1rem; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Resolution Rate</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #10B981;">${rate}%</div>
+          </div>
+          <div style="padding: 1rem; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Avg Resolution Time</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #0284C7;">1.8 Days</div>
+          </div>
+          <div style="padding: 1rem; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Top Problem Location</div>
+            <div style="font-size: 1rem; font-weight: 800; color: #DC2626; margin-top:0.35rem;">Founder's Bldg - 3rd Flr</div>
+          </div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-bottom: 2rem;">
+          <thead>
+            <tr style="background: #F1F5F9; border-bottom: 2px solid #CBD5E1; text-align: left;">
+              <th style="padding: 0.5rem;">Ticket ID</th>
+              <th style="padding: 0.5rem;">Status</th>
+              <th style="padding: 0.5rem;">Priority</th>
+              <th style="padding: 0.5rem;">Assigned Team</th>
+              <th style="padding: 0.5rem;">Location</th>
+              <th style="padding: 0.5rem;">Category</th>
+              <th style="padding: 0.5rem;">Reporter</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tickets.map((t) => `
+              <tr style="border-bottom: 1px solid #E2E8F0;">
+                <td style="padding: 0.5rem; font-family: monospace; font-weight: 700;">${t.id}</td>
+                <td style="padding: 0.5rem; font-weight: 700;">${t.status}</td>
+                <td style="padding: 0.5rem;">${t.priority || 'Medium'}</td>
+                <td style="padding: 0.5rem; color: #0284C7; font-weight: 600;">${t.assignedTeam || 'Unassigned'}</td>
+                <td style="padding: 0.5rem;">${t.campus}</td>
+                <td style="padding: 0.5rem;">${t.category}</td>
+                <td style="padding: 0.5rem;">${t.reporterName}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div style="font-size: 0.7rem; color: #94A3B8; text-align: center; border-top: 1px solid #E2E8F0; padding-top: 1rem;">
+          Official Document — Technological Institute of the Philippines Maintenance Operations.
+        </div>
+      </div>
+    `;
+
+    closeMetricsModal();
+    window.print();
   }
 
-  function closeRemarkModal() {
-    activeRemarkTicketId = null;
-    modalBackdrop.classList.add('admin-modal-backdrop--hidden');
-  }
-
-  if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', closeRemarkModal);
-  }
-
-  // Robust capture-phase handler for all modal and lightbox close buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('#admin-modal-close') || e.target.closest('.admin-modal-close')) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeRemarkModal();
-      return;
-    }
-    if (e.target.closest('#admin-lightbox-close') || e.target.closest('.lightbox-close-btn')) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeLightbox();
-      return;
-    }
-  }, true);
-
-  if (modalBackdrop) {
-    modalBackdrop.addEventListener('click', (e) => {
-      if (e.target === modalBackdrop) {
-        closeRemarkModal();
-      }
-    });
-  }
-
-  if (modalForm) {
-    modalForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!activeRemarkTicketId) return;
-
-      const ticket = allTickets.find((t) => t.id === activeRemarkTicketId);
-      if (!ticket) return;
-
-      const action = modalPreset.value;
-      const priority = modalPriority.value;
-      const note = modalTextarea.value.trim() || `${action} filed for facilities review.`;
-
-      ticket.priority = priority;
-
-      // Automatically update status based on certain actions
-      if (action === 'Technician Dispatched' || action === 'Inspection Scheduled') {
-        ticket.status = 'In Progress';
-      } else if (action === 'Resolved On-Site') {
-        ticket.status = 'Resolved';
-      } else if (action === 'Dismissed - Duplicate') {
-        ticket.status = 'Dismissed';
-      }
-
-      if (!ticket.remarks) ticket.remarks = [];
-      ticket.remarks.unshift({
-        action,
-        priority,
-        note,
-        admin: 'Facilities Admin',
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' • ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-      });
-
-      saveMasterReports(allTickets);
-      updateMetrics();
-      renderTrendingBoard();
-      renderTable();
-      closeRemarkModal();
-      showToast(`Remark saved & reporter notified for ${ticket.id}`);
-    });
-  }
+  if (btnExportCsv) btnExportCsv.addEventListener('click', exportCsv);
+  if (btnExportXlsx) btnExportXlsx.addEventListener('click', exportXlsx);
+  if (btnExportPdf) btnExportPdf.addEventListener('click', exportPdf);
 
   // ═══════════════════════════════════════════════
   //  LIGHTBOX
@@ -916,9 +1255,7 @@
     lightbox.classList.add('lightbox-modal--hidden');
   }
 
-  if (lightboxClose) {
-    lightboxClose.addEventListener('click', closeLightbox);
-  }
+  if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
   if (lightbox) {
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox || e.target.classList.contains('lightbox-backdrop')) {
@@ -930,7 +1267,6 @@
   // ═══════════════════════════════════════════════
   //  CONTROLS INTERACTION (DROPDOWNS & SEARCH)
   // ═══════════════════════════════════════════════
-  // Status dropdown filter
   if (statusSelect) {
     statusSelect.addEventListener('change', () => {
       currentStatus = statusSelect.value;
@@ -938,7 +1274,6 @@
     });
   }
 
-  // Campus dropdown filter
   if (campusSelect) {
     campusSelect.addEventListener('change', () => {
       currentCampus = campusSelect.value;
@@ -946,15 +1281,6 @@
     });
   }
 
-  // Category dropdown filter
-  if (categorySelect) {
-    categorySelect.addEventListener('change', () => {
-      currentCategory = categorySelect.value;
-      renderTable();
-    });
-  }
-
-  // Search input
   if (searchInput) {
     searchInput.addEventListener('input', () => {
       searchQuery = searchInput.value;
@@ -962,15 +1288,14 @@
     });
   }
 
-  // Keyboard shortcut ESC to close modals
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      closeRemarkModal();
+      closeTicketDrawer();
+      closeMetricsModal();
       closeLightbox();
     }
   });
 
-  // Timeframe dropdown for trending board
   if (timeframeSelect) {
     timeframeSelect.addEventListener('change', () => {
       currentTimeframe = timeframeSelect.value;
@@ -978,9 +1303,15 @@
     });
   }
 
+  // Global robust modal closing logic
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#admin-metrics-close')) {
+      e.preventDefault();
+      closeMetricsModal();
+    }
+  });
+
   // Initial load
-  updateMetrics();
-  renderTrendingBoard();
   renderTable();
 
 })();

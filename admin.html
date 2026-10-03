@@ -28,115 +28,181 @@
       </div>
 
       <div class="dash-header__right">
-        <div class="dash-user">
-          <span class="dash-user__name">Facilities Admin</span>
-          <span class="dash-user__role" style="background:#EF4444; color:#FFFFFF;">ADMIN</span>
+        <!-- Desktop Profile Menu Dropdown (>= 768px) -->
+        <div class="profile-dropdown-container" id="profile-dropdown-container">
+          <button type="button" class="profile-avatar-btn" id="profile-avatar-btn" aria-expanded="false" aria-haspopup="true" aria-label="User profile menu" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); border-color: rgba(239, 68, 68, 0.5); color: #FFFFFF;">
+            <span class="profile-avatar-initials" id="header-avatar-initials">AD</span>
+          </button>
+
+          <!-- Dropdown Flyout Card -->
+          <div class="profile-dropdown-menu" id="profile-dropdown-menu" role="menu" aria-hidden="true">
+            <!-- 1. Header with Full Name & Role Badge -->
+            <div class="profile-dropdown-header">
+              <div class="profile-dropdown-avatar" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: #FFFFFF;">
+                <span id="dropdown-avatar-initials">AD</span>
+              </div>
+              <div class="profile-dropdown-user-details">
+                <div class="profile-dropdown-name" id="dropdown-user-name">Facilities Admin</div>
+                <div class="profile-dropdown-role-badge" id="dropdown-user-role" style="background: rgba(239, 68, 68, 0.2); color: #EF4444; border-color: rgba(239, 68, 68, 0.35);">ADMIN</div>
+              </div>
+            </div>
+
+            <div class="profile-dropdown-divider"></div>
+
+            <!-- 2. Body: Menu Items & Actions -->
+            <div class="profile-dropdown-body">
+              <button type="button" class="profile-dropdown-item-btn" id="dropdown-advanced-metrics-btn" role="menuitem">
+                <div class="profile-dropdown-item-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                </div>
+                <span>Analytics &amp; Reports</span>
+              </button>
+
+              <button type="button" class="profile-dropdown-theme-row" id="dropdown-theme-toggle" role="menuitem" style="margin-top:0.25rem;">
+                <div class="profile-dropdown-theme-info">
+                  <div class="profile-dropdown-theme-icon">
+                    <svg class="dropdown-theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="5"></circle>
+                      <line x1="12" y1="1" x2="12" y2="3"></line>
+                      <line x1="12" y1="21" x2="12" y2="23"></line>
+                      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                      <line x1="1" y1="12" x2="3" y2="12"></line>
+                      <line x1="21" y1="12" x2="23" y2="12"></line>
+                      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="dropdown-theme-moon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+                  </div>
+                  <span id="dropdown-theme-text">Dark Mode</span>
+                </div>
+                <div class="profile-theme-pill"></div>
+              </button>
+            </div>
+
+            <div class="profile-dropdown-divider"></div>
+
+            <!-- 3. Bottom: Logout Action -->
+            <div class="profile-dropdown-footer">
+              <button type="button" class="profile-dropdown-logout-btn" id="dropdown-logout-btn" role="menuitem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
-          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          <svg class="theme-toggle__icon theme-toggle__icon--moon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <!-- Mobile Hamburger Button (< 768px) -->
+        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open mobile navigation menu" aria-expanded="false" aria-controls="mobile-drawer">
+          <svg class="mobile-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
         </button>
-
-        <button id="logout-btn" class="dash-logout-btn" title="Sign out of portal">Logout</button>
       </div>
     </div>
   </header>
 
   <!-- ═══════════════════════════════════════════════════
-       ADMIN CONSOLE MAIN CONTENT
+       SLIDE-OVER MOBILE DRAWER & BACKDROP (< 768px)
+  ═══════════════════════════════════════════════════ -->
+  <div id="mobile-drawer-backdrop" class="mobile-drawer-backdrop" aria-hidden="true"></div>
+  <aside id="mobile-drawer" class="mobile-drawer" aria-label="Mobile Navigation" aria-hidden="true">
+    <div class="mobile-drawer__header">
+      <div class="mobile-user-card">
+        <div class="mobile-user-avatar" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color:#FFFFFF;">
+          <span id="mobile-avatar-text">FA</span>
+        </div>
+        <div class="mobile-user-info">
+          <span class="mobile-user-name" id="mobile-user-name">Facilities Admin</span>
+          <span class="mobile-user-role" id="mobile-user-role" style="color:#EF4444;">Staff / Admin</span>
+        </div>
+      </div>
+      <button id="mobile-drawer-close" class="mobile-drawer-close" aria-label="Close navigation menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="mobile-drawer__nav">
+      <a href="/admin" class="mobile-nav-link mobile-nav-link--active" id="mob-link-admin">
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Admin Console</span>
+      </a>
+      <button type="button" class="mobile-nav-link" id="mob-link-metrics">
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span>Analytics &amp; Reports</span>
+      </button>
+      <button type="button" class="mobile-nav-link" id="mob-link-alerts">
+        <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span>System Operations</span>
+        <span class="mobile-nav-badge">Online</span>
+      </button>
+    </nav>
+
+    <div class="mobile-drawer__footer">
+      <div class="mobile-theme-row">
+        <div class="mobile-theme-label">
+          <span class="mobile-theme-text">Interface Theme</span>
+          <span class="mobile-theme-sub" id="mobile-theme-mode-text">Dark Mode Active</span>
+        </div>
+        <button type="button" id="mobile-drawer-theme-toggle" class="mobile-theme-toggle-btn mobile-theme-toggle-btn--active" aria-label="Toggle theme">
+          <span class="mobile-theme-toggle-pill"></span>
+        </button>
+      </div>
+
+      <button type="button" id="mobile-drawer-logout" class="mobile-drawer-logout-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Sign Out of Portal</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════
+       ADMIN CONSOLE MAIN CONTENT (FOCUSED 4-COL QUEUE)
   ═══════════════════════════════════════════════════ -->
   <main class="dashboard-page tracker-page">
     <div class="dashboard-container tracker-container" style="max-width: 1240px;">
 
-      <!-- ── 1. Top Bento Row — Live Operational Metrics ── -->
-      <section class="admin-metrics-grid" aria-label="Operational Metrics">
-        <!-- Metric 1: Total Incidents -->
-        <div class="admin-metric-card admin-metric-card--total">
-          <div class="admin-metric-card__header">
-            <span class="admin-metric-card__label">Total Logged</span>
-            <div class="admin-metric-card__icon admin-metric-card__icon--total" title="Campus wide incidents">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-            </div>
-          </div>
-          <div class="admin-metric-card__value" id="metric-total">48</div>
-        </div>
-
-        <!-- Metric 2: Pending Review -->
-        <div class="admin-metric-card admin-metric-card--pending">
-          <div class="admin-metric-card__header">
-            <span class="admin-metric-card__label">Pending</span>
-            <div class="admin-metric-card__icon admin-metric-card__icon--pending" title="Awaiting action">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            </div>
-          </div>
-          <div class="admin-metric-card__value" id="metric-pending">12</div>
-        </div>
-
-        <!-- Metric 3: In Progress -->
-        <div class="admin-metric-card admin-metric-card--progress">
-          <div class="admin-metric-card__header">
-            <span class="admin-metric-card__label">In Progress</span>
-            <div class="admin-metric-card__icon admin-metric-card__icon--progress" title="Under maintenance">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-            </div>
-          </div>
-          <div class="admin-metric-card__value" id="metric-progress">18</div>
-        </div>
-
-        <!-- Metric 4: Resolved Today -->
-        <div class="admin-metric-card admin-metric-card--resolved">
-          <div class="admin-metric-card__header">
-            <span class="admin-metric-card__label">Resolved</span>
-            <div class="admin-metric-card__icon admin-metric-card__icon--resolved" title="Completed today">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
-          </div>
-          <div class="admin-metric-card__value" id="metric-resolved">15</div>
-        </div>
+      <!-- ── 0. Minimalist Welcome Header (No $ icon, clean dynamic name) ── -->
+      <section class="admin-greeting-wrap" aria-label="Console Greeting">
+        <h1 class="admin-greeting">Welcome, <span id="admin-user-firstname" class="admin-greeting-name">Admin</span></h1>
       </section>
 
-      <!-- ── 1.5. Most Reported Incidents Bento Board ── -->
-      <section class="admin-trending-card" aria-label="Most Reported Incidents">
-        <div class="admin-trending-header">
-          <div class="admin-trending-title-wrap">
-            <div class="admin-trending-badge-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M18 20V10M12 20V4M6 20v-6"/>
-              </svg>
-            </div>
-            <h2 class="admin-trending-title">Most Reported Incidents</h2>
-          </div>
-
-          <!-- Timeframe filter dropdown with icon -->
-          <div class="tracker-select-custom admin-timeframe-select-wrap">
-            <svg class="admin-timeframe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <select id="admin-timeframe-filter" class="tracker-select admin-timeframe-select" aria-label="Filter timeframe">
-              <option value="weekly" selected>This Week</option>
-              <option value="monthly">This Month</option>
-              <option value="all">All-Time</option>
-            </select>
-            <svg viewBox="0 0 20 20" fill="currentColor" class="tracker-select-chevron">
-              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-            </svg>
-          </div>
-        </div>
-
-        <div id="admin-trending-grid" class="admin-trending-grid">
-          <!-- Dynamically populated via admin.js from real submitted reports -->
-        </div>
-      </section>
-
-      <!-- ── 2. Master Control & Filter Bento Bar with Sleek Dropdowns ── -->
+      <!-- ── 1. Simplified 3-Item Filter & Search Bar ── -->
       <section class="bento-tile--tracker-controls" aria-label="Filter & Search Controls">
         <div class="tracker-toolbar">
-          <div class="tracker-toolbar__filters">
-            <!-- Dropdown 1: Status -->
+          <div class="tracker-toolbar__filters" style="display:flex; gap:0.75rem;">
+            <!-- Selector 1: Status -->
             <div class="tracker-select-wrap">
               <label for="admin-status-filter" class="tracker-select-label">Status</label>
               <div class="tracker-select-custom">
@@ -154,11 +220,11 @@
               </div>
             </div>
 
-            <!-- Dropdown 2: Campus / Building -->
+            <!-- Selector 2: Building / Campus -->
             <div class="tracker-select-wrap">
-              <label for="admin-campus-filter" class="tracker-select-label">Campus</label>
+              <label for="admin-campus-filter" class="tracker-select-label">Building</label>
               <div class="tracker-select-custom">
-                <select id="admin-campus-filter" class="tracker-select" aria-label="Filter by campus">
+                <select id="admin-campus-filter" class="tracker-select" aria-label="Filter by building or campus">
                   <option value="all">All Buildings</option>
                   <option value="arlegui">Arlegui Campus</option>
                   <option value="casal">Casal Campus</option>
@@ -168,30 +234,9 @@
                 </svg>
               </div>
             </div>
-
-            <!-- Dropdown 3: Category -->
-            <div class="tracker-select-wrap">
-              <label for="admin-category-filter" class="tracker-select-label">Category</label>
-              <div class="tracker-select-custom">
-                <select id="admin-category-filter" class="tracker-select" aria-label="Filter by incident category">
-                  <option value="all">All Categories</option>
-                  <option value="HVAC & Cooling">HVAC &amp; Cooling</option>
-                  <option value="Electrical & Power">Electrical &amp; Power</option>
-                  <option value="Water & Sanitation">Water &amp; Sanitation</option>
-                  <option value="Digital & IT">Digital &amp; IT</option>
-                  <option value="Furniture & Fixtures">Furniture &amp; Fixtures</option>
-                  <option value="Life Safety & Hazards">Life Safety &amp; Hazards</option>
-                  <option value="Faculty / Academic">Faculty / Academic</option>
-                  <option value="General Concern / Other">General Concern / Other</option>
-                </select>
-                <svg viewBox="0 0 20 20" fill="currentColor" class="tracker-select-chevron">
-                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                </svg>
-              </div>
-            </div>
           </div>
 
-          <!-- Inline Search Field (Right Aligned) -->
+          <!-- Selector 3: Search Bar -->
           <div class="tracker-search-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="tracker-search-icon">
               <circle cx="11" cy="11" r="8"></circle>
@@ -201,7 +246,7 @@
               type="text"
               id="admin-search-input"
               class="tracker-search-input"
-              placeholder="Search by Ticket ID, reporter, room..."
+              placeholder="Search Ticket ID or Room..."
               aria-label="Search incident tickets"
               autocomplete="off"
             />
@@ -209,11 +254,11 @@
         </div>
       </section>
 
-      <!-- ── 3. Master Tickets Table Bento Tile ── -->
+      <!-- ── 2. Clean 4-Column Active Incident Queue Table ── -->
       <section class="admin-table-card" aria-label="Master Incident Tickets">
         <div class="admin-table-header">
           <div class="admin-table-title">
-            <span>Active Campus Reports</span>
+            <span>Active Incident Queue</span>
             <span class="admin-table-count" id="admin-table-count">Loading tickets…</span>
           </div>
         </div>
@@ -222,16 +267,30 @@
           <table class="admin-table" aria-label="Campus incident tickets list">
             <thead>
               <tr>
-                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Ticket &amp; Date</th>
-                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Reporter</th>
-                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Location &amp; Category</th>
-                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Details &amp; Evidence</th>
-                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Status</th>
-                <th scope="col"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Action</th>
+                <!-- Column 1: Ticket & Date -->
+                <th scope="col" style="width: 25%;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Ticket &amp; Date
+                </th>
+                <!-- Column 2: Location & Category -->
+                <th scope="col" style="width: 35%;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Location &amp; Category
+                </th>
+                <!-- Column 3: Status -->
+                <th scope="col" style="width: 22%;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Status
+                </th>
+                <!-- Column 4: Action -->
+                <th scope="col" style="width: 18%; text-align: right;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody id="admin-table-body">
-              <!-- Dynamically rendered via admin.js -->
+              <!-- Dynamically rendered via admin.js (4 columns) -->
             </tbody>
           </table>
         </div>
@@ -241,61 +300,233 @@
   </main>
 
   <!-- ═══════════════════════════════════════════════════
-       ADMIN REMARKS & ACTION LOG MODAL OVERLAY
+       SLIDE-OVER RIGHT DRAWER FOR TICKET MANAGEMENT
   ═══════════════════════════════════════════════════ -->
-  <div id="admin-remark-modal" class="admin-modal-backdrop admin-modal-backdrop--hidden" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title">
-    <div class="admin-modal-card">
-      <div class="admin-modal-header">
-        <div>
-          <h2 id="admin-modal-title" class="admin-modal-title">Log Maintenance Remark</h2>
-          <p id="admin-modal-subtitle" class="admin-modal-subtitle">Update maintenance audit log &amp; notify reporter</p>
+  <div id="admin-drawer-backdrop" class="admin-drawer-backdrop" aria-hidden="true"></div>
+  <aside id="admin-ticket-drawer" class="admin-ticket-drawer" aria-label="Ticket Management Drawer" aria-hidden="true">
+    <div class="admin-drawer-header">
+      <div class="admin-drawer-title-wrap">
+        <div class="admin-drawer-title">
+          <span id="drawer-ticket-id">ARL-FAC-2026-0877</span>
+          <span id="drawer-priority-pill" class="priority-pill priority-pill--high">High</span>
         </div>
-        <button id="admin-modal-close" class="admin-modal-close" aria-label="Close modal">&times;</button>
+        <span id="drawer-ticket-date" class="admin-drawer-subtitle">Oct 1, 2026 • 09:14 AM</span>
+      </div>
+      <button id="admin-drawer-close" class="admin-drawer-close" aria-label="Close ticket drawer">&times;</button>
+    </div>
+
+    <div class="admin-drawer-body">
+      <!-- Section 1: Reporter -->
+      <div class="admin-drawer-section">
+        <span class="admin-drawer-section-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Reporter
+        </span>
+        <div class="admin-drawer-reporter-box">
+          <div class="admin-avatar-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="admin-drawer-reporter-info">
+            <div class="admin-drawer-reporter-line">
+              <span id="drawer-reporter-name" class="admin-drawer-reporter-name">Juan De La Cruz</span>
+              <span class="admin-drawer-reporter-sep">•</span>
+              <span id="drawer-reporter-email" class="admin-drawer-reporter-email">jdelacruz.m@tip.edu.ph</span>
+            </div>
+            <div>
+              <span id="drawer-reporter-location" class="admin-drawer-room-badge">#A-302 (CAD Lab 302)</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <form id="admin-modal-form" class="admin-modal-form">
-        <!-- Field 1: Action Taken Preset -->
-        <div class="admin-modal-field">
-          <label for="admin-remark-action" class="admin-modal-label">Action Taken Preset</label>
-          <select id="admin-remark-action" class="admin-modal-select" required>
-            <option value="Inspection Scheduled">Inspection Scheduled</option>
-            <option value="Technician Dispatched">Technician Dispatched</option>
-            <option value="Parts Ordered">Parts Ordered</option>
-            <option value="Resolved On-Site">Resolved On-Site</option>
-            <option value="Dismissed - Duplicate">Dismissed - Duplicate</option>
-            <option value="General Note">General Note</option>
-          </select>
+      <!-- Section 2: Details -->
+      <div class="admin-drawer-section">
+        <span class="admin-drawer-section-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Details
+        </span>
+        <div id="drawer-description-text" class="admin-drawer-desc-box">
+          Inverter AC leaking water on drafting desks. Unit producing loud rattling noise.
+        </div>
+        <div id="drawer-evidence-grid" class="admin-drawer-evidence-grid">
+          <!-- Dynamically populated thumbnails -->
+        </div>
+      </div>
+
+      <!-- Section 3: Assignment -->
+      <div class="admin-drawer-section">
+        <span class="admin-drawer-section-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Assignment
+        </span>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+          <div>
+            <label for="drawer-assign-team" class="admin-modal-label">Team</label>
+            <select id="drawer-assign-team" class="admin-modal-select">
+              <option value="Unassigned">Unassigned</option>
+              <option value="Electrical Team">Electrical Team</option>
+              <option value="Plumbing Team">Plumbing Team</option>
+              <option value="Aircon/HVAC Team">Aircon/HVAC Team</option>
+              <option value="General Maintenance">General Maintenance</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="drawer-set-priority" class="admin-modal-label">Priority</label>
+            <select id="drawer-set-priority" class="admin-modal-select">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Staff Notes -->
+      <div class="admin-drawer-section">
+        <span class="admin-drawer-section-title">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Staff Notes
+        </span>
+        <textarea id="drawer-internal-note-input" class="admin-modal-textarea" style="min-height:55px;" placeholder="Add note..."></textarea>
+        <div id="drawer-internal-notes-feed" class="admin-staff-notes-log">
+          <!-- Dynamic feed -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Footer / Save Action -->
+    <div class="admin-drawer-footer">
+      <button type="button" id="btn-drawer-save" class="admin-drawer-save-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span>Save Changes</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════
+       ADVANCED METRICS & REPORT GENERATOR MODAL
+  ═══════════════════════════════════════════════════ -->
+  <div id="admin-metrics-modal" class="admin-modal-backdrop admin-modal-backdrop--hidden" role="dialog" aria-modal="true" aria-labelledby="metrics-modal-title">
+    <div class="admin-modal-card admin-metrics-modal-card">
+      <div class="admin-modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.75rem;">
+        <div>
+          <h2 id="metrics-modal-title" class="admin-modal-title" style="display:flex; align-items:center; gap:0.5rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-gold)" stroke-width="2.3"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <span>Reports &amp; Analytics</span>
+          </h2>
+        </div>
+        <button id="admin-metrics-close" class="admin-modal-close" aria-label="Close analytics modal">&times;</button>
+      </div>
+
+      <!-- Section 1: REPORT GENERATOR TOOLKIT -->
+      <div class="metrics-section" style="border-top: none; margin-top: 0.75rem; padding-top: 0;">
+        <div class="metrics-range-pills" id="metrics-range-pills" role="radiogroup" aria-label="Date Range Filter">
+          <button type="button" class="metrics-range-pill" data-range="1w">1 Week</button>
+          <button type="button" class="metrics-range-pill metrics-range-pill--active" data-range="30d">30 Days</button>
+          <button type="button" class="metrics-range-pill" data-range="6m">6 Months</button>
+          <button type="button" class="metrics-range-pill" data-range="1y">1 Year</button>
+          <button type="button" class="metrics-range-pill" data-range="all">All Time</button>
         </div>
 
-        <!-- Field 2: Priority Flag -->
-        <div class="admin-modal-field">
-          <label for="admin-remark-priority" class="admin-modal-label">Priority Flag</label>
-          <select id="admin-remark-priority" class="admin-modal-select" required>
-            <option value="Low">Low</option>
-            <option value="Medium" selected>Medium</option>
-            <option value="High">High</option>
-            <option value="Critical">Critical</option>
-          </select>
+        <div class="metrics-export-grid">
+          <button type="button" id="btn-export-csv" class="metrics-export-btn metrics-export-btn--csv" title="Download raw CSV records">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
+            <span>Export CSV</span>
+          </button>
+
+          <button type="button" id="btn-export-xlsx" class="metrics-export-btn metrics-export-btn--xlsx" title="Download Excel records">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="12" y1="9" x2="12" y2="21"/></svg>
+            <span>Export XLSX</span>
+          </button>
+
+          <button type="button" id="btn-export-pdf" class="metrics-export-btn metrics-export-btn--pdf" title="Generate printable PDF Report">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+            <span>Export PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Section 2: ANALYTICS DASHBOARD WIDGETS -->
+      <div class="metrics-section">
+        <div class="admin-analytics-grid" style="margin-bottom: 1.25rem;">
+          <div class="admin-analytics-card">
+            <div class="admin-analytics-header">
+              <span class="admin-analytics-label">Avg Resolution Time</span>
+              <div class="admin-analytics-icon-box admin-analytics-icon-box--green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+            </div>
+            <div class="admin-analytics-val-row">
+              <span class="admin-analytics-val" id="analytics-avg-time">1.8 Days</span>
+              <span class="admin-analytics-badge admin-analytics-badge--good">⚡ -0.4d vs last mo</span>
+            </div>
+          </div>
+
+          <div class="admin-analytics-card">
+            <div class="admin-analytics-header">
+              <span class="admin-analytics-label">Top Problem Location</span>
+              <div class="admin-analytics-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </div>
+            </div>
+            <div class="admin-analytics-val-row">
+              <span class="admin-analytics-val" id="analytics-top-loc" style="font-size:1.05rem;" title="Founder's Building - 3rd Floor">Founder's Bldg - 3rd Flr</span>
+              <span class="admin-analytics-badge admin-analytics-badge--warn" id="analytics-top-loc-count">14 tickets</span>
+            </div>
+          </div>
+
+          <div class="admin-analytics-card">
+            <div class="admin-analytics-header">
+              <span class="admin-analytics-label">Open vs Resolved Ratio</span>
+              <div class="admin-analytics-icon-box admin-analytics-icon-box--blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              </div>
+            </div>
+            <div class="admin-analytics-val-row">
+              <span class="admin-analytics-val" id="analytics-resolution-rate">85% Resolved</span>
+              <span class="admin-analytics-badge admin-analytics-badge--info" id="analytics-ratio-count">41 of 48 closed</span>
+            </div>
+            <div class="admin-analytics-bar-track">
+              <div class="admin-analytics-bar-fill" id="analytics-ratio-bar" style="width: 85%;"></div>
+            </div>
+          </div>
         </div>
 
-        <!-- Field 3: Admin Note Textarea -->
-        <div class="admin-modal-field">
-          <label for="admin-remark-note" class="admin-modal-label">Admin Official Note</label>
-          <textarea id="admin-remark-note" class="admin-modal-textarea" placeholder="e.g. Technician dispatched to Arlegui CAD Lab 302. Replaced AC drain pipe."></textarea>
-        </div>
+        <div class="admin-trending-card" style="margin-top: 0; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155;">
+          <div class="admin-trending-header">
+            <div class="admin-trending-title-wrap">
+              <div class="admin-trending-badge-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <h3 class="admin-trending-title" style="font-size:0.85rem;">Most Reported Incidents</h3>
+            </div>
 
-        <!-- History log -->
-        <div id="admin-remark-history-wrap" class="admin-remark-history" style="display:none;">
-          <div class="admin-remark-history-title">Prior Remarks History</div>
-          <div id="admin-remark-history-box" class="admin-remark-history-box"></div>
-        </div>
+            <div class="tracker-select-custom admin-timeframe-select-wrap">
+              <select id="admin-timeframe-filter" class="tracker-select admin-timeframe-select" aria-label="Filter timeframe">
+                <option value="weekly" selected>This Week</option>
+                <option value="monthly">This Month</option>
+                <option value="all">All-Time</option>
+              </select>
+              <svg viewBox="0 0 20 20" fill="currentColor" class="tracker-select-chevron">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+          </div>
 
-        <!-- Action Button -->
-        <button type="submit" class="admin-modal-submit">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          <span>Save Remark &amp; Notify Reporter</span>
-        </button>
-      </form>
+          <div class="stacked-bar-legend" style="padding: 0 0.25rem 0.65rem 0.25rem;">
+            <span><span class="stacked-legend-dot stacked-legend-dot--resolved"></span>Resolved</span>
+            <span><span class="stacked-legend-dot stacked-legend-dot--progress"></span>In Progress</span>
+            <span><span class="stacked-legend-dot stacked-legend-dot--pending"></span>Pending</span>
+          </div>
+
+          <div id="admin-trending-grid" class="admin-trending-grid">
+            <!-- Populated dynamically via admin.js as horizontal stacked bar chart -->
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -325,6 +556,7 @@
     <span id="admin-toast-text">Ticket status updated.</span>
   </div>
 
+  <script src="/nav.js"></script>
   <script src="/admin.js"></script>
 </body>
 </html>

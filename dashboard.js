@@ -52,11 +52,13 @@
   //  SESSION & USER DATA
   // ═══════════════════════════════════════════════
   const sessionUser = sessionStorage.getItem('tipped_user_name');
-  if (sessionUser && userDisplay) {
-    userDisplay.textContent = sessionUser;
-    const bannerTitle = $('.dash-banner__title');
-    if (bannerTitle) {
-      bannerTitle.textContent = `Welcome back, ${sessionUser.split(' ')[0]}!`;
+  const bannerTitle = $('.dash-banner__title') || $('#dash-welcome-title');
+  if (bannerTitle) {
+    if (sessionUser && sessionUser.trim()) {
+      const firstName = sessionUser.trim().split(/\s+/)[0];
+      bannerTitle.textContent = `Welcome back, ${firstName}!`;
+    } else {
+      bannerTitle.textContent = 'Welcome back, Student!';
     }
   }
 

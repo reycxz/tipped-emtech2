@@ -425,17 +425,44 @@
     }
   }
 
+  // ── Auto-load photos passed from Camera FAB trigger ──
+  try {
+    const pendingPhotosRaw = sessionStorage.getItem('tipped_pending_photos');
+    if (pendingPhotosRaw) {
+      const pendingPhotos = JSON.parse(pendingPhotosRaw);
+      if (Array.isArray(pendingPhotos) && pendingPhotos.length > 0) {
+        uploadedPhotos = pendingPhotos.slice(0, 5);
+        renderThumbnails();
+        updatePhotoCounter();
+      }
+      sessionStorage.removeItem('tipped_pending_photos');
+    }
+  } catch (err) {
+    console.warn('Could not read pending photos:', err);
+  }
+
   function handleFiles(files) {
+    const nonImages = Array.from(files).filter((f) => !f.type.startsWith('image/'));
+    if (nonImages.length > 0) {
+      alert('Only image files are allowed. Video formats are blocked.');
+    }
+
+    const imageFiles = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    if (imageFiles.length === 0) return;
+
     const remainingSlots = 5 - uploadedPhotos.length;
     if (remainingSlots <= 0) {
-      alert('You can upload a maximum of 5 photos.');
+      alert('Maximum 5 photos allowed per incident report.');
       return;
     }
 
-    const filesToLoad = Array.from(files).slice(0, remainingSlots);
+    if (imageFiles.length > remainingSlots) {
+      alert(`Maximum 5 photos allowed per incident report. Attaching first ${remainingSlots} photo(s).`);
+    }
+
+    const filesToLoad = imageFiles.slice(0, remainingSlots);
 
     filesToLoad.forEach((file) => {
-      if (!file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = (e) => {
         uploadedPhotos.push({
