@@ -1,0 +1,13 @@
+{
+  "name": "tipped-portal",
+  "version": "1.0.0",
+  "description": "TIPPED — T.I.P. Manila Campus Incident & Facilities Reporting Portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["incident-reporting", "tip-manila", "campus-safety"],
+  "author": "",
+  "license": "ISC"
+}

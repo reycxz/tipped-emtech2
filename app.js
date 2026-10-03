@@ -32,10 +32,12 @@
   const signupEmailErr  = $('#signup-email-error');
   const signupPassword  = $('#signup-password');
   const signupTogglePw  = $('#signup-toggle-pw');
+  const signupConfirmPassword = $('#signup-confirm-password');
+  const signupToggleConfirmPw = $('#signup-toggle-confirm-pw');
+  const signupConfirmPwErr    = $('#signup-confirm-password-error');
   const strengthMeter   = $('#password-strength');
   const strengthBar     = $('#strength-bar');
   const strengthLabel   = $('#strength-label');
-  const footerToggleText = $('#footer-toggle-text');
   const footerToggleLink = $('#footer-toggle-link');
   const themeToggle      = $('#theme-toggle');
 
@@ -107,16 +109,13 @@
     activeForm.style.animation = '';
 
     // Footer text
-    if (mode === 'signin') {
-      footerToggleText.innerHTML = 'Don\'t have an account? <a href="#" id="footer-toggle-link" class="form-link form-link--bold">Sign Up</a>';
-    } else {
-      footerToggleText.innerHTML = 'Already have an account? <a href="#" id="footer-toggle-link" class="form-link form-link--bold">Sign In</a>';
+    if (footerToggleLink) {
+      if (mode === 'signin') {
+        footerToggleLink.textContent = "Don't have an account?";
+      } else {
+        footerToggleLink.textContent = "Already have an account?";
+      }
     }
-
-    $('#footer-toggle-link').addEventListener('click', (e) => {
-      e.preventDefault();
-      setMode(currentMode === 'signin' ? 'signup' : 'signin');
-    });
 
     const newPath = mode === 'signin' ? '/login' : '/register';
     history.replaceState(null, '', newPath);
@@ -124,10 +123,12 @@
 
   modeSigninBtn.addEventListener('click', () => setMode('signin'));
   modeSignupBtn.addEventListener('click', () => setMode('signup'));
-  footerToggleLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    setMode('signup');
-  });
+  if (footerToggleLink) {
+    footerToggleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      setMode(currentMode === 'signin' ? 'signup' : 'signin');
+    });
+  }
 
   // ═══════════════════════════════════════════════
   //  EMAIL VALIDATION
@@ -177,6 +178,41 @@
 
   bindPasswordToggle(signinTogglePw, signinPassword);
   bindPasswordToggle(signupTogglePw, signupPassword);
+  if (signupToggleConfirmPw && signupConfirmPassword) {
+    bindPasswordToggle(signupToggleConfirmPw, signupConfirmPassword);
+  }
+
+  // ═══════════════════════════════════════════════
+  //  CONFIRM PASSWORD VALIDATION
+  // ═══════════════════════════════════════════════
+  function validateConfirmPassword() {
+    if (!signupConfirmPassword) return true;
+    const pw = signupPassword ? signupPassword.value : '';
+    const confirm = signupConfirmPassword.value;
+
+    if (confirm === '') {
+      signupConfirmPassword.classList.remove('form-input--valid', 'form-input--error');
+      if (signupConfirmPwErr) signupConfirmPwErr.classList.add('form-error--hidden');
+      return false;
+    }
+
+    if (pw === confirm) {
+      signupConfirmPassword.classList.add('form-input--valid');
+      signupConfirmPassword.classList.remove('form-input--error');
+      if (signupConfirmPwErr) signupConfirmPwErr.classList.add('form-error--hidden');
+      return true;
+    } else {
+      signupConfirmPassword.classList.add('form-input--error');
+      signupConfirmPassword.classList.remove('form-input--valid');
+      if (signupConfirmPwErr) signupConfirmPwErr.classList.remove('form-error--hidden');
+      return false;
+    }
+  }
+
+  if (signupConfirmPassword) {
+    signupConfirmPassword.addEventListener('input', validateConfirmPassword);
+    signupConfirmPassword.addEventListener('blur', validateConfirmPassword);
+  }
 
   // ═══════════════════════════════════════════════
   //  PASSWORD STRENGTH METER
@@ -198,13 +234,16 @@
     const val = signupPassword.value;
     if (val.length === 0) {
       strengthMeter.classList.add('strength-meter--hidden');
-      return;
+    } else {
+      strengthMeter.classList.remove('strength-meter--hidden');
+      const { level, label } = evaluateStrength(val);
+      strengthBar.setAttribute('data-level', level);
+      strengthLabel.setAttribute('data-level', level);
+      strengthLabel.textContent = label;
     }
-    strengthMeter.classList.remove('strength-meter--hidden');
-    const { level, label } = evaluateStrength(val);
-    strengthBar.setAttribute('data-level', level);
-    strengthLabel.setAttribute('data-level', level);
-    strengthLabel.textContent = label;
+    if (signupConfirmPassword && signupConfirmPassword.value) {
+      validateConfirmPassword();
+    }
   });
 
   // ═══════════════════════════════════════════════
@@ -222,7 +261,7 @@
     btn.style.opacity = '.7';
 
     setTimeout(() => {
-      btn.textContent = 'SIGN IN TO TIPPED';
+      btn.textContent = 'SIGN IN';
       btn.disabled = false;
       btn.style.opacity = '';
       
@@ -245,6 +284,10 @@
     validateEmail(signupEmail, signupEmailIcon, signupEmailErr);
     if (!TIP_EMAIL_REGEX.test(signupEmail.value.trim())) { signupEmail.focus(); return; }
     if (signupPassword.value.length < 8) { signupPassword.focus(); return; }
+    if (signupConfirmPassword && !validateConfirmPassword()) {
+      signupConfirmPassword.focus();
+      return;
+    }
 
     const btn = $('#signup-submit');
     btn.textContent = 'CREATING ACCOUNT…';
@@ -277,6 +320,93 @@
       alert('Please enter a valid @tip.edu.ph email address.');
     }
   });
+
+  // ═══════════════════════════════════════════════
+  //  NEED HELP / SUPPORT MODAL
+  // ═══════════════════════════════════════════════
+  const needHelpLink = $('#need-help-link');
+  const helpModalBackdrop = $('#help-modal-backdrop');
+  const helpModalClose = $('#help-modal-close');
+  const helpForm = $('#help-form');
+  const helpSuccessMsg = $('#help-success-msg');
+
+  function openHelpModal() {
+    if (helpModalBackdrop) {
+      helpModalBackdrop.classList.remove('help-modal-backdrop--hidden');
+      if (helpSuccessMsg) helpSuccessMsg.classList.add('hidden');
+      const nameInput = $('#help-name');
+      if (nameInput) setTimeout(() => nameInput.focus(), 60);
+    }
+  }
+
+  function closeHelpModal() {
+    if (helpModalBackdrop) {
+      helpModalBackdrop.classList.add('help-modal-backdrop--hidden');
+    }
+  }
+
+  if (needHelpLink) {
+    needHelpLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openHelpModal();
+    });
+  }
+
+  if (helpModalClose) {
+    helpModalClose.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeHelpModal();
+    });
+  }
+
+  if (helpModalBackdrop) {
+    helpModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === helpModalBackdrop) {
+        closeHelpModal();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && helpModalBackdrop && !helpModalBackdrop.classList.contains('help-modal-backdrop--hidden')) {
+      closeHelpModal();
+    }
+  });
+
+  if (helpForm) {
+    helpForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = $('#help-name').value.trim();
+      const email = $('#help-email').value.trim();
+      const issue = $('#help-issue').value;
+
+      if (!name || !email || !issue) {
+        return;
+      }
+
+      if (helpSuccessMsg) {
+        helpSuccessMsg.classList.remove('hidden');
+      }
+
+      const submitBtn = $('#help-submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'SUBMITTED';
+      }
+
+      setTimeout(() => {
+        helpForm.reset();
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'SUBMIT';
+        }
+        if (helpSuccessMsg) {
+          helpSuccessMsg.classList.add('hidden');
+        }
+        closeHelpModal();
+      }, 1600);
+    });
+  }
 
   // ═══════════════════════════════════════════════
   //  ANIMATED METRIC COUNTERS

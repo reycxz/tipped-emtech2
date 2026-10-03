@@ -305,11 +305,11 @@
   const metricProgress = $('#metric-progress');
   const metricResolved = $('#metric-resolved');
 
-  // Controls
-  const campusBtns = $$('.admin-campus-btn');
+  // Controls (Dropdowns & Search)
+  const statusSelect   = $('#admin-status-filter');
+  const campusSelect   = $('#admin-campus-filter');
   const categorySelect = $('#admin-category-filter');
-  const statusTabs = $$('.admin-status-tab');
-  const searchInput = $('#admin-search-input');
+  const searchInput    = $('#admin-search-input');
 
   // Modal elements
   const modalBackdrop = $('#admin-remark-modal');
@@ -457,11 +457,37 @@
     }
   }
 
+  function getCategoryIcon(cat) {
+    const c = (cat || '').toLowerCase();
+    if (c.includes('hvac') || c.includes('cooling')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+    }
+    if (c.includes('elect') || c.includes('power')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+    }
+    if (c.includes('water') || c.includes('sanitation')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`;
+    }
+    if (c.includes('digital') || c.includes('it')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`;
+    }
+    if (c.includes('furniture') || c.includes('fixture')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>`;
+    }
+    if (c.includes('safety') || c.includes('hazard')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    }
+    if (c.includes('faculty') || c.includes('acad')) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+    }
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+  }
+
   function renderTable() {
     const filtered = getFilteredTickets();
 
     if (countBadge) {
-      countBadge.textContent = `Showing ${filtered.length} of ${allTickets.length} tickets`;
+      countBadge.textContent = `${filtered.length} of ${allTickets.length} tickets`;
     }
 
     if (filtered.length === 0) {
@@ -494,20 +520,35 @@
           <!-- 1. Ticket ID & Date -->
           <td>
             <div class="admin-ticket-id">${ticket.id}</div>
-            <div class="admin-ticket-date">${ticket.date || 'Oct 3, 2026'}</div>
+            <div class="admin-date-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span class="admin-ticket-date">${ticket.date || 'Oct 3, 2026'}</span>
+            </div>
           </td>
 
           <!-- 2. Reporter Details -->
           <td>
-            <div class="admin-reporter-name">${ticket.reporterName || 'Institutional User'}</div>
-            <div class="admin-reporter-email">${ticket.reporterEmail || 'student@tip.edu.ph'}</div>
-            <span class="admin-reporter-pill">Institutional User</span>
+            <div class="admin-reporter-wrap">
+              <div class="admin-avatar-icon" title="Reporter: ${ticket.reporterName || 'Student'}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="admin-reporter-name">${ticket.reporterName || 'Institutional User'}</div>
+                <div class="admin-reporter-email">${ticket.reporterEmail || 'student@tip.edu.ph'}</div>
+              </div>
+            </div>
           </td>
 
           <!-- 3. Location & Category -->
           <td>
-            <div class="admin-location-title">${ticket.campus || 'Arlegui Campus'}</div>
-            <span class="admin-category-badge">${ticket.category || 'General Concern / Other'}</span>
+            <div class="admin-location-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="admin-location-title">${ticket.campus || 'Arlegui Campus'}</span>
+            </div>
+            <span class="admin-category-badge">
+              ${getCategoryIcon(ticket.category)}
+              <span>${ticket.category || 'General Concern / Other'}</span>
+            </span>
           </td>
 
           <!-- 4. Description & Evidence -->
@@ -535,8 +576,8 @@
           <!-- 6. Admin Action -->
           <td>
             <button class="admin-remark-btn" data-id="${ticket.id}" title="Log maintenance remark">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-              <span>Log Remark</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span>Remark</span>
             </button>
           </td>
         </tr>
@@ -713,11 +754,13 @@
     lightboxImg.src = src;
     if (lightboxCaption) lightboxCaption.textContent = caption || 'Photo Evidence';
     lightbox.classList.remove('modal--hidden');
+    lightbox.classList.remove('lightbox-modal--hidden');
   }
 
   function closeLightbox() {
     if (!lightbox) return;
     lightbox.classList.add('modal--hidden');
+    lightbox.classList.add('lightbox-modal--hidden');
   }
 
   if (lightboxClose) {
@@ -732,35 +775,31 @@
   }
 
   // ═══════════════════════════════════════════════
-  //  CONTROLS INTERACTION
+  //  CONTROLS INTERACTION (DROPDOWNS & SEARCH)
   // ═══════════════════════════════════════════════
-  // Campus tabs
-  campusBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      campusBtns.forEach((b) => b.classList.remove('admin-campus-btn--active'));
-      btn.classList.add('admin-campus-btn--active');
-      currentCampus = btn.dataset.campus;
+  // Status dropdown filter
+  if (statusSelect) {
+    statusSelect.addEventListener('change', () => {
+      currentStatus = statusSelect.value;
       renderTable();
     });
-  });
+  }
 
-  // Category select
+  // Campus dropdown filter
+  if (campusSelect) {
+    campusSelect.addEventListener('change', () => {
+      currentCampus = campusSelect.value;
+      renderTable();
+    });
+  }
+
+  // Category dropdown filter
   if (categorySelect) {
     categorySelect.addEventListener('change', () => {
       currentCategory = categorySelect.value;
       renderTable();
     });
   }
-
-  // Status tabs
-  statusTabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      statusTabs.forEach((t) => t.classList.remove('admin-status-tab--active'));
-      tab.classList.add('admin-status-tab--active');
-      currentStatus = tab.dataset.status;
-      renderTable();
-    });
-  });
 
   // Search input
   if (searchInput) {
