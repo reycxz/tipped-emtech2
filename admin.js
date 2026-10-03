@@ -389,9 +389,9 @@
   }
 
   // Trending Board elements
-  const trendingGrid   = $('#admin-trending-grid');
-  const timeframeTabs  = $$('.admin-timeframe-tab');
-  let currentTimeframe = 'weekly';
+  const trendingGrid     = $('#admin-trending-grid');
+  const timeframeSelect  = $('#admin-timeframe-filter');
+  let currentTimeframe   = 'weekly';
 
   // ═══════════════════════════════════════════════
   //  METRICS CALCULATION
@@ -935,19 +935,13 @@
     }
   });
 
-  // Timeframe tabs for trending board
-  timeframeTabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      timeframeTabs.forEach((t) => {
-        t.classList.remove('admin-timeframe-tab--active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      tab.classList.add('admin-timeframe-tab--active');
-      tab.setAttribute('aria-selected', 'true');
-      currentTimeframe = tab.dataset.timeframe;
+  // Timeframe dropdown for trending board
+  if (timeframeSelect) {
+    timeframeSelect.addEventListener('change', () => {
+      currentTimeframe = timeframeSelect.value;
       renderTrendingBoard();
     });
-  });
+  }
 
   // Initial load
   updateMetrics();

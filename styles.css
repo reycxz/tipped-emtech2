@@ -2622,42 +2622,32 @@ input, select { font-family: inherit; outline: none; }
   color: #64748B;
 }
 
-.admin-timeframe-tabs {
-  display: inline-flex;
-  background: #0F172A;
-  padding: 3px;
-  border-radius: var(--radius-xl);
-  border: 1px solid #334155;
-  gap: 3px;
-}
-[data-theme="light"] .admin-timeframe-tabs {
-  background: #F1F5F9;
-  border-color: #CBD5E1;
-}
-
-.admin-timeframe-tab {
+.admin-timeframe-select-wrap {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.85rem;
-  font-size: 0.72rem;
+}
+
+.admin-timeframe-icon {
+  position: absolute;
+  left: 0.75rem;
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--color-gold);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.admin-timeframe-select {
+  padding-left: 2.15rem !important;
+  padding-right: 2.2rem !important;
+  font-size: 0.74rem;
   font-weight: 700;
-  border-radius: calc(var(--radius-xl) - 2px);
-  color: #94A3B8;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  transition: all 0.18s ease;
+  border-radius: var(--radius-lg);
+  background: #0F172A;
 }
-.admin-timeframe-tab:hover:not(.admin-timeframe-tab--active) {
-  color: #FFFFFF;
-}
-[data-theme="light"] .admin-timeframe-tab:hover:not(.admin-timeframe-tab--active) {
-  color: #0F172A;
-}
-.admin-timeframe-tab--active {
-  background: var(--color-gold);
-  color: #0F172A;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+[data-theme="light"] .admin-timeframe-select {
+  background: #F8FAFC;
 }
 
 .admin-trending-grid {
