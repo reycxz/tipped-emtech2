@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Admin Console — TIPPED | T.I.P. Manila</title>
+  <meta name="description" content="T.I.P. Manila Facilities Administration Console. Real-time ticket management, inline status routing, technician dispatches, and remarks logging.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="dashboard-body">
+
+  <!-- ═══════════════════════════════════════════════════
+       UNIVERSAL TOP NAVIGATION HEADER (/navbar)
+  ═══════════════════════════════════════════════════ -->
+  <header class="dash-header">
+    <div class="dash-header__inner">
+      <div class="dash-header__left">
+        <a href="/admin" class="dash-header__brand">
+          <span class="dash-header__brand-name">TIPPED</span>
+        </a>
+
+        <nav class="dash-nav" aria-label="Admin Navigation">
+          <a href="/admin" class="dash-nav__link dash-nav__link--active" aria-current="page">Admin Console</a>
+          <a href="/dashboard" class="dash-nav__link">Dashboard</a>
+          <a href="/report/new" class="dash-nav__link">Submit Report</a>
+          <a href="/my-reports" class="dash-nav__link">My Reports</a>
+        </nav>
+      </div>
+
+      <div class="dash-header__right">
+        <div class="dash-user">
+          <span class="dash-user__name">Facilities Admin</span>
+          <span class="dash-user__role" style="background:#EF4444; color:#FFFFFF;">ADMIN</span>
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+          <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="theme-toggle__icon theme-toggle__icon--moon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+
+        <button id="logout-btn" class="dash-logout-btn" title="Sign out of portal">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       ADMIN CONSOLE MAIN CONTENT
+  ═══════════════════════════════════════════════════ -->
+  <main class="dashboard-page">
+    <div class="dashboard-container" style="max-width: 1240px;">
+
+      <!-- ── 1. Top Bento Row — Live Operational Metrics ── -->
+      <section class="admin-metrics-grid" aria-label="Operational Metrics">
+        <!-- Metric 1: Total Incidents -->
+        <div class="admin-metric-card admin-metric-card--total">
+          <div class="admin-metric-card__header">
+            <span class="admin-metric-card__label">Total Incidents Logged</span>
+            <span class="admin-metric-card__pill admin-metric-card__pill--total">CAMPUS WIDE</span>
+          </div>
+          <div class="admin-metric-card__value" id="metric-total">48</div>
+        </div>
+
+        <!-- Metric 2: Pending Review -->
+        <div class="admin-metric-card admin-metric-card--pending">
+          <div class="admin-metric-card__header">
+            <span class="admin-metric-card__label">Pending Review</span>
+            <span class="admin-metric-card__pill admin-metric-card__pill--pending">AWAITING ACTION</span>
+          </div>
+          <div class="admin-metric-card__value" id="metric-pending">12</div>
+        </div>
+
+        <!-- Metric 3: In Progress -->
+        <div class="admin-metric-card admin-metric-card--progress">
+          <div class="admin-metric-card__header">
+            <span class="admin-metric-card__label">In Progress</span>
+            <span class="admin-metric-card__pill admin-metric-card__pill--progress">UNDER MAINTENANCE</span>
+          </div>
+          <div class="admin-metric-card__value" id="metric-progress">18</div>
+        </div>
+
+        <!-- Metric 4: Resolved Today -->
+        <div class="admin-metric-card admin-metric-card--resolved">
+          <div class="admin-metric-card__header">
+            <span class="admin-metric-card__label">Resolved Today</span>
+            <span class="admin-metric-card__pill admin-metric-card__pill--resolved">COMPLETED</span>
+          </div>
+          <div class="admin-metric-card__value" id="metric-resolved">15</div>
+        </div>
+      </section>
+
+      <!-- ── 2. Master Control & Filter Bento Bar ── -->
+      <section class="admin-controls-card" aria-label="Filter & Search Controls">
+        <div class="admin-controls-row">
+          <!-- Campus Toggle Bar -->
+          <div class="admin-campus-toggle" role="tablist" aria-label="Campus Selection">
+            <button class="admin-campus-btn admin-campus-btn--active" data-campus="all">All Buildings</button>
+            <button class="admin-campus-btn" data-campus="arlegui">Arlegui Campus</button>
+            <button class="admin-campus-btn" data-campus="casal">Casal Campus</button>
+          </div>
+
+          <!-- Category Dropdown Filter -->
+          <div style="position:relative; display:inline-flex; align-items:center;">
+            <select id="admin-category-filter" class="admin-select" aria-label="Filter by incident category">
+              <option value="all">All Categories</option>
+              <option value="HVAC & Cooling">HVAC & Cooling</option>
+              <option value="Electrical & Power">Electrical & Power</option>
+              <option value="Water & Sanitation">Water & Sanitation</option>
+              <option value="Digital & IT">Digital & IT</option>
+              <option value="Furniture & Fixtures">Furniture & Fixtures</option>
+              <option value="Life Safety & Hazards">Life Safety & Hazards</option>
+              <option value="Faculty / Academic">Faculty / Academic</option>
+              <option value="General Concern / Other">General Concern / Other</option>
+            </select>
+            <svg style="position:absolute; right:0.75rem; width:0.85rem; height:0.85rem; color:#94A3B8; pointer-events:none;" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </div>
+
+          <!-- Search Input Field -->
+          <div class="admin-search-wrap">
+            <svg class="admin-search-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+            <input type="text" id="admin-search-input" class="admin-search-input" placeholder="Search by Ticket ID, reporter, room..." autocomplete="off">
+          </div>
+        </div>
+
+        <div class="admin-controls-row">
+          <!-- Status Segmented Filter -->
+          <div class="admin-status-tabs" role="tablist" aria-label="Status Quick Filter">
+            <button class="admin-status-tab admin-status-tab--active" data-status="all">All</button>
+            <button class="admin-status-tab" data-status="Pending">Pending</button>
+            <button class="admin-status-tab" data-status="Under Review">Under Review</button>
+            <button class="admin-status-tab" data-status="In Progress">In Progress</button>
+            <button class="admin-status-tab" data-status="Resolved">Resolved</button>
+            <button class="admin-status-tab" data-status="Dismissed">Dismissed</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 3. Master Tickets Table Bento Tile ── -->
+      <section class="admin-table-card" aria-label="Master Incident Tickets">
+        <div class="admin-table-header">
+          <div class="admin-table-title">
+            <span>Active Campus Reports</span>
+            <span class="admin-table-count" id="admin-table-count">Loading tickets…</span>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table" aria-label="Campus incident tickets list">
+            <thead>
+              <tr>
+                <th scope="col">Ticket ID &amp; Date</th>
+                <th scope="col">Reporter Details</th>
+                <th scope="col">Location &amp; Category</th>
+                <th scope="col">Description &amp; Evidence</th>
+                <th scope="col">Inline Status</th>
+                <th scope="col">Admin Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body">
+              <!-- Dynamically rendered via admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       ADMIN REMARKS & ACTION LOG MODAL OVERLAY
+  ═══════════════════════════════════════════════════ -->
+  <div id="admin-remark-modal" class="admin-modal-backdrop admin-modal-backdrop--hidden" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title">
+    <div class="admin-modal-card">
+      <div class="admin-modal-header">
+        <div>
+          <h2 id="admin-modal-title" class="admin-modal-title">Log Maintenance Remark</h2>
+          <p id="admin-modal-subtitle" class="admin-modal-subtitle">Update maintenance audit log &amp; notify reporter</p>
+        </div>
+        <button id="admin-modal-close" class="admin-modal-close" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="admin-modal-form" class="admin-modal-form">
+        <!-- Field 1: Action Taken Preset -->
+        <div class="admin-modal-field">
+          <label for="admin-remark-action" class="admin-modal-label">Action Taken Preset</label>
+          <select id="admin-remark-action" class="admin-modal-select" required>
+            <option value="Inspection Scheduled">Inspection Scheduled</option>
+            <option value="Technician Dispatched">Technician Dispatched</option>
+            <option value="Parts Ordered">Parts Ordered</option>
+            <option value="Resolved On-Site">Resolved On-Site</option>
+            <option value="Dismissed - Duplicate">Dismissed - Duplicate</option>
+            <option value="General Note">General Note</option>
+          </select>
+        </div>
+
+        <!-- Field 2: Priority Flag -->
+        <div class="admin-modal-field">
+          <label for="admin-remark-priority" class="admin-modal-label">Priority Flag</label>
+          <select id="admin-remark-priority" class="admin-modal-select" required>
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+          </select>
+        </div>
+
+        <!-- Field 3: Admin Note Textarea -->
+        <div class="admin-modal-field">
+          <label for="admin-remark-note" class="admin-modal-label">Admin Official Note</label>
+          <textarea id="admin-remark-note" class="admin-modal-textarea" placeholder="e.g. Technician dispatched to Arlegui CAD Lab 302. Replaced AC drain pipe."></textarea>
+        </div>
+
+        <!-- History log -->
+        <div id="admin-remark-history-wrap" class="admin-remark-history" style="display:none;">
+          <div class="admin-remark-history-title">Prior Remarks History</div>
+          <div id="admin-remark-history-box" class="admin-remark-history-box"></div>
+        </div>
+
+        <!-- Action Button -->
+        <button type="submit" class="admin-modal-submit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span>Save Remark &amp; Notify Reporter</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       LIGHTBOX POPUP FOR PHOTO EVIDENCE
+  ═══════════════════════════════════════════════════ -->
+  <div id="admin-lightbox" class="modal lightbox-modal modal--hidden" role="dialog" aria-modal="true" aria-label="Photo Evidence Preview">
+    <div class="lightbox-backdrop"></div>
+    <div class="lightbox-container">
+      <div class="lightbox-card">
+        <button id="admin-lightbox-close" class="lightbox-close-btn" aria-label="Close photo preview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <img id="admin-lightbox-img" src="" alt="Enlarged photo evidence" class="lightbox-img" />
+      </div>
+      <div id="admin-lightbox-caption" class="lightbox-caption">Photo Evidence</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       FLOATING ACTION TOAST
+  ═══════════════════════════════════════════════════ -->
+  <div id="admin-toast" class="admin-toast" role="status" aria-live="polite">
+    <svg class="admin-toast__icon" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+    </svg>
+    <span id="admin-toast-text">Ticket status updated.</span>
+  </div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>

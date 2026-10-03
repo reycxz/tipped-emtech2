@@ -232,7 +232,11 @@
       sessionStorage.setItem('tipped_user_role', currentRole.toUpperCase());
       sessionStorage.setItem('tipped_user_email', emailVal);
 
-      window.location.href = '/dashboard';
+      if (currentRole === 'admin') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/dashboard';
+      }
     }, 700);
   });
 

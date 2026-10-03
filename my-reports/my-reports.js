@@ -400,6 +400,22 @@
   if (detailsCloseBtn) detailsCloseBtn.addEventListener('click', closeDetailsModal);
   if (detailsBackdrop) detailsBackdrop.addEventListener('click', closeDetailsModal);
 
+  // Robust document-level capture handler for close buttons
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#details-close-btn') || e.target.closest('.details-close-btn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDetailsModal();
+      return;
+    }
+    if (e.target.closest('#lightbox-close-btn') || e.target.closest('.lightbox-close-btn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeLightbox();
+      return;
+    }
+  }, true);
+
   // ═══════════════════════════════════════════════
   //  LIGHTBOX CONTROLLER
   // ═══════════════════════════════════════════════
