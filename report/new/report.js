@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    TIPPED Portal — Submit Incident Report Logic
+   Official T.I.P. Manila Campus Building & Room Mapping Standard
    ═══════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
@@ -29,11 +30,11 @@
     const moonIcon = themeToggle.querySelector('.theme-toggle__icon--moon');
 
     if (theme === 'dark') {
-      sunIcon.classList.remove('hidden');
-      moonIcon.classList.add('hidden');
+      if (sunIcon) sunIcon.classList.remove('hidden');
+      if (moonIcon) moonIcon.classList.add('hidden');
     } else {
-      sunIcon.classList.add('hidden');
-      moonIcon.classList.remove('hidden');
+      if (sunIcon) sunIcon.classList.add('hidden');
+      if (moonIcon) moonIcon.classList.remove('hidden');
     }
   }
 
@@ -64,11 +65,383 @@
   }
 
   // ═══════════════════════════════════════════════
-  //  BENTO TILE 1: CAMPUS TOGGLE
+  //  OFFICIAL T.I.P. MANILA LOCATION MAPPING DATA
   // ═══════════════════════════════════════════════
-  const campusBtns = $$('.campus-toggle__btn');
-  const campusInput = $('#report-campus');
+  const CAMPUS_DATA = {
+    arlegui: {
+      name: 'Arlegui Campus',
+      codePrefix: 'ARL',
+      buildings: [
+        {
+          code: 'A',
+          name: 'Arlegui Main Building',
+          floors: [
+            {
+              level: '1st Floor',
+              facilitiesHint: 'Lobby, Registrar, Accounting, Clinic, Restrooms',
+              quickChips: ['Lobby', 'Registrar', 'Accounting Office', 'Clinic', 'Restroom 101', 'Room 102']
+            },
+            {
+              level: '2nd Floor',
+              facilitiesHint: 'Classrooms, Faculty Room, Restrooms',
+              quickChips: ['Room 201', 'Room 202', 'Room 205', 'Faculty Room', 'Restroom 201']
+            },
+            {
+              level: '3rd Floor',
+              facilitiesHint: 'CAD Lab 302, Computer Labs, Physics Lab, Classrooms',
+              quickChips: ['CAD Lab 302', 'Computer Lab 301', 'Physics Lab', 'Room 304', 'Restroom 301']
+            },
+            {
+              level: '4th Floor',
+              facilitiesHint: 'Classrooms, Engineering Labs, Restrooms',
+              quickChips: ['EE Lab 401', 'ECE Lab 402', 'Room 405', 'Restroom 401']
+            },
+            {
+              level: '5th Floor',
+              facilitiesHint: 'Drawing Rooms, Classrooms, Study Area',
+              quickChips: ['Drafting Room 501', 'Room 502', 'Study Area 5', 'Restroom 501']
+            },
+            {
+              level: '6th Floor',
+              facilitiesHint: 'Auditorium, AVR, Rooftop Hall',
+              quickChips: ['Auditorium', 'AVR 601', 'Rooftop Hall', 'Restroom 601']
+            }
+          ]
+        }
+      ]
+    },
+    casal: {
+      name: 'Casal Campus',
+      codePrefix: 'CSL',
+      buildings: [
+        {
+          code: 'F',
+          name: "Founder's Building",
+          floors: [
+            {
+              level: '1st Floor',
+              facilitiesHint: 'Admissions, Canteen, Student Affairs, Restrooms',
+              quickChips: ['Canteen', 'Admissions Office', 'Student Affairs (OSA)', 'Restroom 101']
+            },
+            {
+              level: '2nd Floor',
+              facilitiesHint: 'Casal Library, Reading Hall, Restrooms',
+              quickChips: ['Casal Library', 'Reading Hall', 'Periodicals Section', 'Restroom 201']
+            },
+            {
+              level: '3rd Floor',
+              facilitiesHint: 'Classrooms, Faculty Center, Restrooms',
+              quickChips: ['Room 301', 'Room 306', 'Faculty Center', 'Restroom 301']
+            },
+            {
+              level: '4th Floor',
+              facilitiesHint: 'Classrooms, Chemistry Lab, Study Area',
+              quickChips: ['Chemistry Lab 401', 'Room 405', 'Study Area 4', 'Restroom 401']
+            },
+            {
+              level: '5th Floor',
+              facilitiesHint: 'Classrooms, Computer Lab, AVR',
+              quickChips: ['Comp Lab 501', 'Room 505', 'Casal AVR', 'Restroom 501']
+            },
+            {
+              level: '6th Floor',
+              facilitiesHint: 'Multi-Purpose Hall, Rooftop',
+              quickChips: ['Multi-Purpose Hall', 'Open Rooftop', 'Restroom 601']
+            }
+          ]
+        },
+        {
+          code: 'C',
+          name: 'Building 2',
+          floors: [
+            {
+              level: '1st Floor',
+              facilitiesHint: 'IT Computer Lab 102, Server Room, IT Faculty',
+              quickChips: ['IT Computer Lab 102', 'Server Room', 'IT Faculty Office', 'Room 105']
+            },
+            {
+              level: '2nd Floor',
+              facilitiesHint: 'Electronics Lab, Hardware Workshop, Classrooms',
+              quickChips: ['Electronics Lab 201', 'Hardware Workshop', 'Room 203', 'Restroom 201']
+            },
+            {
+              level: '3rd Floor',
+              facilitiesHint: 'Study Hall 2, Drafting Room, Restroom',
+              quickChips: ['Study Hall 2', 'Drafting Room 302', 'Room 305', 'Restroom 301']
+            }
+          ]
+        },
+        {
+          code: 'PC-5',
+          name: 'P. Casal 5',
+          floors: [
+            {
+              level: '1st Floor',
+              facilitiesHint: 'Security Office, Student Lounge',
+              quickChips: ['Security Office', 'Student Lounge', 'Restroom 101']
+            },
+            {
+              level: '2nd Floor',
+              facilitiesHint: 'Classrooms, Student Council',
+              quickChips: ['Room 201', 'Student Council Office', 'Restroom 201']
+            },
+            {
+              level: '3rd Floor',
+              facilitiesHint: 'Classrooms, Faculty Extension',
+              quickChips: ['Room 301', 'Room 302', 'Restroom 301']
+            },
+            {
+              level: '4th Floor',
+              facilitiesHint: 'Lecture Rooms, Discussion Rooms',
+              quickChips: ['Lecture Room 401', 'Discussion Room 402']
+            }
+          ]
+        },
+        {
+          code: 'PC-12',
+          name: 'P. Casal 12',
+          floors: [
+            {
+              level: '1st Floor',
+              facilitiesHint: 'Architecture Lobby, Exhibition Hall',
+              quickChips: ['Exhibition Hall', 'Archi Lobby', 'Restroom 101']
+            },
+            {
+              level: '2nd Floor',
+              facilitiesHint: 'Architecture Studios, CAD Stations',
+              quickChips: ['Studio 201', 'Studio 202', 'CAD Station 205']
+            },
+            {
+              level: '3rd Floor',
+              facilitiesHint: 'Design Studios, Model Making Lab',
+              quickChips: ['Design Studio 301', 'Model Making Lab', 'Restroom 301']
+            },
+            {
+              level: '4th Floor',
+              facilitiesHint: 'Senior Studios, Thesis Defense Room',
+              quickChips: ['Senior Studio 401', 'Defense Room 402']
+            }
+          ]
+        },
+        {
+          code: 'PE',
+          name: 'PE Center & Annex',
+          floors: [
+            {
+              level: 'Ground Level',
+              facilitiesHint: 'Gymnasium, Sports Equipment Depot, Bleachers',
+              quickChips: ['Main Basketball Court', 'Equipment Depot', 'Bleachers', 'Shower Room']
+            },
+            {
+              level: '2nd Floor',
+              facilitiesHint: 'Dance Studio, Fitness & Weights Gym',
+              quickChips: ['Dance Studio', 'Fitness Gym', 'PE Faculty Office']
+            },
+            {
+              level: '3rd Floor',
+              facilitiesHint: 'Martial Arts Hall, Table Tennis Area',
+              quickChips: ['Martial Arts Hall', 'Table Tennis Area', 'Restroom 301']
+            },
+            {
+              level: 'Rooftop Annex',
+              facilitiesHint: 'Open Training Deck',
+              quickChips: ['Open Training Deck']
+            }
+          ]
+        },
+        {
+          code: 'EXT',
+          name: 'Outdoor / Common Grounds',
+          floors: [
+            {
+              level: 'Ground Level',
+              facilitiesHint: 'Main Plaza, Gazebo, Flagpole Area, Parking Lot',
+              quickChips: ['Main Plaza', 'Gazebo Area', 'Flagpole Grounds', 'Parking Lot', 'Campus Gate']
+            }
+          ]
+        }
+      ]
+    }
+  };
 
+  // ═══════════════════════════════════════════════
+  //  BENTO TILE 1: CASCADING LOCATION PICKER
+  // ═══════════════════════════════════════════════
+  const campusBtns       = $$('.campus-toggle__btn');
+  const campusInput      = $('#report-campus');
+  const buildingSelect   = $('#report-building');
+  const floorSelect      = $('#report-floor');
+  const roomInput        = $('#report-room');
+  const landmarkInput    = $('#report-landmark');
+  const floorHintBadge   = $('#floor-hint-badge');
+  const floorHintText    = $('#floor-hint-text');
+  const roomQuickChips   = $('#room-quick-chips');
+  const previewRoomCode  = $('#preview-room-code');
+  const previewLocationDesc = $('#preview-location-desc');
+
+  let currentCampusKey   = 'arlegui';
+  let currentBuildingObj = null;
+  let currentFloorObj    = null;
+
+  function formatRoomCode(buildingCode, roomStr) {
+    if (!buildingCode) return 'TBD';
+    if (!roomStr || !roomStr.trim()) return `${buildingCode}-TBD`;
+
+    const raw = roomStr.trim();
+    // If user already typed "F-306" or "A-101"
+    if (raw.toUpperCase().startsWith(`${buildingCode}-`)) {
+      return raw.toUpperCase();
+    }
+
+    // Check for room number pattern e.g. "306", "101B", "Lab 302" -> extracts 302
+    const numMatch = raw.match(/\b\d{1,4}[A-Z]?\b/i);
+    if (numMatch) {
+      return `${buildingCode}-${numMatch[0].toUpperCase()}`;
+    }
+
+    // Clean text for special places like "Canteen", "Casal Library", "Main Plaza"
+    const cleaned = raw
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .split(/\s+/)
+      .map((w) => w.toUpperCase())
+      .slice(0, 2)
+      .join('-');
+
+    return `${buildingCode}-${cleaned || 'AREA'}`;
+  }
+
+  function updateLivePreview() {
+    const campusData = CAMPUS_DATA[currentCampusKey];
+    const bCode = currentBuildingObj ? currentBuildingObj.code : '';
+    const bName = currentBuildingObj ? currentBuildingObj.name : '';
+    const fLevel = currentFloorObj ? currentFloorObj.level : (floorSelect ? floorSelect.value : '');
+    const rVal = roomInput ? roomInput.value.trim() : '';
+
+    const formattedCode = formatRoomCode(bCode, rVal);
+
+    if (previewRoomCode) {
+      previewRoomCode.textContent = `#${formattedCode}`;
+    }
+
+    if (previewLocationDesc) {
+      const parts = [
+        campusData ? campusData.name : '',
+        bName ? `${bName}${fLevel ? `, ${fLevel}` : ''}` : ''
+      ].filter(Boolean);
+      previewLocationDesc.textContent = parts.join(' • ') || 'Please select location details above';
+    }
+  }
+
+  function renderQuickChips(floorObj) {
+    if (!roomQuickChips) return;
+    roomQuickChips.innerHTML = '';
+
+    if (!floorObj || !floorObj.quickChips || floorObj.quickChips.length === 0) {
+      return;
+    }
+
+    floorObj.quickChips.forEach((chipText) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'room-chip';
+      chip.textContent = chipText;
+      chip.addEventListener('click', () => {
+        if (roomInput) {
+          roomInput.value = chipText;
+          // Trigger input event to update preview
+          roomInput.dispatchEvent(new Event('input'));
+          roomInput.focus();
+        }
+      });
+      roomQuickChips.appendChild(chip);
+    });
+  }
+
+  function populateFloors(buildingObj) {
+    if (!floorSelect) return;
+    floorSelect.innerHTML = '<option value="" disabled selected>Select floor level…</option>';
+
+    if (!buildingObj || !buildingObj.floors) {
+      if (floorHintBadge) floorHintBadge.style.display = 'none';
+      renderQuickChips(null);
+      currentFloorObj = null;
+      updateLivePreview();
+      return;
+    }
+
+    buildingObj.floors.forEach((f) => {
+      const opt = document.createElement('option');
+      opt.value = f.level;
+      opt.textContent = f.level;
+      floorSelect.appendChild(opt);
+    });
+
+    // Auto-select first floor if only 1 option (like EXT grounds)
+    if (buildingObj.floors.length === 1) {
+      floorSelect.selectedIndex = 1;
+      onFloorChange();
+    } else {
+      floorSelect.selectedIndex = 0;
+      if (floorHintBadge) floorHintBadge.style.display = 'none';
+      renderQuickChips(null);
+      currentFloorObj = null;
+      updateLivePreview();
+    }
+  }
+
+  function onFloorChange() {
+    if (!floorSelect || !currentBuildingObj) return;
+    const selectedLevel = floorSelect.value;
+    const floorObj = currentBuildingObj.floors.find((f) => f.level === selectedLevel);
+    currentFloorObj = floorObj || null;
+
+    if (floorObj && floorObj.facilitiesHint) {
+      if (floorHintText) floorHintText.textContent = `Known Facilities: ${floorObj.facilitiesHint}`;
+      if (floorHintBadge) floorHintBadge.style.display = 'inline-flex';
+    } else {
+      if (floorHintBadge) floorHintBadge.style.display = 'none';
+    }
+
+    renderQuickChips(floorObj);
+    updateLivePreview();
+  }
+
+  function populateBuildings(campusKey) {
+    if (!buildingSelect) return;
+    buildingSelect.innerHTML = '<option value="" disabled selected>Select building…</option>';
+
+    const campusData = CAMPUS_DATA[campusKey];
+    if (!campusData || !campusData.buildings) return;
+
+    campusData.buildings.forEach((b) => {
+      const opt = document.createElement('option');
+      opt.value = b.code;
+      opt.textContent = `${b.name} (${b.code})`;
+      buildingSelect.appendChild(opt);
+    });
+
+    // Auto-select if only 1 building (e.g. Arlegui Main Building)
+    if (campusData.buildings.length === 1) {
+      buildingSelect.selectedIndex = 1;
+      currentBuildingObj = campusData.buildings[0];
+      populateFloors(currentBuildingObj);
+    } else {
+      buildingSelect.selectedIndex = 0;
+      currentBuildingObj = null;
+      populateFloors(null);
+    }
+    updateLivePreview();
+  }
+
+  function onBuildingChange() {
+    if (!buildingSelect) return;
+    const bCode = buildingSelect.value;
+    const campusData = CAMPUS_DATA[currentCampusKey];
+    currentBuildingObj = campusData ? campusData.buildings.find((b) => b.code === bCode) : null;
+    populateFloors(currentBuildingObj);
+  }
+
+  // Campus Toggle Listeners
   campusBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       campusBtns.forEach((b) => {
@@ -77,9 +450,32 @@
       });
       btn.classList.add('campus-toggle__btn--active');
       btn.setAttribute('aria-checked', 'true');
-      if (campusInput) campusInput.value = btn.dataset.campus;
+
+      const campusVal = btn.dataset.campus.toLowerCase();
+      currentCampusKey = campusVal;
+      if (campusInput) campusInput.value = campusVal;
+
+      // Reset lower inputs on campus switch
+      if (roomInput) roomInput.value = '';
+      if (landmarkInput) landmarkInput.value = '';
+      populateBuildings(currentCampusKey);
     });
   });
+
+  if (buildingSelect) {
+    buildingSelect.addEventListener('change', onBuildingChange);
+  }
+
+  if (floorSelect) {
+    floorSelect.addEventListener('change', onFloorChange);
+  }
+
+  if (roomInput) {
+    roomInput.addEventListener('input', updateLivePreview);
+  }
+
+  // Initialize building & floor cascading picker
+  populateBuildings(currentCampusKey);
 
   // ═══════════════════════════════════════════════
   //  BENTO TILE 2: CATEGORY MATRIX
@@ -160,7 +556,7 @@
       thumbnailGrid.appendChild(item);
     });
 
-    // If max photos reached, hide or disable dropzone prompt
+    // If max photos reached, style dropzone
     if (dropzone) {
       if (uploadedPhotos.length >= 5) {
         dropzone.classList.add('dropzone--max');
@@ -231,35 +627,41 @@
   // ═══════════════════════════════════════════════
   //  FORM SUBMISSION & MODAL
   // ═══════════════════════════════════════════════
-  const form      = $('#incident-form');
-  const submitBtn = $('#submit-report-btn');
-  const modal     = $('#success-modal');
+  const form        = $('#incident-form');
+  const submitBtn   = $('#submit-report-btn');
+  const modal       = $('#success-modal');
   const modalTicket = $('#modal-ticket-id');
 
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const floor = $('#report-floor').value;
-      const room  = $('#report-room').value.trim();
-      const desc  = $('#report-desc').value.trim();
-      const campus = $('#report-campus').value;
-      const category = $('#report-category').value;
-      const landmark = $('#report-landmark').value.trim();
+      const bCode = buildingSelect ? buildingSelect.value : '';
+      const floor = floorSelect ? floorSelect.value : '';
+      const room  = roomInput ? roomInput.value.trim() : '';
+      const desc  = descTextarea ? descTextarea.value.trim() : '';
+      const campusKey = (campusInput ? campusInput.value : currentCampusKey).toLowerCase();
+      const category = (categoryInput ? categoryInput.value : 'HVAC & Cooling');
+      const landmark = landmarkInput ? landmarkInput.value.trim() : '';
 
+      if (!bCode) {
+        alert('Please select a Building.');
+        if (buildingSelect) buildingSelect.focus();
+        return;
+      }
       if (!floor) {
         alert('Please select a Floor Level.');
-        $('#report-floor').focus();
+        if (floorSelect) floorSelect.focus();
         return;
       }
       if (!room) {
         alert('Please enter a Room or Specific Area.');
-        $('#report-room').focus();
+        if (roomInput) roomInput.focus();
         return;
       }
       if (!desc) {
         alert('Please provide a Problem Description.');
-        $('#report-desc').focus();
+        if (descTextarea) descTextarea.focus();
         return;
       }
 
@@ -267,12 +669,17 @@
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.style.opacity = '.75';
-        submitBtn.querySelector('span').textContent = 'SUBMITTING REPORT…';
+        const span = submitBtn.querySelector('span');
+        if (span) span.textContent = 'SUBMITTING REPORT…';
       }
 
       setTimeout(() => {
-        // Generate Campus-First & Category ticket ID (e.g. ARL-FAC-2026-0877)
-        const campusCode = (campus && campus.toLowerCase().includes('casal')) ? 'CSL' : 'ARL';
+        const campusData = CAMPUS_DATA[campusKey] || CAMPUS_DATA.arlegui;
+        const bObj = campusData.buildings.find((b) => b.code === bCode) || currentBuildingObj;
+        const formattedRoomCode = formatRoomCode(bCode, room);
+
+        // Ticket ID generation (e.g. ARL-FAC-2026-0877, CSL-ELE-2026-0142)
+        const campusCode = campusData.codePrefix || 'ARL';
         let catCode = 'FAC';
         const c = (category || '').toLowerCase();
         if (c.includes('elect') || c.includes('power')) catCode = 'ELE';
@@ -287,6 +694,17 @@
         const randomNum = String(Math.floor(100 + Math.random() * 9000)).padStart(4, '0');
         const ticketId = `${campusCode}-${catCode}-2026-${randomNum}`;
 
+        // Structured Location DTO according to official mapping standard
+        const locationPayload = {
+          campus: campusKey,
+          building_code: bCode,
+          building_name: bObj ? bObj.name : bCode,
+          floor_level: floor,
+          room_code: formattedRoomCode,
+          specific_area: room,
+          landmark: landmark
+        };
+
         // Save report to localStorage for cross-page demo
         try {
           const now = new Date();
@@ -297,21 +715,27 @@
           const reports = JSON.parse(localStorage.getItem('tipped_user_reports') || '[]');
           reports.unshift({
             id: ticketId,
-            campus: `${campus} Building — ${room}`,
-            rawCampus: `${campus} Campus`,
-            room: room,
+            campus: `${bObj ? bObj.name : campusData.name} — ${formattedRoomCode} (${room})`,
+            rawCampus: campusData.name,
+            building_code: locationPayload.building_code,
+            building_name: locationPayload.building_name,
+            floor_level: locationPayload.floor_level,
+            room_code: locationPayload.room_code,
+            specific_area: locationPayload.specific_area,
+            room: `${formattedRoomCode} (${room})`,
             floor: floor,
             landmark: landmark,
             category: category,
             status: 'Pending',
             date: formattedTimestamp,
             description: desc,
-            photos: uploadedPhotos.map(p => p.dataUrl),
+            photos: uploadedPhotos.map((p) => p.dataUrl),
             photosCount: uploadedPhotos.length,
+            location: locationPayload,
             adminRemark: {
-              text: 'Report received and queued for dispatch verification by campus facilities.',
+              text: `Report queued for dispatch verification at ${locationPayload.building_name} (${formattedRoomCode}).`,
               action: 'Ticket Logged',
-              admin: `Facilities Helpdesk (${campus})`
+              admin: `Facilities Helpdesk (${campusData.name})`
             }
           });
           localStorage.setItem('tipped_user_reports', JSON.stringify(reports));
@@ -325,9 +749,10 @@
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.style.opacity = '';
-          submitBtn.querySelector('span').textContent = 'SUBMIT INCIDENT REPORT';
+          const span = submitBtn.querySelector('span');
+          if (span) span.textContent = 'SUBMIT INCIDENT REPORT';
         }
-      }, 900);
+      }, 750);
     });
   }
 

@@ -61,6 +61,9 @@
         <!-- ╔═══════════════════════════════════════════════
              ║  BENTO TILE 1 — LOCATION PICKER (5 cols)
              ╚═══════════════════════════════════════════════ -->
+        <!-- ╔═══════════════════════════════════════════════
+             ║  BENTO TILE 1 — LOCATION PICKER (5 cols)
+             ╚═══════════════════════════════════════════════ -->
         <div class="bento-tile bento-tile--location">
           <div class="bento-tile__header">
             <div class="bento-tile__title-wrap">
@@ -73,58 +76,64 @@
             <span class="bento-tile__badge">Step 1</span>
           </div>
 
-          <!-- Campus Toggle -->
+          <!-- 1. Campus Toggle -->
           <div class="campus-toggle" role="radiogroup" aria-label="Campus Selector">
-            <button type="button" class="campus-toggle__btn campus-toggle__btn--active" data-campus="Arlegui" role="radio" aria-checked="true">
+            <button type="button" id="btn-campus-arlegui" class="campus-toggle__btn campus-toggle__btn--active" data-campus="arlegui" role="radio" aria-checked="true">
               Arlegui Campus
             </button>
-            <button type="button" class="campus-toggle__btn" data-campus="Casal" role="radio" aria-checked="false">
+            <button type="button" id="btn-campus-casal" class="campus-toggle__btn" data-campus="casal" role="radio" aria-checked="false">
               Casal Campus
             </button>
           </div>
-          <input type="hidden" id="report-campus" name="campus" value="Arlegui" />
+          <input type="hidden" id="report-campus" name="campus" value="arlegui" />
 
-          <!-- Floor Level Select -->
+          <!-- 2. Building Selector (New Cascading Field) -->
           <div class="form-group form-group--compact">
-            <label for="report-floor" class="form-label form-label--compact">FLOOR LEVEL</label>
+            <label for="report-building" class="form-label form-label--compact">BUILDING</label>
             <div class="input-wrapper input-wrapper--select">
-              <select id="report-floor" class="form-input form-select" required>
-                <option value="" disabled selected>Select floor level…</option>
-                <option value="1st Floor">1st Floor</option>
-                <option value="2nd Floor">2nd Floor</option>
-                <option value="3rd Floor">3rd Floor</option>
-                <option value="4th Floor">4th Floor</option>
-                <option value="5th Floor">5th Floor</option>
-                <option value="Basement">Basement</option>
-                <option value="Rooftop">Rooftop / Grounds</option>
+              <select id="report-building" class="form-input form-select" required>
+                <!-- Dynamically populated via report.js -->
               </select>
             </div>
           </div>
 
-          <!-- Room / Area Input with Datalist Autocomplete -->
+          <!-- 3. Floor Level Selector & Context Hint -->
           <div class="form-group form-group--compact">
-            <label for="report-room" class="form-label form-label--compact">ROOM / SPECIFIC AREA</label>
-            <div class="input-wrapper">
-              <input id="report-room" list="room-suggestions" class="form-input" type="text" autocomplete="off" required />
-              <datalist id="room-suggestions">
-                <option value="Option 1"></option>
-                <option value="Option 2"></option>
-                <option value="Option 3"></option>
-                <option value="Option 4"></option>
-                <option value="Option 5"></option>
-                <option value="Option 6"></option>
-                <option value="Option 7"></option>
-                <option value="Option 8"></option>
-              </datalist>
+            <label for="report-floor" class="form-label form-label--compact">FLOOR LEVEL</label>
+            <div class="input-wrapper input-wrapper--select">
+              <select id="report-floor" class="form-input form-select" required>
+                <!-- Dynamically populated via report.js -->
+              </select>
+            </div>
+            <div id="floor-hint-badge" class="location-hint-badge" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <span id="floor-hint-text">Known Facilities</span>
             </div>
           </div>
 
-          <!-- Landmark Field (Optional) -->
+          <!-- 4. Room / Specific Area & Quick Chips -->
+          <div class="form-group form-group--compact">
+            <label for="report-room" class="form-label form-label--compact">ROOM / SPECIFIC AREA</label>
+            <div class="input-wrapper">
+              <input id="report-room" class="form-input" type="text" placeholder="e.g. 306, Restroom, Lab 2" autocomplete="off" required />
+            </div>
+            <!-- Quick select chips -->
+            <div id="room-quick-chips" class="room-quick-chips"></div>
+          </div>
+
+          <!-- 5. Landmark Field (Optional) -->
           <div class="form-group form-group--compact">
             <label for="report-landmark" class="form-label form-label--compact">LANDMARK <span class="form-label__sub">(OPTIONAL)</span></label>
             <div class="input-wrapper">
-              <input id="report-landmark" class="form-input" type="text" />
+              <input id="report-landmark" class="form-input" type="text" placeholder="e.g. Near elevator, beside stairs" />
             </div>
+          </div>
+
+          <!-- 6. Live Location Code Preview Badge -->
+          <div class="location-code-preview" id="location-preview-badge">
+            <span class="location-code-preview__tag">Target Location ID</span>
+            <span class="location-code-preview__code" id="preview-room-code">#A-101</span>
+            <span class="location-code-preview__desc" id="preview-location-desc">Arlegui Campus • Arlegui Main Building, 1st Floor</span>
           </div>
         </div>
 

@@ -81,28 +81,28 @@
     {
       id: 'ARL-FAC-2026-0877',
       status: 'In Progress',
-      campus: 'Arlegui Campus — CAD Lab 302',
+      campus: 'Arlegui Main Building — #A-302 (CAD Lab 302)',
       category: 'HVAC & Cooling',
       date: 'Oct 1, 2026'
     },
     {
       id: 'CSL-ELE-2026-0142',
       status: 'Pending',
-      campus: 'Casal Campus — Study Hall 2',
+      campus: 'Building 2 — #C-302 (Study Hall 2)',
       category: 'Electrical & Power',
       date: 'Sep 29, 2026'
     },
     {
       id: 'ARL-PLM-2026-0089',
       status: 'Pending',
-      campus: 'Arlegui Campus — 2nd Floor Restroom',
+      campus: 'Arlegui Main Building — #A-201 (2nd Floor Restroom)',
       category: 'Water & Sanitation',
       date: 'Oct 2, 2026'
     },
     {
       id: 'CSL-ELE-2026-7574',
       status: 'Resolved',
-      campus: 'Casal Campus — 4th Floor Hallway',
+      campus: "Founder's Building — #F-405 (4th Floor)",
       category: 'Electrical & Power',
       date: 'Sep 28, 2026'
     }
