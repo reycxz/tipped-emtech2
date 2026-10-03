@@ -510,6 +510,49 @@
     }
   }
 
+  // ── Ultra-Clean Format Helpers ──
+  function formatShortDate(dateStr) {
+    if (!dateStr) return '';
+    let s = dateStr.replace(/, \d{4} • 0?/, ', ');
+    s = s.replace(/ • 0?/, ' ');
+    s = s.replace(/, 0?/, ', ');
+    return s.trim();
+  }
+
+  function formatShortLocation(ticket) {
+    let room = '';
+    if (ticket.room_code) {
+      room = ticket.room_code.startsWith('#') ? ticket.room_code : `#${ticket.room_code}`;
+    } else if (ticket.room) {
+      const m = ticket.room.match(/#[A-Za-z0-9-]+/);
+      room = m ? m[0] : ticket.room.split('(')[0].trim();
+      if (!room.startsWith('#')) room = `#${room}`;
+    } else if (ticket.campus) {
+      const m = ticket.campus.match(/#[A-Za-z0-9-]+/);
+      if (m) room = m[0];
+    }
+    if (!room) room = ticket.specific_area || '#Room';
+
+    let campusShort = 'Arlegui';
+    const raw = (ticket.rawCampus || ticket.campus || '').toLowerCase();
+    if (raw.includes('casal')) campusShort = 'Casal';
+    else if (raw.includes('arlegui')) campusShort = 'Arlegui';
+
+    return `${room} • ${campusShort}`;
+  }
+
+  function getCategoryTagHtml(category) {
+    const cat = (category || '').toLowerCase();
+    let icon = '🔧';
+    if (cat.includes('elect') || cat.includes('power')) icon = '⚡';
+    else if (cat.includes('hvac') || cat.includes('cooling') || cat.includes('aircon')) icon = '❄️';
+    else if (cat.includes('water') || cat.includes('sanitation') || cat.includes('plumb')) icon = '💧';
+    else if (cat.includes('digital') || cat.includes('it') || cat.includes('network')) icon = '🖥️';
+    else if (cat.includes('furniture') || cat.includes('fixture')) icon = '🪑';
+    else if (cat.includes('safety') || cat.includes('hazard')) icon = '⚠️';
+    return `<span class="ticket-category-tag">${icon} ${category || 'General'}</span>`;
+  }
+
   function renderFeed() {
     const allReports = getAllReports();
     updateCounts(allReports);
@@ -569,53 +612,57 @@
       return;
     }
 
-    // Render Compact Cards (Strict 2-Color, 3 Rows: Top, Middle, Bottom)
+    // Render Ultra-Clean Clickable Cards (2-Row Layout: Header & Body)
     filtered.forEach((ticket) => {
       const card = document.createElement('article');
       card.className = 'ticket-card';
+      card.dataset.id = ticket.id;
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `View details for ticket ${ticket.id}`);
+
+      const statusClass = (ticket.status || 'pending').toLowerCase().replace(/\s+/g, '');
+      const displayId = (ticket.id.startsWith('#') ? ticket.id : '#' + ticket.id).replace(/-(?:20\d\d)-/, '-');
 
       card.innerHTML = `
-        <!-- Top Row: Ticket ID, Status Badge, Submission Date -->
+        <!-- Card Header Row: ID + Status on Left, Date + Arrow on Right -->
         <div class="ticket-card__header">
           <div class="ticket-card__id-group">
-            <span class="ticket-card__id">${ticket.id}</span>
-            <span class="ticket-status-pill">${ticket.status}</span>
+            <span class="ticket-card__id">${displayId}</span>
+            <span class="ticket-status-pill ticket-status-pill--${statusClass}">${ticket.status}</span>
           </div>
-          <span class="ticket-card__timestamp">${ticket.date}</span>
+          <div class="ticket-card__header-right">
+            <span class="ticket-card__timestamp">${formatShortDate(ticket.date)}</span>
+            <svg class="ticket-card__arrow" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </div>
         </div>
 
-        <!-- Middle Row: Location Tag & Category Tag -->
-        <div class="ticket-card__tags">
-          <span class="ticket-tag ticket-tag--location">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="display:inline-block; vertical-align:middle; margin-right:3px;">
+        <!-- Card Body Row: Location & Category -->
+        <div class="ticket-card__body">
+          <div class="ticket-card__location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            ${ticket.campus}
-          </span>
-          <span class="ticket-tag ticket-tag--category">
-            ${ticket.category}
-          </span>
-        </div>
-
-        <!-- Bottom Row: Clean Outline Button "View Details" -->
-        <div class="ticket-card__footer">
-          <button type="button" class="btn--view-details" data-id="${ticket.id}" aria-label="View details for ${ticket.id}">
-            <span>View Details</span>
-            <svg viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
-          </button>
+            <span>${formatShortLocation(ticket)}</span>
+          </div>
+          ${getCategoryTagHtml(ticket.category)}
         </div>
       `;
 
-      // Attach Click to "View Details"
-      const viewBtn = card.querySelector('.btn--view-details');
-      if (viewBtn) {
-        viewBtn.addEventListener('click', () => {
+      // Entire card is clickable
+      card.addEventListener('click', () => {
+        openDetailsModal(ticket);
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
           openDetailsModal(ticket);
-        });
-      }
+        }
+      });
 
       cardsGrid.appendChild(card);
     });
