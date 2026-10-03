@@ -240,16 +240,6 @@
       };
     });
   }
-        description: item.description || 'Facility maintenance report submitted via student portal.',
-        photos: Array.isArray(item.photos) ? item.photos : [],
-        adminRemark: item.adminRemark || {
-          text: 'Ticket acknowledged by campus maintenance office. Technician review in progress.',
-          action: 'Under Facilities Review',
-          admin: 'Facilities Helpdesk'
-        }
-      };
-    });
-  }
 
   // ── Elements ──
   const themeToggle   = $('#theme-toggle');

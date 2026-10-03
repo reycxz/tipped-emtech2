@@ -99,15 +99,5 @@
   animateValue($('#count-progress'), 1, 900);
   animateValue($('#count-resolved'), 5, 1100);
 
-  // ═══════════════════════════════════════════════
-  //  NAVIGATION PLACEHOLDER HANDLERS
-  // ═══════════════════════════════════════════════
-  const handleNav = (e, msg) => {
-    e.preventDefault();
-    alert(`[Demo] ${msg} — feature arriving in the next release step.`);
-  };
-
-  const navReports = $('#nav-my-reports');
-  if (navReports) navReports.addEventListener('click', (e) => handleNav(e, 'Navigate to My Reports (/my-reports)'));
-
 })();
+
