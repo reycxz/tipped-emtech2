@@ -143,32 +143,108 @@
 
   // ── Session & Role Scoping ──
   const userFirstnameSpan = $('#admin-user-firstname');
+  const dropdownUserName = $('#dropdown-user-name');
+  const dropdownUserRole = $('#dropdown-user-role');
+  const headerAvatarInitials = $('#header-avatar-initials');
+  const dropdownAvatarInitials = $('#dropdown-avatar-initials');
 
   const sessionRole = (sessionStorage.getItem('tipped_user_role') || 'ADMIN').toUpperCase();
   const sessionName = sessionStorage.getItem('tipped_user_name') || 'Admin';
   const sessionEmail = (sessionStorage.getItem('tipped_user_email') || '').toLowerCase();
   const sessionDept = sessionStorage.getItem('tipped_user_dept') || '';
 
+  // Determine whether user is Super Admin (Global View) or Department Staff (Scoped View)
+  const isSuperAdmin = sessionRole === 'SUPERADMIN' || sessionRole === 'ADMIN_OVERSEER' || (sessionRole === 'ADMIN' && (!sessionDept || sessionDept === 'Executive Operations' || sessionDept === 'ALL' || sessionEmail.includes('superadmin') || sessionEmail.includes('admin@tip.edu.ph')));
+
   let staffScopedTeam = null;
-  const isItDept = sessionEmail.includes('itdeptmnl') || sessionName.toLowerCase().includes('itdeptmnl') || sessionDept.includes('ITSO') || sessionDept.includes('IT');
-
-  if (sessionRole === 'STAFF' || (isItDept && sessionRole !== 'SUPERADMIN' && sessionRole !== 'ADMIN_OVERSEER')) {
-    staffScopedTeam = sessionDept ? sessionDept : (isItDept ? 'ITSO' : null);
+  if (!isSuperAdmin) {
+    staffScopedTeam = sessionDept || (sessionEmail.includes('it') ? 'ITSO' : 'Maintenance');
+    if (staffScopedTeam.includes('IT') || staffScopedTeam.includes('ITSO')) staffScopedTeam = 'ITSO';
+    else if (staffScopedTeam.includes('Maintenance') || staffScopedTeam.includes('Facilities')) staffScopedTeam = 'Maintenance';
+    else if (staffScopedTeam.includes('SOHAS') || staffScopedTeam.includes('Security') || staffScopedTeam.includes('Health')) staffScopedTeam = 'SOHAS';
+    else if (staffScopedTeam.includes('Canteen')) staffScopedTeam = 'Canteen Staff';
+    else if (staffScopedTeam.includes('OSA') || staffScopedTeam.includes('Student Affairs')) staffScopedTeam = 'OSA';
+    else if (staffScopedTeam.includes('Guidance')) staffScopedTeam = 'Guidance';
+  } else {
+    staffScopedTeam = null; // Super Admin sees ALL tickets across ALL departments
   }
 
-  // Update Welcome name
+  // Update Welcome banner and profile badges
   if (userFirstnameSpan) {
-    const firstName = sessionName.split(' ')[0] || 'Admin';
-    userFirstnameSpan.textContent = firstName;
+    if (isSuperAdmin) {
+      userFirstnameSpan.textContent = sessionName.includes('Super') ? 'Super Admin' : (sessionName.split(' ')[0] || 'Admin');
+    } else {
+      userFirstnameSpan.textContent = staffScopedTeam ? `${staffScopedTeam} Staff` : (sessionName.split(' ')[0] || 'Staff');
+    }
   }
+
+  if (dropdownUserName) {
+    dropdownUserName.textContent = sessionName || (isSuperAdmin ? 'Facilities Super Admin' : `${staffScopedTeam || 'Department'} Staff`);
+  }
+
+  if (dropdownUserRole) {
+    dropdownUserRole.textContent = isSuperAdmin ? 'SUPER ADMIN' : `${staffScopedTeam || 'STAFF'} DEPT`;
+  }
+
+  const initials = isSuperAdmin ? 'SA' : (staffScopedTeam ? staffScopedTeam.slice(0, 2).toUpperCase() : 'ST');
+  if (headerAvatarInitials) headerAvatarInitials.textContent = initials;
+  if (dropdownAvatarInitials) dropdownAvatarInitials.textContent = initials;
 
   // ── State ──
   let allTickets = getMasterReports();
+  let loading = false;
   let currentCampus = 'all';
   let currentStatus = 'all';
   let searchQuery = '';
   let selectedMetricsRange = '30d';
   let currentDrawerTicketId = null;
+
+  async function fetchTickets() {
+    loading = true;
+    if (countBadge) countBadge.textContent = 'Loading tickets...';
+    renderTable();
+
+    try {
+      if (window.apiClient) {
+        const response = await window.apiClient.get('/admin/reports');
+        const rawTickets = Array.isArray(response)
+          ? response
+          : (response.tickets || response.reports || response.incidents || response.data || []);
+
+        if (Array.isArray(rawTickets) && rawTickets.length > 0) {
+          allTickets = rawTickets.map((t) => ({
+            id: t.ticketId || t.id,
+            status: t.status || 'Pending',
+            priority: t.priority || 'Medium',
+            assignedTeam: t.assignedTeam || 'Unassigned',
+            campus: t.campus || 'Arlegui Campus',
+            rawCampus: t.campus || 'Arlegui Campus',
+            building_name: t.buildingName || t.building_name || '',
+            floor_level: t.floorLevel || t.floor_level || '',
+            room_code: t.roomCode || t.room_code || '',
+            room: t.roomCode || t.room || '',
+            category: t.category || 'General Concern',
+            description: t.description || '',
+            date: t.createdAt ? new Date(t.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today',
+            reporterName: (t.reporter && t.reporter.fullName) || (t.reporterId && t.reporterId.fullName) || 'Student',
+            reporterEmail: (t.reporter && (t.reporter.tipEmail || t.reporter.email)) || 'student@tip.edu.ph',
+            photos: t.evidencePhotos || t.photos || [],
+            remarks: t.staffNotes || t.adminRemarks || []
+          }));
+        } else {
+          allTickets = getMasterReports();
+        }
+      } else {
+        allTickets = getMasterReports();
+      }
+    } catch (error) {
+      console.error('Failed to load queue:', error);
+      allTickets = getMasterReports();
+    } finally {
+      loading = false;
+      renderTable();
+    }
+  }
 
   // ── DOM Elements ──
   const tableBody      = $('#admin-table-body');
@@ -245,62 +321,104 @@
   // ═══════════════════════════════════════════════
   //  METRICS & MAINTENANCE ANALYTICS (IN MODAL)
   // ═══════════════════════════════════════════════
-  function updateMetricsAndAnalytics() {
+  async function updateMetricsAndAnalytics(timeRange = selectedMetricsRange) {
+    let metricsData = null;
+    try {
+      if (window.apiClient) {
+        const res = await window.apiClient.get(`/analytics/metrics?range=${encodeURIComponent(timeRange)}`);
+        if (res && (res.success || res.totalTickets !== undefined)) {
+          metricsData = res.metrics || res.stats || res;
+        }
+      }
+    } catch (e) {
+      // Gracefully fall back to client memory
+    }
+
     const scopedList = staffScopedTeam
       ? allTickets.filter((t) => (t.assignedTeam || '').toLowerCase() === staffScopedTeam.toLowerCase())
       : allTickets;
 
-    const totalCount = scopedList.length;
+    const totalCount = (metricsData && typeof metricsData.totalTickets === 'number') 
+      ? metricsData.totalTickets 
+      : scopedList.length;
+
     const resolvedCount = scopedList.filter((t) => t.status === 'Resolved').length;
+    const dismissedCount = scopedList.filter((t) => t.status === 'Dismissed').length;
+    const closedCount = (metricsData && typeof metricsData.closedTickets === 'number')
+      ? metricsData.closedTickets
+      : (resolvedCount + dismissedCount);
+
+    if (totalCount === 0) {
+      if (analyticsAvgTime) analyticsAvgTime.textContent = '0.0 Days';
+      const avgBadge = $('#analytics-avg-time-badge');
+      if (avgBadge) avgBadge.textContent = '—';
+      if (analyticsTopLoc) {
+        analyticsTopLoc.textContent = 'No Data';
+        analyticsTopLoc.title = 'No Data';
+      }
+      if (analyticsTopLocCount) analyticsTopLocCount.textContent = '0 tickets';
+      if (analyticsResolutionRate) analyticsResolutionRate.textContent = '0% Resolved';
+      if (analyticsRatioCount) analyticsRatioCount.textContent = '0 of 0 closed';
+      if (analyticsRatioBar) analyticsRatioBar.style.width = '0%';
+      return;
+    }
 
     // 1. Average Resolution Time
     if (analyticsAvgTime) {
-      analyticsAvgTime.textContent = staffScopedTeam === 'ITSO' ? '1.4 Days' : '1.8 Days';
+      const avgDays = metricsData && metricsData.avgResolutionTimeFormatted
+        ? metricsData.avgResolutionTimeFormatted
+        : '0.0 Days';
+      analyticsAvgTime.textContent = avgDays;
     }
 
     // 2. Top Problem Location
     if (analyticsTopLoc) {
-      const locCounts = {};
-      scopedList.forEach((t) => {
-        let locKey = "Building 2 - 1st Flr";
-        if (t.building_name && t.floor_level) {
-          locKey = `${t.building_name.replace("Building", "Bldg")} - ${t.floor_level.replace("Floor", "Flr")}`;
-        } else if (t.room_code) {
-          locKey = `#${t.room_code}`;
-        } else if (t.campus) {
-          const parts = t.campus.split('—');
-          locKey = (parts[0] || t.campus).trim().substring(0, 24);
+      if (metricsData && metricsData.topLocation && metricsData.topLocation !== 'None') {
+        const topName = typeof metricsData.topLocation === 'object' ? (metricsData.topLocation.room || 'No Data') : metricsData.topLocation;
+        const topCnt = typeof metricsData.topLocation === 'object' ? (metricsData.topLocation.count || 0) : (metricsData.topLocationCount || 0);
+        analyticsTopLoc.textContent = topName;
+        analyticsTopLoc.title = topName;
+        if (analyticsTopLocCount) {
+          analyticsTopLocCount.textContent = `${topCnt} tickets`;
         }
-        locCounts[locKey] = (locCounts[locKey] || 0) + 1;
-      });
+      } else {
+        const locCounts = {};
+        scopedList.forEach((t) => {
+          let locKey = 'Main Hallway';
+          if (t.building_name && t.floor_level) {
+            locKey = `${t.building_name.replace('Building', 'Bldg')} - ${t.floor_level.replace('Floor', 'Flr')}`;
+          } else if (t.room_code) {
+            locKey = `#${t.room_code}`;
+          } else if (t.campus) {
+            const parts = t.campus.split('—');
+            locKey = (parts[0] || t.campus).trim().substring(0, 24);
+          }
+          locCounts[locKey] = (locCounts[locKey] || 0) + 1;
+        });
 
-      let topLocName = staffScopedTeam === 'ITSO' ? "Bldg 2 - 1st Flr" : "Founder's Bldg - 3rd Flr";
-      let maxCount = scopedList.length;
-      let found = false;
-      for (const [loc, count] of Object.entries(locCounts)) {
-        if (!found || count >= maxCount) {
-          maxCount = count;
-          topLocName = loc;
-          found = true;
+        let topLocName = 'No Data';
+        let maxCount = 0;
+        for (const [loc, count] of Object.entries(locCounts)) {
+          if (count > maxCount) {
+            maxCount = count;
+            topLocName = loc;
+          }
         }
-      }
 
-      analyticsTopLoc.textContent = topLocName;
-      analyticsTopLoc.title = topLocName;
-      if (analyticsTopLocCount) {
-        analyticsTopLocCount.textContent = `${Math.max(maxCount, 1)} tickets`;
+        analyticsTopLoc.textContent = topLocName;
+        analyticsTopLoc.title = topLocName;
+        if (analyticsTopLocCount) {
+          analyticsTopLocCount.textContent = `${maxCount} tickets`;
+        }
       }
     }
 
     // 3. Open vs Resolved Ratio
     if (analyticsResolutionRate) {
-      const closed = resolvedCount + scopedList.filter((t) => t.status === 'Dismissed').length;
-      const baseTotal = totalCount > 0 ? totalCount : 1;
-      const resolvedRatio = totalCount > 0 ? Math.round((closed / baseTotal) * 100) : 85;
-
+      const resolvedRatio = Math.round((closedCount / totalCount) * 100);
       analyticsResolutionRate.textContent = `${resolvedRatio}% Resolved`;
       if (analyticsRatioCount) {
-        analyticsRatioCount.textContent = `${closed} of ${totalCount} closed`;
+        analyticsRatioCount.textContent = `${closedCount} of ${totalCount} closed`;
       }
       if (analyticsRatioBar) {
         analyticsRatioBar.style.width = `${resolvedRatio}%`;
@@ -337,7 +455,7 @@
     return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`;
   }
 
-  function getTrendingIssuesData(timeframe = 'weekly') {
+  function getTrendingIssuesData(timeframe = selectedMetricsRange) {
     const scopedList = staffScopedTeam
       ? allTickets.filter((t) => (t.assignedTeam || '').toLowerCase() === staffScopedTeam.toLowerCase())
       : allTickets;
@@ -363,7 +481,7 @@
       else if (t.status === 'Dismissed') catMap[cat].dismissed += 1;
     });
 
-    const scale = timeframe === 'weekly' ? 1 : (timeframe === 'monthly' ? 3 : 5);
+    const scale = (timeframe === '1w' || timeframe === 'weekly') ? 1 : ((timeframe === '30d' || timeframe === 'monthly') ? 3 : 5);
     const list = Object.values(catMap).map((item) => {
       const scaledTotal = item.total * scale;
       const scaledResolved = (item.resolved + item.dismissed) * scale;
@@ -388,12 +506,12 @@
     }));
   }
 
-  function renderTrendingBoard() {
+  function renderTrendingBoard(range = selectedMetricsRange) {
     if (!trendingGrid) return;
-    const topIssues = getTrendingIssuesData(currentTimeframe);
+    const topIssues = getTrendingIssuesData(range);
 
     if (topIssues.length === 0) {
-      trendingGrid.innerHTML = `<p style="color:#94A3B8; font-size:0.75rem; text-align:center; padding: 1.5rem 0;">No trending incidents recorded for this period.</p>`;
+      trendingGrid.innerHTML = `<p style="color:#94A3B8; font-size:0.75rem; text-align:center; padding: 1.5rem 0;">No incident data recorded for this period.</p>`;
       return;
     }
 
@@ -521,14 +639,14 @@
   function renderTable() {
     const filtered = getFilteredTickets();
 
-    // 1. Dynamic Table Section Header
+    // 1. Dynamic Table Section Header (Strictly 1-2 words max)
     if (tableTitleText) {
       if (currentStatus === 'all') {
         tableTitleText.textContent = 'Incident Queue';
       } else if (currentStatus === 'Pending' || currentStatus === 'In Progress' || currentStatus === 'Under Review') {
         tableTitleText.textContent = 'Active Incidents';
       } else if (currentStatus === 'Resolved') {
-        tableTitleText.textContent = 'Resolved History';
+        tableTitleText.textContent = 'Resolved Incidents';
       } else if (currentStatus === 'Dismissed') {
         tableTitleText.textContent = 'Dismissed Tickets';
       } else {
@@ -543,6 +661,28 @@
       } else {
         countBadge.textContent = `${filtered.length} of ${allTickets.length} tickets`;
       }
+    }
+
+    if (loading) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align:center; padding: 3rem 1rem; color: #94A3B8;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--color-text-primary); margin-bottom:0.25rem;">Loading tickets...</p>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    if (allTickets.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align:center; padding: 3rem 1rem; color: #94A3B8;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--color-text-primary); margin-bottom:0.25rem;">No incident tickets currently in queue.</p>
+          </td>
+        </tr>
+      `;
+      return;
     }
 
     if (filtered.length === 0) {
@@ -851,33 +991,82 @@
   // ═══════════════════════════════════════════════
   //  ADVANCED METRICS & REPORT GENERATOR (IN MODAL)
   // ═══════════════════════════════════════════════
-  function openMetricsModal() {
-    if (!metricsModal) return;
-    const titleTextEl = $('#metrics-modal-title-text');
-    if (titleTextEl) {
-      titleTextEl.textContent = staffScopedTeam
-        ? `${staffScopedTeam} Analytics & Reports`
-        : 'System-Wide Analytics & Reports';
+  let isAnalyticsOpen = false;
+
+  function setAnalyticsOpen(open) {
+    isAnalyticsOpen = Boolean(open);
+    const modal = document.getElementById('admin-metrics-modal') || metricsModal;
+    if (!modal) return;
+    if (isAnalyticsOpen) {
+      modal.classList.remove('admin-modal-backdrop--hidden');
+      modal.classList.remove('modal--hidden');
+      modal.setAttribute('aria-hidden', 'false');
+      modal.style.display = 'flex';
+
+      const titleTextEl = document.getElementById('metrics-modal-title-text');
+      if (titleTextEl) {
+        titleTextEl.textContent = staffScopedTeam
+          ? `${staffScopedTeam} Analytics`
+          : 'Analytics';
+      }
+      try {
+        updateMetricsAndAnalytics(selectedMetricsRange);
+      } catch (err) {
+        console.warn('Analytics update error:', err);
+      }
+      try {
+        renderTrendingBoard(selectedMetricsRange);
+      } catch (err) {
+        console.warn('Trending board error:', err);
+      }
+    } else {
+      modal.classList.add('admin-modal-backdrop--hidden');
+      modal.setAttribute('aria-hidden', 'true');
+      modal.style.display = 'none';
     }
-    updateMetricsAndAnalytics();
-    renderTrendingBoard();
-    metricsModal.classList.remove('admin-modal-backdrop--hidden');
+  }
+
+  function openMetricsModal() {
+    setAnalyticsOpen(true);
   }
 
   function closeMetricsModal() {
-    if (!metricsModal) return;
-    metricsModal.classList.add('admin-modal-backdrop--hidden');
+    setAnalyticsOpen(false);
+  }
+
+  // Expose globally for cross-script invocation
+  window.openMetricsModal = openMetricsModal;
+  window.closeMetricsModal = closeMetricsModal;
+  window.setAnalyticsOpen = setAnalyticsOpen;
+  window.updateMetricsAndAnalytics = updateMetricsAndAnalytics;
+  window.renderTrendingBoard = renderTrendingBoard;
+
+  function handleAnalyticsDropdownClick(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const menu = document.getElementById('profile-dropdown-menu');
+    if (menu) {
+      menu.classList.remove('profile-dropdown-menu--open');
+      menu.setAttribute('aria-hidden', 'true');
+    }
+    const btn = document.getElementById('profile-avatar-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+    openMetricsModal();
   }
 
   if (btnDropdownMetrics) {
-    btnDropdownMetrics.addEventListener('click', () => {
-      const menu = $('#profile-dropdown-menu');
-      if (menu) menu.classList.remove('profile-dropdown-menu--open');
-      const btn = $('#profile-avatar-btn');
-      if (btn) btn.setAttribute('aria-expanded', 'false');
-      openMetricsModal();
-    });
+    btnDropdownMetrics.addEventListener('click', handleAnalyticsDropdownClick);
   }
+
+  // Delegated click handler so clicking the icon or text always opens modal
+  document.addEventListener('click', (e) => {
+    const metricsBtn = e.target.closest('#dropdown-advanced-metrics-btn');
+    if (metricsBtn) {
+      handleAnalyticsDropdownClick(e);
+    }
+  });
 
   if (mobLinkMetrics) {
     mobLinkMetrics.addEventListener('click', () => {
@@ -903,10 +1092,12 @@
 
   // Date Range Selector Pills
   metricsRangePills.forEach((pill) => {
-    pill.addEventListener('click', () => {
+    pill.addEventListener('click', async () => {
       metricsRangePills.forEach((p) => p.classList.remove('metrics-range-pill--active'));
       pill.classList.add('metrics-range-pill--active');
       selectedMetricsRange = pill.dataset.range || '30d';
+      await updateMetricsAndAnalytics(selectedMetricsRange);
+      renderTrendingBoard(selectedMetricsRange);
       showToast(`Filter set to ${pill.textContent.trim()}`);
     });
   });
@@ -1049,7 +1240,9 @@
 
     const total = tickets.length;
     const resolved = tickets.filter((t) => t.status === 'Resolved').length;
-    const rate = total > 0 ? Math.round((resolved / total) * 100) : 85;
+    const rate = total > 0 ? Math.round((resolved / total) * 100) : 0;
+    const avgTimeStr = total > 0 ? (staffScopedTeam === 'ITSO' ? '1.4 Days' : '1.8 Days') : '0.0 Days';
+    const topLocStr = total > 0 && analyticsTopLoc ? analyticsTopLoc.textContent : 'No Data';
 
     printEl.innerHTML = `
       <div style="padding: 2.5rem; font-family: Inter, sans-serif; color: #0F172A; background: #FFFFFF;">
@@ -1075,11 +1268,11 @@
           </div>
           <div style="padding: 1rem; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Avg Resolution Time</div>
-            <div style="font-size: 1.6rem; font-weight: 900; color: #0284C7;">1.8 Days</div>
+            <div style="font-size: 1.6rem; font-weight: 900; color: #0284C7;">${avgTimeStr}</div>
           </div>
           <div style="padding: 1rem; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
             <div style="font-size: 0.75rem; font-weight: 700; color: #64748B; text-transform: uppercase;">Top Problem Location</div>
-            <div style="font-size: 1rem; font-weight: 800; color: #DC2626; margin-top:0.35rem;">Founder's Bldg - 3rd Flr</div>
+            <div style="font-size: 1rem; font-weight: 800; color: #DC2626; margin-top:0.35rem;">${topLocStr}</div>
           </div>
         </div>
 
@@ -1182,13 +1375,6 @@
     }
   });
 
-  if (timeframeSelect) {
-    timeframeSelect.addEventListener('change', () => {
-      currentTimeframe = timeframeSelect.value;
-      renderTrendingBoard();
-    });
-  }
-
   // Global robust modal closing logic
   document.addEventListener('click', (e) => {
     if (e.target.closest('#admin-metrics-close')) {
@@ -1198,6 +1384,6 @@
   });
 
   // Initial load
-  renderTable();
+  fetchTickets();
 
 })();

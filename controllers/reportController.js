@@ -123,67 +123,67 @@ exports.createReport = asyncHandler(async (req, res, next) => {
  * @access  Private
  */
 exports.getReports = asyncHandler(async (req, res, next) => {
-  const { campus, status, category, team, search, reporterId, myReports } = req.query;
-  let query = {};
+  const department = req.user?.department || 'ALL';
+  const role = (req.user?.role || 'staff').toLowerCase();
+
+  let filter = {};
 
   // If filtered for user's own reports (Student view)
+  const { campus, status, category, team, search, reporterId, myReports } = req.query;
   if (reporterId) {
-    query.$or = [{ reporter: reporterId }, { reporterId: reporterId }];
+    filter.$or = [{ reporter: reporterId }, { reporterId: reporterId }];
   } else if (myReports === 'true' && req.user) {
     const uId = req.user.userId || req.user.id;
-    query.$or = [{ reporter: uId }, { reporterId: uId }];
-  }
-
-  // Department Scoping for Staff vs Admin
-  if (req.user && (req.user.role || '').toLowerCase() === 'staff') {
-    const staffDept = req.user.department || '';
+    filter.$or = [{ reporter: uId }, { reporterId: uId }];
+  } else if (role !== 'admin' && department !== 'ALL') {
     let scopedTeam = 'ITSO';
-    if (staffDept.includes('IT') || staffDept.includes('ITSO')) scopedTeam = 'ITSO';
-    else if (staffDept.includes('Maintenance') || staffDept.includes('Facilities')) scopedTeam = 'Maintenance';
-    else if (staffDept.includes('SOHAS') || staffDept.includes('Security') || staffDept.includes('Health')) scopedTeam = 'SOHAS';
-    else if (staffDept.includes('Canteen')) scopedTeam = 'Canteen Staff';
-    else if (staffDept.includes('OSA') || staffDept.includes('Student Affairs')) scopedTeam = 'OSA';
-    else if (staffDept.includes('Guidance')) scopedTeam = 'Guidance';
-    else scopedTeam = staffDept;
+    if (department.includes('IT') || department.includes('ITSO')) scopedTeam = 'ITSO';
+    else if (department.includes('Maintenance') || department.includes('Facilities')) scopedTeam = 'Maintenance';
+    else if (department.includes('SOHAS') || department.includes('Security') || department.includes('Health')) scopedTeam = 'SOHAS';
+    else if (department.includes('Canteen')) scopedTeam = 'Canteen Staff';
+    else if (department.includes('OSA') || department.includes('Student Affairs')) scopedTeam = 'OSA';
+    else if (department.includes('Guidance')) scopedTeam = 'Guidance';
+    else scopedTeam = department;
 
-    query.assignedTeam = scopedTeam;
+    filter.assignedTeam = scopedTeam;
   }
 
-  if (campus && campus !== 'All') {
-    query.campus = campus;
+  if (campus && campus !== 'All' && campus !== 'all') {
+    filter.campus = campus === 'arlegui' ? 'Arlegui' : (campus === 'casal' ? 'Casal' : campus);
   }
 
-  if (status && status !== 'All') {
-    query.status = status;
+  if (status && status !== 'All' && status !== 'all') {
+    filter.status = status;
   }
 
   if (category && category !== 'All') {
-    query.category = category;
+    filter.category = category;
   }
 
   if (team && team !== 'All') {
-    query.assignedTeam = team;
+    filter.assignedTeam = team;
   }
 
   if (search) {
-    query.$or = [
+    const searchFilter = [
       { ticketId: { $regex: search, $options: 'i' } },
       { roomCode: { $regex: search, $options: 'i' } },
       { description: { $regex: search, $options: 'i' } }
     ];
+    if (filter.$or) {
+      filter.$and = [{ $or: filter.$or }, { $or: searchFilter }];
+      delete filter.$or;
+    } else {
+      filter.$or = searchFilter;
+    }
   }
 
-  const incidents = await Incident.find(query)
+  const tickets = (await Incident.find(filter)
     .populate('reporter', 'fullName email tipEmail department')
     .populate('reporterId', 'fullName email tipEmail department')
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })) || [];
 
-  res.status(200).json({
-    success: true,
-    count: incidents.length,
-    reports: incidents,
-    incidents
-  });
+  return res.status(200).json(tickets);
 });
 
 /**
@@ -212,6 +212,46 @@ exports.getDashboardStats = asyncHandler(async (req, res, next) => {
 
   if (campus && campus !== 'All') {
     matchQuery.campus = campus;
+  }
+
+  const totalTickets = await Incident.countDocuments(matchQuery);
+
+  const scopeLabel = req.user && (req.user.role || '').toLowerCase() === 'staff' 
+    ? `${req.user.department || 'Department'} Scope` 
+    : 'System-Wide Admin Scope';
+
+  if (totalTickets === 0) {
+    const zeroStats = {
+      pending: 0,
+      inProgress: 0,
+      resolved: 0,
+      underReview: 0,
+      total: 0,
+      totalTickets: 0,
+      closedTickets: 0,
+      categories: {},
+      topLocation: { room: 'None', count: 0 },
+      topLocationName: 'None',
+      topLocationCount: 0,
+      avgResolutionTime: 0,
+      avgResolutionTimeFormatted: '0.0 Days',
+      resolvedPercentage: 0,
+      resolutionRate: '0%',
+      teams: {}
+    };
+
+    return res.status(200).json({
+      success: true,
+      scope: scopeLabel,
+      avgResolutionTime: 0,
+      topLocation: 'None',
+      topLocationCount: 0,
+      resolvedPercentage: 0,
+      totalTickets: 0,
+      closedTickets: 0,
+      stats: zeroStats,
+      metrics: zeroStats
+    });
   }
 
   // 1. Status Aggregation (Open vs Resolved)
@@ -246,24 +286,46 @@ exports.getDashboardStats = asyncHandler(async (req, res, next) => {
     inProgress: 0,
     resolved: 0,
     underReview: 0,
-    total: 0,
+    total: totalTickets,
+    totalTickets: totalTickets,
+    closedTickets: 0,
     categories: {},
-    topLocation: locationStats.length > 0 ? { room: locationStats[0]._id, count: locationStats[0].count } : { room: 'CAD Lab 302', count: 4 },
-    avgResolutionTime: req.user && req.user.role === 'staff' ? '1.4 Days' : '1.8 Days',
-    resolutionRate: '85%',
+    topLocation: locationStats.length > 0 ? { room: locationStats[0]._id || 'None', count: locationStats[0].count } : { room: 'None', count: 0 },
+    topLocationName: locationStats.length > 0 ? (locationStats[0]._id || 'None') : 'None',
+    topLocationCount: locationStats.length > 0 ? locationStats[0].count : 0,
+    avgResolutionTime: 0,
+    avgResolutionTimeFormatted: '0.0 Days',
+    resolutionRate: '0%',
+    resolvedPercentage: 0,
     teams: {}
   };
 
   statusStats.forEach((item) => {
-    formattedStats.total += item.count;
     if (item._id === 'Pending') formattedStats.pending = item.count;
     if (item._id === 'In Progress') formattedStats.inProgress = item.count;
     if (item._id === 'Resolved') formattedStats.resolved = item.count;
     if (item._id === 'Under Review') formattedStats.underReview = item.count;
   });
 
+  // Calculate dynamic average resolution time from resolved timestamps
+  if (formattedStats.resolved > 0) {
+    const resolvedItems = await Incident.find({ ...matchQuery, status: 'Resolved' }).select('createdAt updatedAt');
+    if (resolvedItems.length > 0) {
+      const totalMs = resolvedItems.reduce((acc, cur) => {
+        const diff = (cur.updatedAt || new Date()) - (cur.createdAt || new Date());
+        return acc + Math.max(diff, 0);
+      }, 0);
+      const avgDays = parseFloat(((totalMs / resolvedItems.length) / (1000 * 60 * 60 * 24)).toFixed(1));
+      formattedStats.avgResolutionTime = avgDays;
+      formattedStats.avgResolutionTimeFormatted = avgDays > 0 ? `${avgDays} Days` : '0.0 Days';
+    }
+  }
+
+  const closed = formattedStats.resolved + (formattedStats.dismissed || 0);
+  formattedStats.closedTickets = closed;
   if (formattedStats.total > 0) {
-    const rate = Math.round((formattedStats.resolved / formattedStats.total) * 100);
+    const rate = Math.round((closed / formattedStats.total) * 100);
+    formattedStats.resolvedPercentage = rate;
     formattedStats.resolutionRate = `${rate}%`;
   }
 
@@ -277,9 +339,13 @@ exports.getDashboardStats = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    scope: req.user && (req.user.role || '').toLowerCase() === 'staff' 
-      ? `${req.user.department || 'Department'} Scope` 
-      : 'System-Wide Admin Scope',
+    scope: scopeLabel,
+    avgResolutionTime: formattedStats.avgResolutionTime,
+    topLocation: formattedStats.topLocationName,
+    topLocationCount: formattedStats.topLocationCount,
+    resolvedPercentage: formattedStats.resolvedPercentage,
+    totalTickets: formattedStats.totalTickets,
+    closedTickets: formattedStats.closedTickets,
     stats: formattedStats,
     metrics: formattedStats
   });

@@ -300,7 +300,7 @@
   // ═══════════════════════════════════════════════
   //  FORM SUBMISSIONS
   // ═══════════════════════════════════════════════
-  signinForm.addEventListener('submit', (e) => {
+  signinForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     validateEmail(signinEmail, signinEmailIcon, signinEmailErr);
 
@@ -322,48 +322,68 @@
     btn.disabled = true;
     btn.style.opacity = '.7';
 
+    const normalizedInput = inputVal.toLowerCase();
+    let userRole = currentRole === 'admin' ? 'admin' : 'student';
+    let userDept = '';
+    let extractedName = 'Juan Dela Cruz';
+
+    if (normalizedInput === 'superadmin' || normalizedInput === 'admin@tip.edu.ph') {
+      userRole = 'admin';
+      userDept = 'Executive Operations';
+      extractedName = 'Super Admin';
+    } else if (normalizedInput === 'itdeptmnl' || normalizedInput === 'it@tip.edu.ph') {
+      userRole = 'staff';
+      userDept = 'ITSO';
+      extractedName = 'ITSO Operations';
+    } else if (currentRole === 'admin') {
+      userRole = 'admin';
+      extractedName = isEmail 
+        ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
+        : (inputVal.charAt(0).toUpperCase() + inputVal.slice(1) + ' (Admin)');
+      if (!extractedName || extractedName.trim() === '(Admin)') extractedName = 'Campus Admin';
+    } else {
+      userRole = 'student';
+      extractedName = isEmail
+        ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
+        : 'Juan Dela Cruz';
+    }
+
+    try {
+      if (window.apiClient) {
+        const res = await window.apiClient.post('/auth/login', {
+          identifier: inputVal,
+          email: isEmail ? inputVal : undefined,
+          username: !isEmail ? inputVal : undefined,
+          password: signinPassword.value
+        });
+        if (res && res.token && res.user) {
+          sessionStorage.setItem('tipped_token', res.token);
+          localStorage.setItem('tipped_token', res.token);
+          userRole = res.user.role || userRole;
+          userDept = res.user.department || userDept;
+          extractedName = res.user.fullName || extractedName;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend login fallback active:', err);
+    }
+
+    sessionStorage.setItem('tipped_user_name', extractedName);
+    sessionStorage.setItem('tipped_user_role', userRole.toUpperCase());
+    sessionStorage.setItem('tipped_user_dept', userDept);
+    sessionStorage.setItem('tipped_user_email', isEmail ? inputVal : `${inputVal}@tip.edu.ph`);
+
     setTimeout(() => {
       btn.textContent = 'SIGN IN';
       btn.disabled = false;
       btn.style.opacity = '';
 
-      const normalizedInput = inputVal.toLowerCase();
-      let userRole = currentRole === 'admin' ? 'admin' : 'student';
-      let userDept = '';
-      let extractedName = 'Juan Dela Cruz';
-
-      if (normalizedInput === 'superadmin' || normalizedInput === 'admin@tip.edu.ph') {
-        userRole = 'admin';
-        userDept = 'Executive Operations';
-        extractedName = 'Super Admin';
-      } else if (normalizedInput === 'itdeptmnl' || normalizedInput === 'it@tip.edu.ph') {
-        userRole = 'staff';
-        userDept = 'ITSO';
-        extractedName = 'ITSO Operations';
-      } else if (currentRole === 'admin') {
-        userRole = 'admin';
-        extractedName = isEmail 
-          ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
-          : (inputVal.charAt(0).toUpperCase() + inputVal.slice(1) + ' (Admin)');
-        if (!extractedName || extractedName.trim() === '(Admin)') extractedName = 'Campus Admin';
-      } else {
-        userRole = 'student';
-        extractedName = isEmail
-          ? inputVal.split('@')[0].split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')
-          : 'Juan Dela Cruz';
-      }
-
-      sessionStorage.setItem('tipped_user_name', extractedName);
-      sessionStorage.setItem('tipped_user_role', userRole.toUpperCase());
-      sessionStorage.setItem('tipped_user_dept', userDept);
-      sessionStorage.setItem('tipped_user_email', isEmail ? inputVal : `${inputVal}@tip.edu.ph`);
-
-      if (userRole === 'admin' || userRole === 'staff' || currentRole === 'admin') {
+      if (userRole.toLowerCase() === 'admin' || userRole.toLowerCase() === 'staff' || userRole.toLowerCase() === 'superadmin' || currentRole === 'admin') {
         window.location.href = '/admin';
       } else {
         window.location.href = '/dashboard';
       }
-    }, 700);
+    }, 400);
   });
 
   signupForm.addEventListener('submit', (e) => {

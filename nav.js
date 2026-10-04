@@ -193,6 +193,26 @@
       }
     });
 
+    // Analytics modal trigger inside dropdown
+    const metricsBtn = $('#dropdown-advanced-metrics-btn');
+    if (metricsBtn) {
+      metricsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+        if (typeof window.openMetricsModal === 'function') {
+          window.openMetricsModal();
+        } else {
+          const modal = document.getElementById('admin-metrics-modal');
+          if (modal) {
+            modal.classList.remove('admin-modal-backdrop--hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            modal.style.display = 'flex';
+          }
+        }
+      });
+    }
+
     // Theme toggle action inside dropdown
     if (themeToggleBtn) {
       themeToggleBtn.addEventListener('click', (e) => {

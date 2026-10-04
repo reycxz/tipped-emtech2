@@ -4056,17 +4056,17 @@ input, select { font-family: inherit; outline: none; }
 .admin-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.82);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
 }
 .admin-modal-backdrop--hidden {
-  display: none;
+  display: none !important;
 }
 
 .admin-modal-card {
